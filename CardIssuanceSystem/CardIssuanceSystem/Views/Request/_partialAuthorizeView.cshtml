@@ -1,0 +1,139 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.AuthorizationVM>
+@{
+
+}
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                @*<th>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                        </label>
+                    </div>
+                </th>*@
+                <th>Request #</th>
+                <th>Customer ID</th>
+                <th>Name</th>
+                <th>Card No</th>
+                <th>Card Type</th>
+                @*<th>Card Nature</th>*@
+                <th>Account #</th>
+                <th>Request Nature</th>
+                @*<th>Description</th>*@
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        @*<td>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                                </label>
+                            </div>
+                        </td>*@
+                        <td>@item.ID</td>
+                        <td>@item.CIFNo</td>
+                        <td>@item.CardTitle</td>
+                        <td>@item.CardNo</td>
+                        <td>@(item.CardType?.Title ?? string.Empty)</td>
+                        @*<td>Primary</td>*@
+                        <td>@item.AccountNo</td>
+                        <td>@(item.RequestType != "N" ? item.RequestType != "A" ? item.RequestType != "U" ? item.RequestType != "L" ? item.RequestType != "D" ? item.RequestType != "H" ? item.RequestType != "R" ? string.Empty : "Card Replacement Request" : "Card Hotmark Request" : "Card Delinking Request" : "Card Linking Request" : "Card Upgrade Request" : "Card Ammendment Request" : "New Card Request")</td>
+                        @*<td>Debit Master Gold Card</td>*@
+                        <td>
+                            @ActionButton(item.RequestType, item.ID)
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr colspan="11">
+                    <td>No Record Found!</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div><!-- End table-responsive -->
+
+@*@helper ActionButton(string requestType, long id)
+{
+switch (requestType)
+{
+    case "N":
+            <a href="@Url.Action("AuthorizeNewRequestDetail","Authorization",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "R":
+            <a href="@Url.Action("AuthorizeCardReplacementScreen","Authorization",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "L":
+            <a href="@Url.Action("AuthorizeLinkingScreen","Authorization",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "D":
+            <a href="@Url.Action("AuthorizeDelinkingScreen","Authorization",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "A":
+            <a href="@Url.Action("AuthorizeCardAmendmentScreen","Authorization",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "U":
+            <a href="@Url.Action("AuthorizeCardUpgradeScreen","Authorization",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    default:
+            <a href="@Url.Action("AuthorizeNewRequestDetail","Authorization",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+}
+
+}*@
+
+
+
+@helper ActionButton(string requestType, long id)
+{
+switch (requestType)
+{
+    case "N":
+            <a href="@Url.Action("AuthorizeNewRequestDetail","Authorization",new { RequestId = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "R":
+            <a href="@Url.Action("AuthorizeCardReplacementScreen","Authorization",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "L":
+            <a href="@Url.Action("AuthorizeLinkingScreen","Authorization",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "D":
+            <a href="@Url.Action("AuthorizeDelinkingScreen","Authorization",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "A":
+            <a href="@Url.Action("AuthorizeAmmendRequestDetail","Authorization",new { RequestId = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "U":
+            <a href="@Url.Action("AuthorizeUpgradeRequestDetail","Authorization",new { RequestId = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    default:
+            <a href="@Url.Action("AuthorizeNewRequestDetail","Authorization",new { RequestId = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+}
+
+}

@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CardIssuanceSystem.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="CardIssuanceSystem_NewCISSB_T24WebServicesImplService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://10.35.1.154:9092/SON.CARD.OPS/services</Value>
+    </Setting>
+    <Setting Name="CardIssuanceSystem_CISSB_BEAPITransactionService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://10.20.206.22:7800/SBL/SBLPaymentServices</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

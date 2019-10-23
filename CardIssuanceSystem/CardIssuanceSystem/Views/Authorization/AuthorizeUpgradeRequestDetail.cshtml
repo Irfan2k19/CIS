@@ -1,0 +1,336 @@
+﻿@using CardIssuanceSystem.DAL
+@model CardIssuanceSystem.DAL.tbl_Requests
+@{
+    ViewBag.Title = "Card Upgrade Authorization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var existingCard = ViewBag.ExistingCardNumber as tbl_Customer_Cards;
+}
+@section CustomJS{
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#UnEditable :input").attr("disabled", true);
+        });
+
+        $('#btnproceed').click(function () {
+            //debugger
+            ShowLoader();
+            var RequestId = '@Model.ID';
+            var RequestType = '@Model.RequestType';
+            var AuthorizationStatus = $('input[name=correct-ans]:checked').val();
+            var AuthorizeComments = $('#AuthorizeComments').val();
+            var Url = '@Url.Action("AuthorizeRequest", "Authorization")';
+            var AccountStatus = '@(ViewBag.T24AccountInfo?.AccountStatus ?? "Y")';
+            var AvailableBalance = '@(ViewBag.T24AccountInfo?.AvailableBalance ?? "0")';
+            var WaiveCharges = '@Model.WaiveCharges';
+            var DrCustomerAccountNumber = '@Model.AccountNo';
+            var CardTypeId = '@Model.CardTypeID';
+            var CIF = '@ViewBag.AccountInfo.CIF';
+            var CardNo = '@Model.CardNo';
+            if ($('input[name=correct-ans]:checked').val() === undefined || $('input[name=correct-ans]:checked').val() === "") {
+                alert("Action required!");
+                HideLoader();
+                return false;
+            }
+
+            
+
+            if (AuthorizationStatus === "R" && AuthorizeComments === "") {
+                alert("Comment required!");
+                HideLoader();
+                return false;
+            }
+            else {
+                ajaxCall(Url, { RequestId: RequestId, RequestType: RequestType, AuthorizationStatus: AuthorizationStatus, AuthorizeComments: AuthorizeComments, DrCustomerAccountNumber: DrCustomerAccountNumber, CardTypeId: CardTypeId, WaiveCharges: WaiveCharges, CIF: CIF, CardNo: CardNo }, function (resp) {
+                    //debugger;
+                    if (resp == true) {
+                        alert("Success");
+                        HideLoader();
+                        location.reload();
+                    }
+                    else if (typeof (resp) === 'object') {
+                        alert(resp.ErrorMessage);
+                        location.reload();
+                    }
+                    else {
+                        alert("Insufficient Funds");
+                        location.reload();
+                        HideLoader();
+                    }
+                }, function (fail) {
+                    alert("Failure");
+                    HideLoader();
+                }, function (err) {
+                    alert("Error");
+                    HideLoader();
+                });
+            }
+        });
+    </script>
+}
+<div class="container">
+    <div id="UnEditable">
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Existing Card No</label>
+                <input type="text" class="form-control" value="@(Model.CardNo)">
+            </div><!-- End col-sm-3 -->
+            <!-- <div class="col-sm-3">
+                <label class="control-label">Request No</label>
+                <input type="text" class="form-control">
+            </div> -->
+            <!-- End col-sm-3 -->
+
+            @*<div class="col-sm-3">
+                <label class="control-label">Salutation</label>
+                <select class="form-control">
+                    <option>@Model.Salutation</option>
+                </select>
+            </div>*@<!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Card Title</label>
+                <input type="text" class="form-control" value="@Model.CardTitle" disabled>
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Card Type</label>
+                <input type="text" class="form-control" value="@ViewBag.ExistingCardType1">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Upgradation Type</label>
+                <select class="form-control">
+                    <option>@ViewBag.NewCardType1</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+        </div><!-- End row -->
+
+        <div class="row form-group">
+
+            <div class="col-sm-3">
+                <label class="control-label">Request Date</label>
+                <div class='input-group date datetimepicker1'>
+                    <input type='text' id="RequestDate" class="form-control" readonly value="@Model.RequestDate"/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div><!-- End datepicker -->
+                <!-- End col-sm-3 -->
+            </div>
+            
+            <div class="col-sm-3">
+            </div><!-- End col-sm-3 -->
+
+
+            <div class="col-sm-3">
+            </div><!-- End col-sm-3 -->
+        </div><!-- End row -->
+
+        <h4 class="main_hdng">Customer Information</h4>
+
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Customer ID</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.CIF">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Customer Name</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.CustomerName">
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Account Number</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.AccountNo">
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Account Title</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.AccountTitle">
+            </div><!-- End col-sm-3 -->
+
+        </div><!-- End row -->
+
+         <div class="row form-group">
+     
+        <div class="col-sm-12">
+            <label class="control-label">Account Address</label>
+            <input type="text" class="form-control" value="@ViewBag.AccountInfo.Address">
+        </div><!-- End col-sm-3 -->
+    </div>
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <label class="control-label">Customer Address 1</label>
+            <input type="text" class="form-control" value="@ViewBag.AccountInfo.Address2">
+        </div><!-- End col-sm-3 -->
+    </div>
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <label class="control-label">Customer Address 2</label>
+            <input type="text" class="form-control" value="@ViewBag.AccountInfo.Address3">
+        </div><!-- End col-sm-3 -->
+    </div>
+    
+
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Mobile No</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.Mobile">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Mobile No 1</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.Mobile2">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Mobile No 2</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.Mobile3">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Mobile No 3</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.Mobile4">
+            </div><!-- End col-sm-3 -->
+
+        </div><!-- End row -->
+
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Phone Res</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.LandlineNo">
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Phone Off</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.PhoneOffice">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Fax No</label>
+                <input type="text" class="form-control">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Email</label>
+                <input type="email" class="form-control" value="@ViewBag.AccountInfo.Email">
+            </div><!-- End col-sm-3 -->
+
+        </div><!-- End row -->
+
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Date of Birth</label>
+                <div class='input-group date'>
+                    <input type='text' class="form-control" value="@(ViewBag?.AccountInfo?.DateofBirth == null ? string.Empty : ViewBag?.AccountInfo?.DateofBirth.ToString("dd/MM/yyyy"))" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div><!-- End datepicker -->
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Father's Name</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.FatherName">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Mother's Maiden Name</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.MotherMaidenName">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Identification</label>
+                <select class="form-control">
+                    <option>@ViewBag.AccountInfo.IdentificationType</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+
+        </div><!-- End row -->
+
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Identification No</label>
+                <input type="text" class="form-control" value="@ViewBag.AccountInfo.Identification">
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Old NIC</label>
+                <input type="text" class="form-control">
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Product</label>
+                <input id="Product" type="text" class="form-control" value="@(ViewBag.T24AccountInfo?.Product ?? string.Empty)" />
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Operating Instruction</label>
+                <input id="OperatingInst" type="text" class="form-control" value="@(ViewBag.T24AccountInfo?.OpInstructions ?? string.Empty)" />
+            </div><!-- End col-sm-3 -->
+
+        </div><!-- End row -->
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Sector</label>
+                <input id="Sector" type="text" class="form-control" value="@(ViewBag.T24AccountInfo?.Sector ?? string.Empty)" />
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Nationality</label>
+                <input id="Nationality" type="text" class="form-control" value="@(ViewBag.AccountInfo?.Nationality ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Residence</label>
+                <input id="Residence" type="text" class="form-control" value="@(ViewBag.AccountInfo?.ResidenceStatus ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <div class="checkbox">
+                    <label>
+                        @if (Model.WaiveCharges == true)
+                        {
+                            <input type="checkbox" name="Waive-Charges" checked><span class="checkbox-material"><span class="check"></span></span>
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="Waive-Charges"><span class="checkbox-material"><span class="check"></span></span>
+                        }
+
+                        Waive Charges
+                    </label>
+                </div>
+            </div><!-- End col-sm-6 -->
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="correct-ans" value="A"><span class="checkbox-material"><span class="check"></span></span>
+                    Approved
+                </label>
+
+                <label>
+                    <input type="radio" name="correct-ans" value="C"><span class="checkbox-material"><span class="check"></span></span>
+                    Reject
+                </label>
+
+                <label>
+                    <input type="radio" name="correct-ans" value="R"><span class="checkbox-material"><span class="check"></span></span>
+                    To be corrected
+                </label>
+            </div>
+        </div><!-- End col-sm-12 -->
+    </div><!-- End row -->
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <textarea class="form-control" rows="5" id="AuthorizeComments" maxlength="50"></textarea>
+        </div><!-- End col-sm-12 -->
+    </div><!-- End row -->
+
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="btns_right">
+                <button class="btn btn-cstm" id="btnproceed">Proceed</button>
+                <a class="btn btn-cstm btn-light" id="btncancel" href="@Url.Action("AuthorizeCardUpgradeScreen", "Request")">Cancel</a>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-3 -->
+    </div><!-- End row -->
+</div><!-- End container -->

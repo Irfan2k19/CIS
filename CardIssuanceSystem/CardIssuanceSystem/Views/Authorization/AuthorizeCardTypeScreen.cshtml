@@ -1,0 +1,222 @@
+﻿@using CardIssuanceSystem.Core.ViewModel
+@using CardIssuanceSystem.DAL
+@model CardTypeVM
+@{
+    ViewBag.Title = "Card Type Authorization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var lstCardTypes = ViewBag.CardTypes as List<tbl_Card_Types>;
+    var requestId = ViewBag.RequestId;
+    var requestType = ViewBag.CardTypeRequestType;
+}
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            $('.btn-proceed').on('click', function () {
+                ShowLoader();
+                var status = $('.rb-val').find('input[type="radio"]:checked').val();
+                var comment = $('.txt-desc').val();
+                var code = $('#txtCardCode').val();
+                var id = '@requestId';
+               var url = '@requestType' === "Add" ? '@Url.Action("UpdateACAuthorizeScreen", "Authorization")' : '@Url.Action("UpdateACAuthorizeScreenForUpdateRequest", "Authorization")';
+                if (status === undefined || status === "") {
+                    HideLoader();
+                    alert("Action required!");
+                    return false;
+                }
+                if (status === "R" && comment === "") {
+                    HideLoader();
+                    alert("Comment required!");
+                    return false;
+                }
+                else {
+                    ShowLoader();
+                    ajaxCall(url, { RequestId: id, RequestType: "CardType", AuthorizationStatus: status, AuthorizeComments: comment }, function (resp) {
+                        //debugger;
+                        if (resp == true) {
+                            HideLoader();
+                            alert("Success");
+
+                            location.reload();
+                        }
+                        else {
+                            HideLoader();
+                            //alert("Failure");
+                            alert(resp.ErrorMessage);
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        alert("Failure");
+                    }, function (err) {
+                        HideLoader();
+                        alert("Error");
+                    });
+                }
+            });
+        });
+
+        $(window).on('load', function () {
+            if (parseInt('@requestId') > 0) {
+                $('.no-accept').find('input').prop('disabled', 'disabled');
+                $('.no-accept').find('textarea').prop('disabled', 'disabled');
+            }
+            $('.chkUpgradeTypes').find('.checkbox').filter(function () { return $(this).css('display', 'block'); });
+            $('.chkUpgradeTypes').find('input[type="checkbox"]').filter(function () { return $(this).attr('checked', false); });
+
+            $('.chkUpgradeTypes').find('input[type="checkbox"]').each(function (index, value) {
+                if ('@requestType' === "Add") {
+                    $(@Html.Raw(Json.Encode(Model.UpgradeChildTypes))).each(function (index1, value1) {
+                        //$('input[data-attr-update-upgradetype-id="' + id + '"]').css('display','none');
+                        if (value1.toString() === $(value).attr('data-attr-upgradetype-id')) {
+                            setTimeout(function () {
+                                $(value).removeAttr('unchecked');
+                                $(value).prop('checked', 'checked');
+                            }, 100);
+                        }
+                    });
+                }
+                else {
+                    $(@Html.Raw(Json.Encode(Model.tbl_Card_Upgrade_Types))).each(function (index1, value1) {
+                        //$('input[data-attr-update-upgradetype-id="' + id + '"]').css('display','none');
+                        if (value1.ParentCardType.toString() === $(value).attr('data-attr-upgradetype-id')) {
+                            setTimeout(function () {
+                                $(value).removeAttr('unchecked');
+                                $(value).prop('checked', 'checked');
+                            }, 100);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+<div class="container">
+    @*<h4 class="main_hdng">Card Types</h4>*@
+
+    <div class="tab-content">
+        <div id="newcardtype" class="tab-pane fade in active">
+            <div class="no-accept">
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        @Html.Hidden("txtAuthorizationStatus")
+                        <label class="control-label">Card Title</label>
+                        <input type="text" id="txtCardTitle" class="form-control" value="@Model.Title">
+                    </div><!-- End col-sm-6 -->
+
+                    <div class="col-sm-6">
+                        <label class="control-label">Card Code (IRIS)</label>
+                        <input class="form-control" id="txtCardCode" value="@Model.CardCode" />
+                    </div><!-- End col-sm-6 -->
+                </div><!-- End row -->
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        @*<label class="control-label">Card Description</label>
+                        <textarea class="form-control" rows="3" id="txtCardDesc">@Model.Description</textarea>
+                    <div class="col-sm-12">*@
+                        <label class="control-label">Card Code(Internal)</label>
+                        <textarea class="form-control" id="txtCardDesc">@Model.Description</textarea>
+                    </div><!-- End col-sm-6 -->
+
+                    <div class="col-sm-6">
+                        <label class="control-label">Is Card Type Active</label>
+                        <div class="row chk_bxs chkActive">
+                            <div class="col-md-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="activeCheckbox" @((Model?.IsActive ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                        Active
+                                    </label>
+                                </div>
+                            </div><!-- End col-md-3 -->
+                        </div>
+                    </div>
+                </div><!-- End row -->
+
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <label class="control-label">Upgrade Applicable froms Card Types</label>
+                        <div class="row chk_bxs chkUpgradeTypes">
+                            @foreach (var item in lstCardTypes)
+                            {
+                                <div class="col-md-3">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="optionsCheckboxes" unchecked="" data-attr-upgradetype-id="@item.ID"><span class="checkbox-material"><span class="check"></span></span>
+                                            @item.Title
+                                        </label>
+                                    </div>
+                                </div><!-- End col-md-3 -->
+                            }
+                        </div><!-- End row -->
+                    </div><!-- End col-sm-6 -->
+
+                    <div class="col-sm-6">
+                        <label class="control-label">Screens To View Card Type</label>
+                        <div class="row chk_bxs chkScreens">
+                            <div class="col-md-4">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="optionIssuanceScreen" @((Model?.IsIssuance ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                        Issuance
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="optionUpgradeScreen" @((Model?.IsUpgrade ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                        Upgrade
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="optionReplacementScreen" @((Model?.IsReplacement ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                        Replacement
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div><!-- End col-sm-6 -->
+                    </div><!-- End row -->
+                </div>
+           
+        </div>
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <div class="radio rb-val">
+                        <label>
+                            <input type="radio" name="correct-ans" value="A"><span class="checkbox-material"><span class="check"></span></span>
+                            Approved
+                        </label>
+
+                        <label>
+                        <input type="radio" name="correct-ans" value="C"><span class="checkbox-material"><span class="check"></span></span>
+                        Reject
+                    </label>
+
+                        <label>
+                            <input type="radio" name="correct-ans" value="R"><span class="checkbox-material"><span class="check"></span></span>
+                            To be corrected
+                        </label>
+                    </div>
+                </div><!-- End col-sm-12 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <textarea class="form-control txt-desc" rows="5" maxlength="50"></textarea>
+                </div><!-- End col-sm-12 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <div class="btns_right">
+                        <button class="btn btn-cstm btn-proceed">Proceed</button>
+                        <a class="btn btn-cstm btn-light btn-cancel" href="@Url.Action("Authorize", "CardType")">Cancel</a>
+                    </div><!-- End btns_right -->
+                </div><!-- End col-sm-3 -->
+            </div><!-- End row -->
+    </div>
+</div><!-- End container -->

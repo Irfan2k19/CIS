@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c730a7fa22724b1ca533ba7fe53560d3" Name="Diagram1" ZoomLevel="55">
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Account_Types" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Card_Charges" Width="1.5" PointX="3" PointY="4.25" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Card_Charges_Recovery" Width="1.5" PointX="3" PointY="12.75" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Card_Types" Width="1.5" PointX="0.75" PointY="4.375" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Card_Upgrade_Types" Width="1.5" PointX="3" PointY="9.625" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Currency" Width="1.5" PointX="7.75" PointY="2.5" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Customer_Accounts" Width="1.5" PointX="3" PointY="18" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Customer_Cards" Width="1.5" PointX="0.75" PointY="13.125" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_File_Exports" Width="1.5" PointX="7.75" PointY="5.5" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_File_Imports" Width="1.5" PointX="5.75" PointY="12.5" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_File_Paths" Width="1.5" PointX="7.75" PointY="12.5" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_IncomeAccounts" Width="1.5" PointX="10.75" PointY="11.5" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_OperatingInstructions" Width="1.5" PointX="12.75" PointY="11.5" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Posting_Restrictions" Width="1.5" PointX="12.75" PointY="14.5" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Region" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Regional_Charges" Width="1.5" PointX="5.25" PointY="4.875" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Request_Customer_Accounts" Width="1.5" PointX="13" PointY="3" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Requests" Width="1.5" PointX="10.75" PointY="4.25" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Sector" Width="1.5" PointX="5.75" PointY="15.5" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_transactions" Width="1.5" PointX="7.75" PointY="15.5" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_User_Log" Width="1.5" PointX="8" PointY="8.75" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Users" Width="1.5" PointX="5.75" PointY="8.75" />
+        <AssociationConnector Association="SoneriCISModel.FK_tbl_Card_Charges_tbl_Account_Types" />
+        <AssociationConnector Association="SoneriCISModel.FK_tbl_Customer_Accounts_tbl_Account_Types" />
+        <AssociationConnector Association="SoneriCISModel.FK_tbl_Card_Charges_tbl_Card_Types" />
+        <AssociationConnector Association="SoneriCISModel.FK_tbl_Regional_Charges_tbl_Card_Charges" />
+        <AssociationConnector Association="SoneriCISModel.FK_tbl_Card_Charges_Recovery_tbl_Customer_Cards" />
+        <AssociationConnector Association="SoneriCISModel.FK_tbl_Card_Upgrade_Types_tbl_Card_Types" />
+        <AssociationConnector Association="SoneriCISModel.FK_tbl_Card_Upgrade_Types_tbl_Card_Types1" />
+        <AssociationConnector Association="SoneriCISModel.FK_tbl_Regional_Charges_tbl_Region" />
+        <AssociationConnector Association="SoneriCISModel.FK_tbl_Request_Customer_Accounts_tbl_Requests" />
+        <AssociationConnector Association="SoneriCISModel.FK_tbl_User_Log_tbl_Users" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Page" Width="1.5" PointX="15.375" PointY="0.75" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Profile" Width="1.5" PointX="15.375" PointY="3.75" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Profile_Page" Width="1.5" PointX="15.375" PointY="6.75" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Section" Width="1.5" PointX="15.375" PointY="9.75" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_System_Requests" Width="1.5" PointX="15.375" PointY="12.75" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_User_Profile" Width="1.5" PointX="15.375" PointY="16.75" />
+        <EntityTypeShape EntityType="SoneriCISModel.tbl_Session_Timeout" Width="1.5" PointX="17.375" PointY="0.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

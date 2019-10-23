@@ -1,0 +1,114 @@
+﻿@model CardIssuanceSystem.DAL.tbl_System_Requests
+@{
+    ViewBag.Title = "AuthorizeExistingUser";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+    var userDetails = ViewBag.UserDetails as CardIssuanceSystem.Core.ViewModel.UserVM;
+}
+
+<div class="login-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+            </div><!-- End col-md-2 -->
+
+            <div class="col-md-8">
+                <div class="sidebar-login">
+                    <div class="logo-row">
+                        <img class="img-logo" src="~/assets/images/logo.png">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="login-form ResultForm">
+                                <h1 class="login-hdng">Update Profile</h1>
+
+                                <div class="form-group">
+                                    <select id="cmbxUserName" class="form-control formfields" placeholder="User Name" required>
+                                        <option value="">Select User</option>
+                                        <option value="@userDetails.ID" selected>@userDetails.UserLogin</option>
+                                    </select>
+                                    <span class="glyphicon glyphicon-user"></span>
+                                    <label class="lblerror" style="color:red;"></label>
+                                </div><!-- End form-group -->
+
+                                <div class="form-group">
+                                    <input type="text" id="txtName" class="form-control formfields" placeholder="Name" value="@userDetails.UserName" required />
+                                    <span class="glyphicon glyphicon-user"></span>
+                                    <label class="lblerror" style="color:red;"></label>
+
+
+                                    <div class="form-group">
+                                        <label for="txtEmpCode">Employee Code </label>
+                                        <input type="text" id="txtEmpCode" class="form-control formfields" placeholder="Employee Code" value="@(userDetails != null ? userDetails.EmpCode : string.Empty)" required>
+                                        <label class="lblerror" style="color:red;"></label>
+                                    </div>
+                                </div><!-- End form-group -->
+                                @*<div class="form-group">
+                                        <input id="txtPassword" type="password" class="form-control formfields" placeholder="Password" required>
+                                        <span class="glyphicon glyphicon-lock"></span>
+                                        <label class="lblerror" style="color:red;"></label>
+                                    </div>*@<!-- End form-group -->
+                                <div class="form-group">
+                                    <label for="txtexpirydate">Expiry Date </label>
+                                    <div class='input-group date datetimepicker1'>
+                                        <input type='text' class="form-control from_date" id="txtexpirydate" value="@(userDetails != null ? userDetails.ExpiryDate : null)" readonly />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="display:none">
+                                    <select class="form-control formfields" id="cmbxRole" placeholder="RoleTitle" required>
+                                        <option value="" selected>Please select role</option>
+                                        <option value="c" @(userDetails.RoleTitle == "c" ? "selected" : string.Empty)>Creator</option>
+                                        <option value="u" @(userDetails.RoleTitle == "u" ? "selected" : string.Empty)>Authenticator</option>
+                                    </select>
+                                    <span class="glyphicon glyphicon-subtitles"></span>
+                                    <label class="lblerror" style="color:red;"></label>
+                                </div><!-- End form-group -->
+
+                                <div class="form-group">
+                                    <div class="row chk_bxs">
+                                        <div class="col-md-12">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" name="optionCheckbox" @(userDetails.IsActive == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                                    Is Active
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <label class="lblerror" style="color:red;"></label>
+                                </div><!-- End form-group -->
+                            </div>
+                        </div><!-- End col-sm-6 -->
+
+                        <div class="col-sm-6">
+                            <h1 class="cntnt_hdng">Card Issuance System</h1>
+                            <p class="cntnt">
+                                Find out how Soneri Bank can help you achieve all your financial goals.
+                            </p>
+                        </div><!-- End col-sm-6 -->
+                    </div><!-- End row -->
+
+                @CustomHelper.AuthorizeDiv(Url.Action("AuthorizeUser","SystemAuthorization"))
+                </div><!-- End sidebar-login -->
+            </div><!-- End col-md-8 -->
+        </div><!-- End row -->
+    </div><!-- End container-fluid -->
+</div><!-- End login-bg -->
+
+
+@section CustomJS{
+    <script src="@Url.Content("~/Content/SystemRequestJS.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.ResultForm input, .ResultForm select').attr("disabled", "disabled");
+            $('#btnproceed').click(function () {
+                AuthorizeSystemRequest('@Url.Action("AuthorizeExistingUserRequest", "SystemAuthorization")', '@Model.ID', $('input[name="correct-ans"]:checked').val(), $('#AuthorizeComments').val());
+            });
+        });
+    </script>
+    }
+

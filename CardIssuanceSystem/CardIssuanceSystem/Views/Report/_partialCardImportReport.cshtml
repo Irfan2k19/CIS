@@ -1,0 +1,53 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.ReportCardImportVM>
+@{ }
+
+@using (Html.BeginForm("Export", "Report", FormMethod.Post, new { }))
+{
+    <input type="hidden" name="GridHtml" />
+    <input type="hidden" name="GridCss" />
+    <input type="submit" id="btnExport" class="btn btn-default" value="Export to pdf" style="margin: 0px 0px 2px 21px;" />
+}
+<div id="GridHtml">
+    <table class="table" id="customers">
+        <thead>
+            <tr>
+                <th>Card No</th>
+                <th>Account No</th>
+                <th>CIF</th>
+                <th>Card Type</th>
+                <th>Card Production Date</th>
+                <th>Card Expiry Date</th>
+                <th>Card Import Date</th>
+                <th>Branch Code</th>
+                <th>Branch Name</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.CardNo</td>
+                        <td>@item.AccountNo</td>
+                        <td>@item.CIF</td>
+                        <td>@item.CardType</td>
+                        <td>@item.CardProductionDate</td>
+                        <td>@item.CardExpiryDate</td>
+                        <td>@item.CardImportDate</td>
+                        <td>@item.BranchCode</td>
+                        <td>@item.BranchName</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="9">No Record Found</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

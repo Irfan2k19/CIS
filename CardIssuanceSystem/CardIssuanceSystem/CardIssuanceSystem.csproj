@@ -1,0 +1,518 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{83600CB5-BA94-4E9E-964A-5E367CCECABA}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CardIssuanceSystem</RootNamespace>
+    <AssemblyName>CardIssuanceSystem</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.13\lib\itextsharp.xmlworker.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\css\custom.css" />
+    <Content Include="assets\css\datatables.min.css" />
+    <Content Include="assets\css\jquery-ui.min.css" />
+    <Content Include="assets\css\new-changes.css" />
+    <Content Include="assets\images\img-bg.jpg" />
+    <Content Include="assets\images\logo.png" />
+    <Content Include="assets\js\datatables.min.js" />
+    <Content Include="assets\js\FileSaver.min.js" />
+    <Content Include="assets\js\jquery-ui.min.js" />
+    <Content Include="assets\js\tableexport.min.js" />
+    <Content Include="assets\js\xlsx.core.min.js" />
+    <Content Include="Content\jquery.mask.min.js" />
+    <Content Include="Content\RequestJS.js" />
+    <Content Include="Content\ReviewJS.js" />
+    <Content Include="Content\SystemRequestJS.js" />
+    <Content Include="packages.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\web.config" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Request\CardIssuanceScreen.cshtml" />
+    <Content Include="Views\Request\CardAmendmentScreen.cshtml" />
+    <Content Include="Views\Request\CardUpgradeScreen.cshtml" />
+    <Content Include="Views\Request\LinkingScreen.cshtml" />
+    <Content Include="Views\Request\DelinkingScreen.cshtml" />
+    <Content Include="Views\Request\CardReplacementScreen.cshtml" />
+    <Content Include="Views\AccountTypes\Index.cshtml" />
+    <Content Include="Views\AccountTypes\AddUpdateAccountType.cshtml" />
+    <Content Include="Views\CardCharges\AddUpdateCardCharges.cshtml" />
+    <Content Include="Views\CardType\AddUpdateCardType.cshtml" />
+    <Content Include="Views\CardType\Index.cshtml" />
+    <Content Include="Views\CardCharges\Index.cshtml" />
+    <Content Include="Views\FileExport\Index.cshtml" />
+    <Content Include="Views\FileImport\Index.cshtml" />
+    <Content Include="Views\FilePath\Index.cshtml" />
+    <Content Include="Views\Request\AuthorizeCardIssuanceScreen.cshtml" />
+    <Content Include="Views\Request\AuthorizeCardAmendmentScreen.cshtml" />
+    <Content Include="Views\Request\AuthorizeCardUpgradeScreen.cshtml" />
+    <Content Include="Views\Request\AuthorizeLinkingScreen.cshtml" />
+    <Content Include="Views\Request\AuthorizeDelinkingScreen.cshtml" />
+    <Content Include="Views\Request\AuthorizeCardReplacementScreen.cshtml" />
+    <Content Include="Views\Request\_partialAuthorizeView.cshtml" />
+    <Content Include="App_Code\CustomHelper.cshtml" />
+    <None Include="Properties\PublishProfiles\abc.pubxml" />
+    <None Include="Properties\PublishProfiles\CardIssuanceV2.pubxml" />
+    <None Include="Properties\PublishProfiles\CIS.pubxml" />
+    <None Include="Properties\PublishProfiles\CISSB.pubxml" />
+    <Content Include="Views\Shared\Message.cshtml" />
+    <Content Include="Views\Review\ReviewCardIssuanceScreen.cshtml" />
+    <Content Include="Views\Review\ReviewCardReplacementScreen.cshtml" />
+    <Content Include="Views\Review\ReviewCardAmendmentScreen.cshtml" />
+    <Content Include="Views\Review\ReviewCardUpgradeScreen.cshtml" />
+    <Content Include="Views\Review\ReviewLinkingScreen.cshtml" />
+    <Content Include="Views\Review\ReviewDelinkingScreen.cshtml" />
+    <Content Include="Views\Review\_partialReviewAuthorizeView.cshtml" />
+    <Content Include="Views\Authorization\AuthorizeNewRequestDetail.cshtml" />
+    <Content Include="Views\Authorization\AuthorizeLinkingScreen.cshtml" />
+    <Content Include="Views\Authorization\AuthorizeDelinkingScreen.cshtml" />
+    <None Include="Properties\PublishProfiles\CIS_V2.pubxml" />
+    <None Include="Properties\PublishProfiles\V2.pubxml" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="Web References\CISSB\AccountInfoResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Web References\CISSB\EODStatusReponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Web References\CISSB\GetStatementTodayResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Views\FileExport\EncryptedFileExport.cshtml" />
+    <Content Include="Views\Login\ChangePassword.cshtml" />
+    <Content Include="Views\Login\UpdateUserProfile.cshtml" />
+    <Content Include="Views\Report\RecoveryReport.cshtml" />
+    <Content Include="Views\FileExport\EncryptDecryptTest.cshtml" />
+    <Content Include="Views\Profile\Index.cshtml" />
+    <Content Include="Views\Profile\UserProfile.cshtml" />
+    <Content Include="Views\Profile\ProfilePages.cshtml" />
+    <Content Include="Views\SystemAuthorization\AuthorizeUser.cshtml" />
+    <Content Include="Views\SystemAuthorization\_partialUserAuthorizeView.cshtml" />
+    <Content Include="Views\SystemAuthorization\_partialProfileAuthorizeView.cshtml" />
+    <Content Include="Views\SystemAuthorization\AuthorizeProfile.cshtml" />
+    <Content Include="Views\SystemAuthorization\AuthorizeNewUser.cshtml" />
+    <Content Include="Views\SystemAuthorization\AuthorizeUserProfile.cshtml" />
+    <Content Include="Views\SystemReview\UserProfileReview.cshtml" />
+    <Content Include="Views\SystemReview\PageProfileReview.cshtml" />
+    <Content Include="Views\SystemReview\_partialUserProfileReview.cshtml" />
+    <Content Include="Views\SystemReview\_partialPageProfileReview.cshtml" />
+    <Content Include="Views\CardHotMark\CardActivationScreen.cshtml" />
+    <Content Include="Views\CardHotMark\AuthorizeActivationScreen.cshtml" />
+    <Content Include="Views\CardHotMark\_AuthorizeActivationScreen.cshtml" />
+    <Content Include="Views\SystemAuthorization\AuthorizeNewProfile.cshtml" />
+    <Content Include="Views\Profile\UpdateProfile.cshtml" />
+    <Content Include="Views\SystemAuthorization\AuthorizeExistingProfile.cshtml" />
+    <Content Include="Views\SystemAuthorization\AuthorizeExistingUser.cshtml" />
+    <Content Include="Views\SystemAuthorization\AuthorizeProfilePage.cshtml" />
+    <Content Include="Views\SystemAuthorization\_partialUserAuthorizeAddView.cshtml" />
+    <Content Include="Views\SystemAuthorization\_partialUserAuthorizeUpdateView.cshtml" />
+    <Content Include="Views\SystemAuthorization\_partialProfileAuthorizeAddView.cshtml" />
+    <Content Include="Views\SystemAuthorization\_partialProfileAuthorizeUpdateView.cshtml" />
+    <Content Include="Views\AccountTypes\_partialAuthorizeAccountTypeAddView.cshtml" />
+    <Content Include="Views\AccountTypes\_partialAuthorizeAccountTypeUpdateView.cshtml" />
+    <Content Include="Views\Review\_partialReviewAuthorizeAccountTypeAddView.cshtml" />
+    <Content Include="Views\Review\_partialReviewAuthorizeAccountTypeUpdateView.cshtml" />
+    <Content Include="Views\SystemReview\_partialUserProfileAddReview.cshtml" />
+    <Content Include="Views\SystemReview\_partialUserProfileUpdateReview.cshtml" />
+    <Content Include="Views\SystemReview\_partialPageProfileAddReview.cshtml" />
+    <Content Include="Views\SystemReview\_partialPageProfileUpdateReview.cshtml" />
+    <Content Include="Views\CardType\_partialAuthorizeCardTypeAddView.cshtml" />
+    <Content Include="Views\CardType\_partialAuthorizeCardTypeUpdateView.cshtml" />
+    <Content Include="Views\Review\_partialReviewAuthorizeCardChargesAddView.cshtml" />
+    <Content Include="Views\Review\_partialReviewAuthorizeCardChargesUpdateView.cshtml" />
+    <Content Include="Views\Review\_partialReviewAuthorizeCardTypeAddView.cshtml" />
+    <Content Include="Views\Review\_partialReviewAuthorizeCardTypeUpdateView.cshtml" />
+    <Content Include="Views\CardCharges\_partialAuthorizeCardChargesAddView.cshtml" />
+    <Content Include="Views\CardCharges\_partialAuthorizeCardChargesUpdateView.cshtml" />
+    <Content Include="Views\MainMenu\GetMenu.cshtml" />
+    <Content Include="Views\Login\Index2.cshtml" />
+    <Content Include="Views\Login\MainIndex.cshtml" />
+    <Content Include="Views\FileImport\EncryptedFileImport.cshtml" />
+    <Content Include="Views\Configuration\SetTimeoutScreen.cshtml" />
+    <Content Include="Views\Recovery\NewRecords.cshtml" />
+    <Content Include="Views\SystemReview\ReviewAddUser.cshtml" />
+    <Content Include="Views\FileExport\PlainExport.cshtml" />
+    <None Include="Web References\CISSB\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Views\Authorization\AuthorizeAmmendRequestDetail.cshtml" />
+    <Content Include="Views\Review\ReviewAccountTypeScreen.cshtml" />
+    <Content Include="Views\Review\_partialReviewAuthorizeAccountTypeView.cshtml" />
+    <Content Include="Views\Review\_partialReviewAuthorizeCardChargesView.cshtml" />
+    <Content Include="Views\Review\_partialReviewAuthorizeCardTypeView.cshtml" />
+    <Content Include="Views\Review\ReviewCardTypeScreen.cshtml" />
+    <Content Include="Views\Review\ReviewCardChargesScreen.cshtml" />
+    <Content Include="Views\CardCharges\Authorize.cshtml" />
+    <Content Include="Views\AccountTypes\Authorize.cshtml" />
+    <Content Include="Views\CardType\Authorize.cshtml" />
+    <!--<Content Include="Views\AccountTypes\_partialAuthorizeAccountTypeView.cshtml" />-->
+    <Content Include="Views\CardCharges\_partialAuthorizeCardChargesView.cshtml" />
+    <Content Include="Views\CardType\_partialAuthorizeCardTypeView.cshtml" />
+    <Content Include="Views\Authorization\AuthorizeAccountTypesScreen.cshtml" />
+    <Content Include="Views\Authorization\AuthorizeCardChargesScreen.cshtml" />
+    <Content Include="Views\Authorization\AuthorizeCardTypeScreen.cshtml" />
+    <Content Include="Views\Authorization\AuthorizeCardReplacementScreen.cshtml" />
+    <Content Include="Views\Authorization\AuthorizeUpgradeRequestDetail.cshtml" />
+    <Content Include="Views\CardHotMark\CardHotMarkScreen.cshtml" />
+    <Content Include="Views\CardHotMark\AuthorizeHotMarking.cshtml" />
+    <Content Include="Views\CardHotMark\_AuthorizeHotMarking.cshtml" />
+    <Content Include="Views\Login\Register.cshtml" />
+    <Content Include="Views\Shared\Dashboard.cshtml" />
+    <Content Include="Views\Recovery\Index.cshtml" />
+    <Content Include="Views\Shared\_LoginLayout.cshtml" />
+    <Content Include="Views\Report\DemoReport.cshtml" />
+    <Content Include="Views\Report\_partialDemoReport.cshtml" />
+    <Content Include="Views\Request\GetAccountScreen.cshtml" />
+    <Content Include="Views\Configuration\BranchesScreen.cshtml" />
+    <Content Include="Views\Configuration\SectorScreen.cshtml" />
+    <Content Include="Views\Configuration\OperatingInstructionScreen.cshtml" />
+    <Content Include="Views\Configuration\IncomeAccountScreen.cshtml" />
+    <Content Include="Views\Configuration\PostingRestrictionScreen.cshtml" />
+    <Content Include="Views\CardReport\CardReportScreen.cshtml" />
+    <Content Include="Views\FileExport\ReExport.cshtml" />
+    <Content Include="Views\Report\ExceptionReport.cshtml" />
+    <Content Include="Views\Report\_partialExceptionReport.cshtml" />
+    <Content Include="Views\Report\TransactionReport.cshtml" />
+    <Content Include="Views\Report\_partialTransactionReport.cshtml" />
+    <Content Include="Views\Report\CardImportReport.cshtml" />
+    <Content Include="Views\Report\_partialCardImportReport.cshtml" />
+    <Content Include="Views\Report\RequestReport.cshtml" />
+    <None Include="Web References\CISSB\SBLPaymentServices.wsdl" />
+    <None Include="Web References\CISSB\SBLPaymentServices.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Web References\CISSB\TransactionInfoResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Web References\CISSB\TransactionStatusResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\NewCISSB\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\NewCISSB\services.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\NewCISSB\services0.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\NewCISSB\services1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Web References\NewCISSB\SONFETCHCARDINFOType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Web References\NewCISSB\Status.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\NewCISSB\T24WebServicesImplService.wsdl" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\css\animate.css" />
+    <Content Include="assets\css\bootstrap-datetimepicker.css" />
+    <Content Include="assets\css\bootstrap.css" />
+    <Content Include="assets\css\font-awesome.min.css" />
+    <Content Include="assets\css\style.css" />
+    <Content Include="assets\fonts\fontawesome-webfont.svg" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="assets\js\bootstrap-datetimepicker.js" />
+    <Content Include="assets\js\bootstrap.min.js" />
+    <Content Include="assets\js\jquery-2.1.1.min.js" />
+    <Content Include="assets\js\moment-with-locales.js" />
+    <Content Include="Content\Scripts.js" />
+    <Content Include="Global.asax" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="assets\fonts\fontawesome-webfont.eot" />
+    <Content Include="assets\fonts\fontawesome-webfont.ttf" />
+    <Content Include="assets\fonts\fontawesome-webfont.woff" />
+    <Content Include="assets\fonts\fontawesome-webfont.woff2" />
+    <Content Include="assets\fonts\FontAwesome.otf" />
+    <Content Include="assets\fonts\gLfmBATgABwy0zMVv-qqhiEAvth_LlrfE80CYdSH47w.woff2" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="assets\fonts\gwVJDERN2Amz39wrSoZ7FxTbgVql8nDJpwnrE27mub0.woff2" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountTypesController.cs" />
+    <Compile Include="Controllers\AuthorizationController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CardChargesController.cs" />
+    <Compile Include="Controllers\CardHotMarkController.cs" />
+    <Compile Include="Controllers\CardReportController.cs" />
+    <Compile Include="Controllers\CardTypeController.cs" />
+    <Compile Include="Controllers\ConfigurationController.cs" />
+    <Compile Include="Controllers\FileExportController.cs" />
+    <Compile Include="Controllers\FileImportController.cs" />
+    <Compile Include="Controllers\FilePathController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MainMenuController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\RecoveryController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\RequestController.cs" />
+    <Compile Include="Controllers\ReviewController.cs" />
+    <Compile Include="Controllers\SystemAuthorizationController.cs" />
+    <Compile Include="Controllers\SystemReviewController.cs" />
+    <Compile Include="Controllers\T24Methods.cs" />
+    <Compile Include="Filters\AuthOpAttribute.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\CISSB\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\NewCISSB\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Models\" />
+    <Folder Include="Views\Base\" />
+    <Folder Include="Views\Export\" />
+    <Folder Include="Views\Import\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://10.35.1.167:7800/SBL/SBLPaymentServices%3fwsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\CISSB\</RelPath>
+      <UpdateFromURL>http://10.35.1.167:7800/SBL/SBLPaymentServices%3fwsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>CardIssuanceSystem_CISSB_BEAPITransactionService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://10.35.1.154:9092/SON.CARD.OPS/services%3fwsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\NewCISSB\</RelPath>
+      <UpdateFromURL>http://10.35.1.154:9092/SON.CARD.OPS/services%3fwsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>CardIssuanceSystem_NewCISSB_T24WebServicesImplService</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CardIssuanceSystem.Core\CardIssuanceSystem.Core.csproj">
+      <Project>{056d97ec-299e-41ed-850e-35d413e0311e}</Project>
+      <Name>CardIssuanceSystem.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CardIssuanceSystem.DAL\CardIssuanceSystem.DAL.csproj">
+      <Project>{467f5097-e581-4e3d-bbf5-d873a94a2280}</Project>
+      <Name>CardIssuanceSystem.DAL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>41056</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:41056/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

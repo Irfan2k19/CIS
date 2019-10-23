@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewBag.Title = "MainIndex";
+    Layout = null;
+}
+
+<html>
+<head>
+    <script type="text/javascript">
+
+        function popup()
+        {
+            var window_dimensions = "toolbars=no,menubar=no,location=no,scrollbars=yes,resizable=yes,status=yes,top=0,left=0,width=" + screen.availWidth + ", height=" + screen.availHeight + "";
+            window.opener = self;
+            //window.close();
+            window.open("@Url.Action("index2", "login")", "_blank", window_dimensions);
+            window.focus();
+        }
+
+       
+
+        window.onload = function () {
+            setTimeout(function () { document.getElementById('btnSubmit').click() }, 1000);
+            
+        }
+    </script>
+</head>
+<body>
+    <input type="submit" id="btnSubmit" onclick="popup()" style="visibility:hidden;"/>
+    
+</body>
+</html>
+

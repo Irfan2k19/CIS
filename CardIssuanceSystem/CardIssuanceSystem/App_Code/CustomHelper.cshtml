@@ -1,0 +1,43 @@
+﻿@{
+    Layout = null;
+}
+
+@helper AuthorizeDiv(string cancelUrl)
+{
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="correct-ans" value="A"><span class="checkbox-material"><span class="check"></span></span>
+                    Approved
+                </label>
+
+                <label>
+                    <input type="radio" name="correct-ans" value="C"><span class="checkbox-material"><span class="check"></span></span>
+                    Reject
+                </label>
+
+                <label>
+                    <input type="radio" name="correct-ans" value="R"><span class="checkbox-material"><span class="check"></span></span>
+                    To be corrected
+                </label>
+            </div>
+        </div><!-- End col-sm-12 -->
+    </div><!-- End row -->
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <textarea class="form-control" rows="5" id="AuthorizeComments" maxlength="50"></textarea>
+        </div><!-- End col-sm-12 -->
+    </div><!-- End row -->
+
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="btns_right">
+                <button class="btn btn-cstm" id="btnproceed">Proceed</button>
+                <a class="btn btn-cstm btn-light" id="btncancel" href="@cancelUrl">Cancel</a>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-3 -->
+    </div><!-- End row -->
+}

@@ -1,0 +1,297 @@
+﻿@using CardIssuanceSystem.DAL
+@{
+    ViewBag.Title = "Request Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var branches = ViewData["Branches"] as List<tbl_Region>;
+    var cardTypes = ViewData["CardTypes"] as List<tbl_Card_Types>;
+}
+@section CustomCSS{
+    <style type="text/css">
+        .table-responsive {
+            overflow: scroll;
+            max-height: 345px;
+        }
+
+        #btnSubmit {
+            margin: 5px 0px 0px 0px;
+        }
+    </style>
+}
+@section CustomJS{
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.7.12/xlsx.core.min.js"></script>
+    <script src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/3.3.5/js/tableexport.min.js"></script>*@
+    <script src="@Url.Content("~/assets/js/xlsx.core.min.js")"></script>
+    <script src="@Url.Content("~/assets/js/FileSaver.min.js")"></script>
+    <script src="@Url.Content("~/assets/js/tableexport.min.js")"></script>
+    <script type="text/javascript">
+        var currentDate = new Date();
+        var filename = "Request Report " + currentDate.getFullYear() + (currentDate.getMonth() + 1) + currentDate.getDate() + "_" + currentDate.getTime();
+
+        $(document).on('click', '#btnExport', function () {
+            $("input[name='GridHtml']").val($("#GridHtml").html());
+            $("input[name='GridCss']").val('.table{border-collapse: collapse;width: 100%;font-size: x-small;}.table td, .table th {border: 1px solid #ddd;padding: 5px;}.table tr:nth-child(even){background-color: #f2f2f2;}.table tr:hover {background-color: #ddd;}.table th {padding-top: 12px;padding-bottom: 12px;text-align: left;background-color: #ffc423;color: white;}');
+        });
+
+        $('#cmbxRequestType').change(function () {
+            if ($(this).val() == 'U' || $(this).val()=='H') { 
+                $('.checkbox').css("display", "none");
+                
+            }
+            else{
+                $('.checkbox').css("display", "block");
+            }
+        });
+        //$(document).on('click', '#btnExcelExport', function () {
+        //    $("input[name='GridHtml1']").val($("#GridHtml").html());
+        //    $("input[name='GridCss1']").val('<style>.textmode{mso-number-format:\@@;} .table{border-collapse: collapse;width: 100%;font-size: x-small;}.table td, .table th {border: 1px solid #000;padding: 5px;}.table tr:nth-child(even){background-color: #f2f2f2;}.table tr:hover {background-color: #ddd;}.table th {padding-top: 12px;padding-bottom: 12px;text-align: left;background-color: #ffc423;color: white;}</style>');
+        //});
+
+        $(function () {
+            $('#btnSubmit').click(function () {
+                Filter();
+            });
+
+            //$('#btnExport').click(function (e) {
+            //    var requestType = $('#cmbxRequestType :selected').text();
+            //    var currentDate = new Date();
+            //    var filename = requestType + " Report " + currentDate.getFullYear() + (currentDate.getMonth() + 1) + currentDate.getDate() + "_" + currentDate.getTime() + ".xls";
+            //    //ExportExcel(filename, "table-responsive");
+            //    tableToExcel('table-responsive', filename);
+            //    e.preventDefault();
+            //});
+
+            /* Excel Open XML spreadsheet (.xlsx) */
+            TableExport.prototype.xlsx = {
+                defaultClass: "xlsx",
+                buttonContent: "Export to xlsx",
+                mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                fileExtension: ".xlsx"
+            };
+
+            /* Comma Separated Values (.csv) */
+            TableExport.prototype.csv = {
+                defaultClass: "csv",
+                buttonContent: "Export to csv",
+                separator: ",",
+                mimeType: "application/csv",
+                fileExtension: ".csv"
+            };
+
+            ExportTable(".table-responsive table", filename);
+            //$('#btnExport').click(function (e) {
+            //    exportPDF();
+            //});
+        });
+
+        function Filter() {
+            var accountNo = $('#txtAccountNo').val();
+            var cif = $('#txtCIFNo').val();
+            var cardNo = $('#txtCardNo').val();
+            var requestNo = $('#txtRequestNo').val();
+            var waive = $('#cmbxWaive').val();
+            var requestType = $('#cmbxRequestType').val();
+         //   var isactive = $('#cmbxReportType').val();
+            var reportType = $('#chkReportType').is(':checked');
+            var branch = $('#txtBranchCode').val();
+            var cardTypeId = $('#cmbxCardType').val();
+            var startDate = $('#txtStartDate').val();
+            var endDate = $('#txtEndDate').val();
+            var authStatus = $("#cmbxAuthorizationStatus").val();
+
+            var url = '@Url.Action("PartialRequestReport", "Report")';
+
+            if (!requestType) {
+                alert("Please select request type");
+                return false;
+            }
+            //if (!reportType) {
+            //    alert("Please select report type");
+            //    return false;
+            //}
+            if (!startDate) {
+                alert("Please select start date");
+                return false;
+            }
+            if (!endDate) {
+                alert("Please select end date");
+                return false;
+            }
+
+
+            ShowLoader();
+            //debugger
+            LoadPartial('.table-responsive', url, { CardNo: cardNo, AccountNo: accountNo, BranchCode: branch, CardTypeId: cardTypeId, CIF: cif, RequestNo: requestNo, Waive: waive, RequestType: requestType, ReportType: reportType, StartDate: startDate, EndDate: endDate, AuthorizeStatus: authStatus }, true, "Export", ".table-responsive table", filename);
+
+            //ajaxCall(url, { branchCode: brCode, requestType: reqType, cardType: cardType },);
+        }
+
+
+
+        //$("#btnExport").click(function () {
+        //    debugger
+        //    $("input[name='GridHtml']").val($("#table-responsive").html());
+        //    $("input[name='GridCss']").val('.table{border-collapse: collapse;width: 100%;font-size: x-small;}.table td, .table th {border: 1px solid #ddd;padding: 5px;}.table tr:nth-child(even){background-color: #f2f2f2;}.table tr:hover {background-color: #ddd;}.table th {padding-top: 12px;padding-bottom: 12px;text-align: left;background-color: #ffc423;color: white;}');
+
+        //});
+    </script>
+}
+
+<div class="container">
+    <iframe id="txtArea1" style="display:none"></iframe>
+    <div class="row">
+        <div class="col-sm-12">
+            @*<h4 class="main_hdng">CARD REQUEST REPORT</h4>*@
+            @*<input id="btnExport" type="button" class="btn btn-default pull-right" value="Export To Excel">*@
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <label class="control-label">Account No</label>
+                    <input type="text" id="txtAccountNo" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">CIF</label>
+                    <input type="text" id="txtCIFNo" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Card No</label>
+                    <input type="text" id="txtCardNo" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Request No</label>
+                    <input type="text" id="txtRequestNo" class="form-control" />
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <label class="control-label">Waive Charges</label>
+                    <select class="form-control" id="cmbxWaive">
+                        <option value="">Select Waive Charges</option>
+                        <option value="-1">All</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Request Type</label>
+                    <select class="form-control" id="cmbxRequestType">
+                        <option value="">Select Request Type</option>
+                        <option value="N">Card Issuance Request</option>
+                        <option value="R">Card Replacement Request</option>
+                        <option value="A">Card Ammendment Request</option>
+                        <option value="U">Card Upgradation Request</option>
+                        <option value="L">Card Linking Request</option>
+                        <option value="D">Card Delinking Request</option>
+                        <option value="H">Card Hot Request</option>
+                       
+                    </select>
+                </div>
+               
+
+                <div class="col-md-3">
+                    <label class="control-label">Branch</label>
+                    <select class="form-control" id="txtBranchCode">
+                        <option value="">Select Branch</option>
+                        @foreach (var item in branches)
+                        {
+                            <option value="@item.Description">@($"{item.Description} - {item.Title}")</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Card Type</label>
+                    <select class="form-control" id="cmbxCardType">
+                        <option value="">Select Card Type</option>
+                        @foreach (var item in cardTypes)
+                        {
+                            <option value="@item.ID">@item.Title</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <label class="control-label">Authorization Status</label>
+                    <select class="form-control" id="cmbxAuthorizationStatus">
+                        <option value="">Select Authorization Status</option>
+                        <option value="A">Authorized</option>
+                        <option value="P">Pending</option>
+                        <option value="R">To Be Reviewed</option>
+                        <option value="C">Closed</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Start Date</label>
+                    <div class='input-group date
+                         datetimepicker1'>
+                        <input type="text" id="txtStartDate" class="form-control" readonly />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">End Date</label>
+                    <div class='input-group date
+                         datetimepicker1'>
+                        <input type="text" id="txtEndDate" class="form-control" readonly />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div>
+
+                @*<div class="col-md-3">
+                    <label class="control-label">Report Type</label>
+                    <select class="form-control" id="cmbxReportType">
+                        <option value="">Select Report Type</option>
+                        <option value="R">Request Report</option>
+                        <option value="AT">Audit Trail Report</option>
+
+
+                    </select>
+                </div>*@
+
+                <div class="col-md-3">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="chkReportType" name="AuditTrail" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                            Audit Trail
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label"></label>
+                    <input type="submit" class="form-control btn btn-default" id="btnSubmit" />
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="table-responsive" id="table-responsive">
+                @using (Html.BeginForm("Export", "Report", FormMethod.Post, new { }))
+                {
+                    <input type="hidden" name="GridHtml" />
+                    <input type="hidden" name="GridCss" />
+                    <input type="submit" id="btnExport" class="btn btn-default" value="Export to pdf" style="margin: 0px 0px 2px 21px;" />
+                }
+
+                <div id="GridHtml">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="1">No Record Found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- End container -->

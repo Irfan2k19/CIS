@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{467F5097-E581-4E3D-BBF5-D873A94A2280}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CardIssuanceSystem.DAL</RootNamespace>
+    <AssemblyName>CardIssuanceSystem.DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CISContext.cs" />
+    <Compile Include="CISModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CISModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CISModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CISModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CISModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="CustomException.cs" />
+    <Compile Include="DataAccessClasses\AccountTypeDataAccess.cs" />
+    <Compile Include="DataAccessClasses\CardChargesDataAccess.cs" />
+    <Compile Include="DataAccessClasses\CardTypesDataAccess.cs" />
+    <Compile Include="DataAccessClasses\CustomerAccountDataAccess.cs" />
+    <Compile Include="DataAccessClasses\CustomerCardDataAccess.cs" />
+    <Compile Include="DataAccessClasses\CustomerRequestAccountDataAccess.cs" />
+    <Compile Include="DataAccessClasses\FileExportDataAccess.cs" />
+    <Compile Include="DataAccessClasses\FileImportDataAccess.cs" />
+    <Compile Include="DataAccessClasses\FilePathDataAccess.cs" />
+    <Compile Include="DataAccessClasses\IncomeAccountsDataAccess.cs" />
+    <Compile Include="DataAccessClasses\OperatingInstructionDataAccess.cs" />
+    <Compile Include="DataAccessClasses\PostingRestrictionDataAccess.cs" />
+    <Compile Include="DataAccessClasses\RecoveryDataAccess.cs" />
+    <Compile Include="DataAccessClasses\RegionDataAccess.cs" />
+    <Compile Include="DataAccessClasses\RequestDataAccess.cs" />
+    <Compile Include="DataAccessClasses\SectorDataAccess.cs" />
+    <Compile Include="DataAccessClasses\SessionDataAccess.cs" />
+    <Compile Include="DataAccessClasses\SystemRequestDataAccess.cs" />
+    <Compile Include="DataAccessClasses\TransactionDataAccess.cs" />
+    <Compile Include="DataAccessClasses\ProfileDataAccess.cs" />
+    <Compile Include="DataAccessClasses\UserDataAccess.cs" />
+    <Compile Include="DataAccessClasses\UserLogDataAccess.cs" />
+    <Compile Include="DatabaseGateway.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="sp_ExportData_Result.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_GetCardChargesRegion1_Result.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_GetCardChargesRegion_Result.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_GetCardCharges_Result.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagrams_Result.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Account_Types.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Card_Charges.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Card_Charges_Recovery.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Card_Types.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Card_Upgrade_Types.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Currency.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Customer_Accounts.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Customer_Cards.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_File_Exports.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_File_Imports.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_File_Paths.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_IncomeAccounts.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_OperatingInstructions.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Page.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Posting_Restrictions.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Profile.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Profile_Page.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Region.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Regional_Charges.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Requests.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Request_Customer_Accounts.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Section.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Sector.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Session_Timeout.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_System_Requests.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_transactions.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_Users.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_User_Log.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_User_Profile.cs">
+      <DependentUpon>CISModel.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="CISModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>CISModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="CISModel.edmx.diagram">
+      <DependentUpon>CISModel.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CISModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CISModel.edmx</DependentUpon>
+      <LastGenOutput>CISModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="CISModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CISModel.edmx</DependentUpon>
+      <LastGenOutput>CISModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

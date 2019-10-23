@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewBag.Title = "Card Hot Mark Authorization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row form-group">
+
+        <div class="col-md-2">
+            <label class="control-label">Card #</label>
+            <input type="text" class="form-control" id="CardNo">
+        </div><!-- End col-md-2 -->
+
+        <div class="col-md-2">
+            <button class="btn btn-cstm" id="btn-search">Search</button>
+        </div><!-- End col-md-2 -->
+    </div><!-- End row -->
+
+    
+   
+
+    <div class="row form-group">
+        <div class="col-md-12">
+            <button class="btn btn-cstm pull-right" id="btn-rejectall">Reject All</button>
+            <button class="btn btn-cstm pull-right" id="btn-approveall">Approve All</button>
+        </div> End col-md-2 
+    </div>
+
+
+
+    <div id="PartialTable">
+
+        @Html.Action("_AuthorizeHotMarking", "CardHotMark")
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $('#btn-search').click(function () {
+          var CardNo = $('#CardNo').val();
+        var Url = '@Url.Action("_AuthorizeHotMarking", "CardHotMark")';
+        ajaxCall(Url, { CardNo: CardNo }, function (resp) {
+          
+            if (resp != null) {
+                $('#PartialTable').html('');
+                $('#PartialTable').html(resp)
+            }
+
+        }, function (fail) {
+            alert("Failure");
+        }, function (err) {
+            alert("Error");
+        });
+    });
+
+</script>

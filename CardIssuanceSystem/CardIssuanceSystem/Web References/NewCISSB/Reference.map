@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://10.35.1.154:9092/SON.CARD.OPS/services?xsd=2" filename="services.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://10.35.1.154:9092/SON.CARD.OPS/services?xsd=1" filename="services0.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://10.35.1.154:9092/SON.CARD.OPS/services?xsd=3" filename="services1.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://10.35.1.154:9092/SON.CARD.OPS/services?wsdl" filename="T24WebServicesImplService.wsdl" />
+  </Results>
+</DiscoveryClientResultsFile>

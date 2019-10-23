@@ -1,0 +1,46 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.CardTypeVM>
+@{ }
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                @*<th>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                            </label>
+                        </div>
+                    </th>*@
+                <th>Title</th>
+                <th>Card Type</th>
+                <th>Comments</th>
+                <th>Actions</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @*<td>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                                </label>
+                            </div>
+                        </td>*@
+
+                    <td>@item.Title</td>
+                    <td>Card A</td>
+                    <td>@item.AuthorizationComments</td>
+                    <td>
+                        <a class="btn btn-cstm btn-edit" href="@(Url.Action("AddUpdateCardTypeForUpdateRequest","CardType",new { Id=item.CardCode}))"><i class="fa fa-eye"></i></a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div><!-- End table-responsive -->

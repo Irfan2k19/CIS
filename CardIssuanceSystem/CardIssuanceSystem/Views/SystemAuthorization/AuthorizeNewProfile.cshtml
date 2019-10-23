@@ -1,0 +1,106 @@
+﻿@model CardIssuanceSystem.DAL.tbl_Profile
+@{
+    ViewBag.Title = "AuthorizeNewProfile";
+}
+
+<div class="container">
+    <div id="ResultForm">
+        <div class="form-group row">
+            <div class="col-md-6">
+                <label class="control-label">Title</label>
+                <input type="text" class="form-control" id="txtTitle" maxlength="100" value="@Model.Title" />
+            </div>
+            <div class="col-md-6">
+                <label class="control-label">Is Profile Active</label>
+                <div class="row chk_bxs">
+                    <div class="col-md-12">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="optionsCheckbox" @(Model.IsActive == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                Is Active
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="correct-ans" value="A"><span class="checkbox-material"><span class="check"></span></span>
+                    Approved
+                </label>
+
+                <label>
+                    <input type="radio" name="correct-ans" value="C"><span class="checkbox-material"><span class="check"></span></span>
+                    Reject
+                </label>
+
+                <label>
+                    <input type="radio" name="correct-ans" value="R"><span class="checkbox-material"><span class="check"></span></span>
+                    To be corrected
+                </label>
+            </div>
+        </div><!-- End col-sm-12 -->
+    </div><!-- End row -->
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <textarea class="form-control" rows="5" id="AuthorizeComments" maxlength="50"></textarea>
+        </div><!-- End col-sm-12 -->
+    </div><!-- End row -->
+
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="btns_right">
+                <button class="btn btn-cstm" id="btnproceed">Proceed</button>
+                <a class="btn btn-cstm btn-light" id="btncancel" href="@Url.Action("AuthorizeProfile", "SystemAuthorization")">Cancel</a>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-3 -->
+    </div><!-- End row -->
+</div>
+
+@section CustomJS
+{
+    <script type="text/javascript">
+        $(function () {
+            $('#ResultForm input').attr('disabled', 'disabled');
+            $('#btnproceed').click(function () {
+                var url = '@Url.Action("AuthorizeNewProfileRequest", "SystemAuthorization")';
+                var Id = '@Model.ID';
+                var status = $('input[name="correct-ans"]:checked').val();
+                var comments = $('#AuthorizeComments').val();
+
+                if (status === "C" || status === "R") {
+                    if (!comments) {
+                        alert("Please provide comments before proceed");
+                        return false;
+                    }
+                }
+
+                ShowLoader();
+                ajaxCall(url, { ID: Id, AuthorizationStatus: status, AuthorizationComments: comments }, function (resp) {
+                    if (typeof (resp) === "object" && resp != null) {
+                        HideLoader();
+                        if (resp.IsSuccess) {
+                            alert(resp.ErrorMessage);
+                            location.reload();
+                        }
+                        else {
+                            alert(resp.ErrorMessage);
+                        }
+                    }
+                }, function (fail) {
+                    HideLoader();
+                    alert("Failure");
+                }, function (err) {
+                    HideLoader();
+                    alert("Error");
+                });
+            });
+        });
+    </script>
+    }

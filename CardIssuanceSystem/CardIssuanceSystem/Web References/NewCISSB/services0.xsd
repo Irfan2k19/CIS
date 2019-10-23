@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" targetNamespace="http://temenos.com/SONFETCHCARDINFO" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="SONFETCHCARDINFOType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ACCTID" type="xs:string" />
+      <xs:element minOccurs="0" name="gSONFETCHCARDINFODetailType">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="mSONFETCHCARDINFODetailType">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element minOccurs="0" name="AccountID" type="xs:string" />
+                  <xs:element minOccurs="0" name="Customer" type="xs:string" />
+                  <xs:element minOccurs="0" name="HDR1" type="xs:string" />
+                  <xs:element minOccurs="0" name="CustomerID" type="xs:string" />
+                  <xs:element minOccurs="0" name="CustomerName" type="xs:string" />
+                  <xs:element minOccurs="0" name="Sector" type="xs:string" />
+                  <xs:element minOccurs="0" name="CustomerDOB" type="xs:string" />
+                  <xs:element minOccurs="0" name="FathersName" type="xs:string" />
+                  <xs:element minOccurs="0" name="MothersName" type="xs:string" />
+                  <xs:element minOccurs="0" name="Nationality" type="xs:string" />
+                  <xs:element minOccurs="0" name="Gender" type="xs:string" />
+                  <xs:element minOccurs="0" name="IdentificationNo" type="xs:string" />
+                  <xs:element minOccurs="0" name="IdentificationType" type="xs:string" />
+                  <xs:element minOccurs="0" name="OffPhone" type="xs:string" />
+                  <xs:element minOccurs="0" name="AccountMobile" type="xs:string" />
+                  <xs:element minOccurs="0" name="SMS" type="xs:string" />
+                  <xs:element minOccurs="0" name="Email" type="xs:string" />
+                  <xs:element minOccurs="0" name="AccountCurrency" type="xs:string" />
+                  <xs:element minOccurs="0" name="PostingRestriction" type="xs:string" />
+                  <xs:element minOccurs="0" name="ErrorField" type="xs:string" />
+                  <xs:element minOccurs="0" name="BranchCode" type="xs:string" />
+                  <xs:element minOccurs="0" name="BranchName" type="xs:string" />
+                  <xs:element minOccurs="0" name="AccountTitle" type="xs:string" />
+                  <xs:element minOccurs="0" name="T24ACNO" type="xs:string" />
+                  <xs:element minOccurs="0" name="Passport" type="xs:string" />
+                  <xs:element minOccurs="0" name="PhoneResidence" type="xs:string" />
+                  <xs:element minOccurs="0" name="CustomerAddress1" type="xs:string" />
+                  <xs:element minOccurs="0" name="AccountAddress" type="xs:string" />
+                  <xs:element minOccurs="0" name="AvailableBalance" type="xs:string" />
+                  <xs:element minOccurs="0" name="ResidenceStatus" type="xs:string" />
+                  <xs:element minOccurs="0" name="Product" type="xs:string" />
+                  <xs:element minOccurs="0" name="Category" type="xs:string" />
+                  <xs:element minOccurs="0" name="AccountNature" type="xs:string" />
+                  <xs:element minOccurs="0" name="AccountStatus" type="xs:string" />
+                  <xs:element minOccurs="0" name="CustomerAddress2" type="xs:string" />
+                  <xs:element minOccurs="0" name="SMS2" type="xs:string" />
+                  <xs:element minOccurs="0" name="SMS3" type="xs:string" />
+                  <xs:element minOccurs="0" name="SUBSCRIPTION" type="xs:string" />
+                  <xs:element minOccurs="0" name="REGISTERNUMBER" type="xs:string" />
+                  <xs:element minOccurs="0" name="OpInstructions" type="xs:string" />
+                </xs:sequence>
+                <xs:attribute name="m" type="xs:positiveInteger" />
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="g" type="xs:positiveInteger" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

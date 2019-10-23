@@ -1,0 +1,51 @@
+﻿@model CardIssuanceSystem.DAL.tbl_System_Requests
+@{
+    ViewBag.Title = "AuthorizeExistingProfile";
+    var profileData = ViewBag.ProfileData as CardIssuanceSystem.DAL.tbl_Profile;
+}
+
+<div class="container">
+    @*<div class="form-group row">
+            <div class="col-md-12">
+                <label class="control-label">Profile</label>
+                <select class="form-control" id="cmbxProfile">
+                    <option value="">--Select Profile--</option>
+                    <option value="@profileData.ID">@profileData.Title</option>
+                </select>
+            </div>
+        </div>*@
+    <div id="ResultForm">
+    <div class="form-group row">
+        <div class="col-md-6">
+            <label class="control-label">Title</label>
+            <input type="text" class="form-control" id="txtTitle" maxlength="100" value="@profileData.Title" />
+        </div>
+        <div class="col-md-6">
+            <label class="control-label">Is Profile Active</label>
+            <div class="row chk_bxs">
+                <div class="col-md-12">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="optionsCheckbox" @(Model.IsActive == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                            Is Active
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    @CustomHelper.AuthorizeDiv(Url.Action("AuthorizeProfile", "SystemAuthorization"))
+</div>
+
+@section CustomJS{
+    <script src="@Url.Content("~/Content/SystemRequestJS.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#ResultForm input').attr('disabled', 'disabled');
+            $('#btnproceed').click(function () {
+                AuthorizeSystemRequest('@Url.Action("AuthorizeExistingProfileRequest", "SystemAuthorization")', '@Model.ID', $('input[name="correct-ans"]:checked').val(), $('#AuthorizeComments').val());
+            });
+        });
+    </script>
+}

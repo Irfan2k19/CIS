@@ -1,0 +1,433 @@
+﻿@using CardIssuanceSystem.Core.ViewModel
+@using CardIssuanceSystem.DAL
+@model CardTypeVM
+@{
+    ViewBag.Title = "Card Type Configuration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var lstCardTypes = ViewBag.CardTypes as List<tbl_Card_Types>;
+    var requestId = ViewBag.RequestId;
+    var requestType = ViewBag.RequestType == null ? string.Empty : ViewBag.RequestType;
+}
+@section CustomJS{
+    <script type="text/javascript">
+
+        $(function () {
+            $('#cmbxCardTypes').on('change', function (e) {
+                if (parseInt('@requestId') <= 0) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var id = parseInt($(this).val());
+                    var status = "";//"A";
+                    var url = '@Url.Action("GetCardTypeDetail","CardType")';
+                    if (id === undefined) {
+                        alert("Please select card type");
+                        return false;
+                    }
+                    else {
+                        if (parseInt('@requestId') > 0) {
+                            status = 'R';
+                        }
+                        ShowLoader();
+                        ajaxCall(url, { Id: id, Status: status }, function (resp) {
+                            $('.chkUpdateUpgradeTypes').find('.checkbox').filter(function () { return $(this).css('display', 'block'); });
+                            $('.chkUpdateUpgradeTypes').find('input[type="checkbox"]').filter(function () { return $(this).attr('checked', false); });
+                            $($('input[data-attr-update-upgradetype-id="' + id + '"]').parents('.checkbox')[0]).css('display', 'none');
+                            if (resp.IsSuccess) {
+                                $('#txtUpdateTitle').val(resp.Response.Title);
+                                $('#txtUpdateDesc').val(resp.Response.Description);
+                                $('#txtUpdateCardCode').val(resp.Response.CardCode);
+                                $('#txtAuthorizationStatus').val(resp.Response.AuthorizationStatus);
+                                if (resp.Response.IsActive) {
+                                    $('input[name="activeCheckbox"]').prop('checked', true);
+                                }
+                                if (resp.Response.IsIssuance) {
+                                    $('input[name="optionUpdateIssuanceScreen"]').prop('checked', true);
+                                }
+                                if (resp.Response.IsReplacement) {
+                                    $('input[name="optionUpdateReplacementScreen"]').prop('checked', true);
+                                }
+                                if (resp.Response.IsUpgrade) {
+                                    $('input[name="optionUpdateUpgradeScreen"]').prop('checked', true);
+                                }
+                                //$(resp.Response.ParentTypes).each(function (ind, val) {
+                                //    $($('input[data-attr-update-upgradetype-id="' + val + '"]').parents('.checkbox')[0]).css('display', 'none');
+                                //});
+                                $('.chkUpdateUpgradeTypes').find('input[type="checkbox"]').each(function (index, value) {
+                                    $(resp.Response.UpgradeChildTypes).each(function (index1, value1) {
+                                        //$('input[data-attr-update-upgradetype-id="' + id + '"]').css('display','none');
+                                        if (value1.toString() === $(value).attr('data-attr-update-upgradetype-id')) {
+                                            setTimeout(function () {
+                                                $(value).removeAttr('unchecked');
+                                                $(value).prop('checked', 'checked');
+                                            }, 100);
+                                        }
+                                    });
+                                });
+                            }
+
+                            HideLoader();
+                        }, function (fail) {
+                            console.log(fail.responseText);
+                            HideLoader();
+                        }, function (err) {
+                            console.log(err.responseText);
+                            if (err.responseText.indexOf("IsSuccess") >= 0) {
+                                alert(err.responseJSON.ErrorMessage);
+                            }
+                            else {
+                                alert(genericMessage);
+                            }
+                            HideLoader();
+                        });
+                    }
+                }
+            });
+
+            $('#btnSave').on('click', function () {
+                var id = parseInt('@requestId');
+                var title = $('#txtCardTitle').val();
+                var desc = $('#txtCardDesc').val();
+                var code = $('#txtCardCode').val();
+                var isIssuance = $('input[name="optionIssuanceScreen"]').is(':checked') == true ? "true" : "false";
+                var isUpgrade = $('input[name="optionUpgradeScreen"]').is(':checked') == true ? "true" : "false";
+                var isReplacement = $('input[name="optionReplacementScreen"]').is(':checked') == true ? "true" : "false";
+
+                var ids = [];
+                $('.chkUpgradeTypes').find('input[type="checkbox"]:checked').each(function (index, value) {
+                    var tbl_Card_Upgrade_Types = new Object();
+                    tbl_Card_Upgrade_Types.ID = $(value).attr('data-attr-upgradetype-id');
+                    ids.push(tbl_Card_Upgrade_Types);
+                });
+
+                var status = "P";
+                var url = '@Url.Action("AddUpdateCardType", "CardType")';
+                var screenCount = $('.chkScreens').find('input[type="checkbox"]:checked').length;
+                if (validate(title, desc, code, ids, false, screenCount)) {
+                    ShowLoader();
+                    ajaxCall(url, { ID: id, Title: title, Description: desc, AuthorizationStatus: status, CardCode: code, IsIssuance: isIssuance, IsUpgrade: isUpgrade, IsReplacement: isReplacement, upgradeTypes: ids }, function (resp) {
+                        if (resp.IsSuccess) {
+                            HideLoader();
+                            alert("Success!");
+                            location.reload();
+                        }
+                        else {
+                            HideLoader();
+                            alert(resp.ErrorMessage);
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        alert("fail");
+                    }, function (err) {
+                        HideLoader();
+                        if (err.responseText.indexOf("IsSuccess") >= 0) {
+                            alert(err.responseJSON.ErrorMessage);
+                        }
+                        else {
+                            alert(genericMessage);
+                        }
+                    });
+                }
+            });
+
+            $('#btnUpdateSave').on('click', function () {
+                var id = $('#cmbxCardTypes').val();
+                var title = $('#txtUpdateTitle').val();
+                var desc = $('#txtUpdateDesc').val();
+                var code = $('#txtUpdateCardCode').val();
+                var active = $('input[name="activeCheckbox"]').is(':checked') == true ? "true" : "false";
+                var isIssuance = $('input[name="optionUpdateIssuanceScreen"]').is(':checked') == true ? "true" : "false";
+                var isUpgrade = $('input[name="optionUpdateUpgradeScreen"]').is(':checked') == true ? "true" : "false";
+                var isReplacement = $('input[name="optionUpdateReplacementScreen"]').is(':checked') == true ? "true" : "false";
+
+                var ids = [];
+                $('.chkUpdateUpgradeTypes').find('input[type="checkbox"]:checked').each(function (index, value) {
+                    var tbl_Card_Upgrade_Types = new Object();
+                    if (typeof ($(value).attr('data-attr-update-upgradetype-id')) !== "undefined") {
+                        tbl_Card_Upgrade_Types.ID = $(value).attr('data-attr-update-upgradetype-id');
+                        ids.push(tbl_Card_Upgrade_Types);
+                    }
+                });
+                var status = $('#txtAuthorizationStatus').val();
+                @*if (parseInt('@requestId') > 0) {*@
+                if (parseInt('@requestId') > 0 || parseInt(id) > 0) {
+                    status = "P";
+                }
+                var requestId = parseInt('@requestId');
+                var url = '@Url.Action("AddUpdateCardType", "CardType")';
+                var screenCount = $('.chkUpdateScreens').find('input[type="checkbox"]:checked').length;
+                if (validate(title, desc, code, ids, true, screenCount)) {
+                    ShowLoader();
+                    ajaxCall(url, { ID: id, Title: title, Description: desc, AuthorizationStatus: status, IsActive: active, CardCode: code, IsIssuance: isIssuance, IsUpgrade: isUpgrade, IsReplacement: isReplacement, upgradeTypes: ids, RequestId: requestId }, function (resp) {
+                        if (resp.IsSuccess) {
+                            HideLoader();
+                            alert("Success!");
+                            location.reload();
+                        }
+                        else {
+                            HideLoader();
+                            alert(resp.ErrorMessage);
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        alert("fail");
+                    }, function (err) {
+                        HideLoader();
+                        if (err.responseText.indexOf("IsSuccess") >= 0) {
+                            alert(err.responseJSON.ErrorMessage);
+                        }
+                        else {
+                            alert(genericMessage);
+                        }
+                    });
+                }
+            });
+        });
+
+        function validate(title, desc, code, ids, isupdate, screencount) {
+            if (title === "") {
+                alert("Invalid card title");
+                return false;
+            }
+            if (code === "") {
+                alert("Invalid card code");
+                return false;
+            }
+            if (desc === "") {
+                alert("Invalid card description");
+                return false;
+            }
+            //if (ids.length <= 0) {
+            //    alert("Please select upgrade card types");
+            //    return false;
+            //}
+            if (screencount <= 0) {
+                alert("Please select atleast one screen");
+                return false;
+            }
+            if (isupdate) {
+                if ($('#cmbxCardTypes').val() === "") {
+                    alert("Invalid card type");
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+
+        $(window).on('load', function () {
+            if (parseInt('@requestId') > 0) {
+                if ('@requestType' != "") {
+                    if ('@requestType' === "Add") {
+                        $('.li-update').css('display', 'none');
+                        //$('.li-update').addClass('active');
+                        $('.li-new > a').trigger('click');
+                    }
+                    else {
+                        $('.li-new').css('display', 'none');
+                        //$('.li-update').addClass('active');
+                        $('.li-update>a').trigger('click');
+                        $('#cmbxCardTypes').val(parseInt('@(Model?.ID ?? 0)'));
+                        $('#cmbxCardTypes').trigger('change');
+                    }
+                }
+            }
+        });
+    </script>
+}
+<div class="container">
+    @*<h4 class="main_hdng">Card Types</h4>*@
+    <ul class="nav nav-tabs radio">
+        <li class="active li-new">
+            <a data-toggle="tab" href="#newcardtype">
+                <label>
+                    <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                    New Card Type
+                </label>
+            </a>
+        </li>
+        <li class="li-update">
+            <a data-toggle="tab" href="#updateexsisting">
+                <label>
+                    <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                    Update Existing Card Type
+                </label>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div id="newcardtype" class="tab-pane fade in active">
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    @Html.Hidden("txtAuthorizationStatus")
+                    <label class="control-label">Card Type Description</label>
+                    <input type="text" id="txtCardTitle" class="form-control" placeholder="Card Title" value="@(Model?.Title??string.Empty)">
+                </div><!-- End col-sm-6 -->
+                <div class="col-sm-6">
+                    <label class="control-label">Card Code (IRIS)</label>
+                    <input class="form-control" id="txtCardCode" value="@(Model?.CardCode??string.Empty)" />
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Card Code(Internal)</label>
+                    <textarea class="form-control" id="txtCardDesc">@(Model?.Description ?? string.Empty)</textarea>
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <label class="control-label">Upgrade Applicable froms Card Types</label>
+                    <div class="row chk_bxs chkUpgradeTypes">
+                        @foreach (var item in lstCardTypes.Where(e => e.IsActive == true).ToList())
+                        {
+                            <div class="col-md-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="optionsCheckboxes" @(Model == null ? string.Empty : Model.UpgradeChildTypes == null ? string.Empty : (Model.UpgradeChildTypes.Any(e => e == item.ID)) ? "checked" : string.Empty) data-attr-upgradetype-id="@item.ID"><span class="checkbox-material"><span class="check"></span></span>
+                                        @item.Title
+                                    </label>
+                                </div>
+                            </div><!-- End col-md-3 -->
+                        }
+                    </div><!-- End row -->
+                </div><!-- End col-sm-6 -->
+                <div class="col-sm-6">
+                    <label class="control-label">Screens To Display Card Type</label>
+                    <div class="row chk_bxs chkScreens">
+                        <div class="col-md-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionIssuanceScreen" @((Model?.IsIssuance ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                    Issuance
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->
+                        <div class="col-md-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionUpgradeScreen" @((Model?.IsUpgrade ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                    Upgrade
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->
+                        <div class="col-md-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionReplacementScreen" @((Model?.IsReplacement ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                    Replacement
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->
+                    </div>
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <div class="btns_right">
+                        <button class="btn btn-cstm" id="btnSave">Save</button>
+                    </div><!-- End btns_right -->
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+        </div>
+        <div id="updateexsisting" class="tab-pane fade">
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <label class="control-label">Select Card Type</label>
+                    <select class="form-control" id="cmbxCardTypes">
+                        <option value="">Select Card Type</option>
+                        @foreach (var item in (requestId > 0 ? lstCardTypes.ToList() : lstCardTypes))
+                        {
+                            <option value="@item.ID">@item.Title</option>
+                        }
+                    </select>
+                </div><!-- End col-sm-6 -->
+                <div class="col-sm-6">
+                    <label class="control-label">Card Code(IRIS)</label>
+                    <input type="text" class="form-control" placeholder="Card Title" id="txtUpdateCardCode" value="@(Model?.CardCode??string.Empty)">
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <label class="control-label">Card Type Description</label>
+                    <input type="text" class="form-control" placeholder="Card Title" id="txtUpdateTitle" value="@(Model?.Title ?? string.Empty)">
+                </div><!-- End col-sm-6 -->
+                <div class="col-sm-6">
+                    <label class="control-label">Card Type Active</label>
+                    <div class="row chk_bxs chkUpdateUpgradeTypes">
+                        <div class="col-md-12">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="activeCheckbox" @((Model?.IsActive ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                    Active
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <label class="control-label">Card Code(Internal)</label>
+                    <textarea class="form-control" rows="3" id="txtUpdateDesc">@(Model?.Description ?? string.Empty)</textarea>
+                </div><!-- End col-sm-6 -->
+                <div class="col-sm-6">
+                    <label class="control-label">Upgrade Applicable froms Card Types</label>
+                    <div class="row chk_bxs chkUpdateUpgradeTypes">
+                        @foreach (var item in lstCardTypes.Where(e => e.IsActive == true).ToList())
+                        {
+                            <div class="col-md-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="optionsCheckboxes" @(Model == null ? string.Empty : requestType == "Add" ? (Model.UpgradeChildTypes == null ? string.Empty : Model.UpgradeChildTypes.Any(e => e == item.ID) ? "checked" : string.Empty) : Model.tbl_Card_Upgrade_Types == null ? string.Empty : (Model.tbl_Card_Upgrade_Types.Any(e => e.ParentCardType == item.ID)) ? "checked" : string.Empty) data-attr-update-upgradetype-id="@item.ID"><span class="checkbox-material"><span class="check"></span></span>
+                                        @item.Title
+                                    </label>
+                                </div>
+                            </div><!-- End col-md-3 -->
+                        }
+                    </div><!-- End row -->
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+            <div class="row form-group">
+                <div class="col-md-6">
+                    <label class="control-label">Screens To Display Card Type</label>
+                    <div class="row chk_bxs chkUpdateScreens">
+                        <div class="col-md-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionUpdateIssuanceScreen" @((Model?.IsIssuance ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                    Issuance
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->
+                        <div class="col-md-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionUpdateUpgradeScreen" @((Model?.IsUpgrade ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                    Upgrade
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->
+                        <div class="col-md-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionUpdateReplacementScreen" @((Model?.IsReplacement ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                    Replacement
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <div class="btns_right">
+                        <button class="btn btn-cstm" id="btnUpdateSave">Save</button>
+                    </div><!-- End btns_right -->
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+        </div>
+    </div>
+</div><!-- End container -->

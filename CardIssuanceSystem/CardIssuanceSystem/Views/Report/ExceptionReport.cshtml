@@ -1,0 +1,104 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.ExceptionLogReportVM>
+@{
+    ViewBag.Title = "Exception Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section CustomCSS{
+    <style type="text/css">
+        .table-responsive {
+            overflow: scroll;
+            max-height: 345px;
+        }
+
+        #btnSubmit {
+            margin: 5px 0px 0px 0px;
+        }
+    </style>
+}
+@section CustomJS{
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.7.12/xlsx.core.min.js"></script>
+<script src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/3.3.5/js/tableexport.min.js"></script>*@
+<script src="@Url.Content("~/assets/js/xlsx.core.min.js")"></script>
+<script src="@Url.Content("~/assets/js/FileSaver.min.js")"></script>
+<script src="@Url.Content("~/assets/js/tableexport.min.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#btnSubmit').click(function () {
+                Filter();
+            });
+
+            //$('#btnExport').click(function (e) {
+            //    var requestType = $('#cmbxRequestType :selected').text();
+            //    var currentDate = new Date();
+            //    var filename = "Exception Report " + currentDate.getFullYear() + (currentDate.getMonth() + 1) + currentDate.getDate() + "_" + currentDate.getTime() + ".xls";
+            //    //ExportExcel(filename, "table-responsive");
+            //    tableToExcel('table-responsive', filename);
+            //    e.preventDefault();
+            //});
+        });
+
+        function Filter() {
+            var starttime = $('#txtStartTime').val();
+            var endtime = $('#txtEndTime').val();
+            var url = '@Url.Action("PartialExceptionReport", "Report")';
+
+            if (!starttime) {
+                alert("Please enter start time");
+                return false;
+            }
+            if (!endtime) {
+                alert("Please enter end time");
+                return false;
+            }
+
+            ShowLoader();
+            LoadPartial('.table-responsive', url, { startDate: starttime, endDate: endtime }, true, null, null, null);
+           // HideLoader();
+            //ajaxCall(url, { branchCode: brCode, requestType: reqType, cardType: cardType },);
+        }
+    </script>
+}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            @*<h4 class="main_hdng">EXCEPTION REPORT</h4>*@
+            @*<input id="btnExport" type="button" class="btn btn-default pull-right" value="Export To Excel">*@
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="control-label">Start Time</label>
+                    <div class='input-group date
+                         datetimepicker1'>
+                        <input type="text" id="txtStartTime" class="form-control" readonly/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label">End Time</label>
+                    <div class='input-group date
+                         datetimepicker1'>
+                        <input type="text" id="txtEndTime" class="form-control" readonly/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label"></label>
+                    <input type="submit" class="form-control btn btn-default" id="btnSubmit" />
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="table-responsive" id="table-responsive">
+                @Html.Partial("_partialExceptionReport", Model)
+            </div>
+        </div>
+
+    </div>
+</div>
+
+

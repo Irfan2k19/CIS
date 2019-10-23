@@ -1,0 +1,317 @@
+﻿
+@{
+    ViewBag.Title = "Card Hot Mark";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container card-hot-mark-wrapper">
+    @*<h4 class="main_hdng">Card Hot Mark</h4>*@
+    <div class="row">
+        <div class="col-sm-12">
+            @*<div class="second-heading">15 Cards with due amount</div>*@
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs radio">
+        <li class="active">
+            <a data-toggle="tab" href="#manual">
+                <label>
+                    <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                    Manual
+                </label>
+            </a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#automatic">
+                <label>
+                    <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                    Automatic
+                </label>
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="manual" class="tab-pane fade in active">
+            <div class="row form-group">
+                <div class="col-sm-9">
+                    <label class="control-label">Card # </label>
+                    <input type="text" class="form-control CardNo" maxlength="16">
+                </div>
+
+
+                <div class="col-sm-3">
+                    <div class="btns_right">
+                        <button class="btn btn-cstm" id="btn-search">Search</button>
+                    </div><!-- End btns_right -->
+                </div><!-- End col-sm-12 -->
+
+
+            </div>
+
+
+            <div  id="ResultForm">
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Card Number</label>
+                    <input type="text" class="form-control CardNo">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Card Title</label>
+                    <input type="text" class="form-control" id="CardTitle">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Card Type</label>
+                    <input type="text" class="form-control" id="CardType">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Default Account Number</label>
+                    <input type="text" class="form-control" placeholder="Account Number" id="AccountNo">
+                </div><!-- End col-sm-3 -->
+
+               
+            </div>
+
+
+            <div class="row form-group">
+
+                <div class="col-sm-3">
+                    <label class="control-label">Account Title</label>
+                    <input type="text" class="form-control" placeholder="Account Title" id="AccountTitle">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="CardActive" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                            Card Active
+                        </label>
+                    </div>
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <div class="btns_right">
+                        <button class="btn btn-cstm" id="proceed">Submit</button>
+                    </div><!-- End btns_right -->
+                </div><!-- End col-sm-12 -->
+            </div>
+
+            </div>
+        </div>
+
+        <div id="automatic" class="tab-pane fade">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="btns_left">
+                        @*@using (Html.BeginForm("AutomaticHotMark", "CardHotMark", FormMethod.Post))
+                        {*@
+                            <button type="submit" class="btn btn-cstm" id="retrieve">Retrieve</button>
+                        @*}*@
+                        <br /> <br />
+
+                        @*<div id="div-upload" style="display:none;">
+
+                                @using (Html.BeginForm("AutomaticHotMark", "CardHotMark", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    <input type="file" name="postedFile" /><br />
+                                    <input type="submit" value="Import" />
+                                }
+                            </div>*@
+                    </div><!-- End btns_right -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    @*<p>2 Cards Found</p>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- End container -->
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger
+        @*if ('@ViewBag.Success' == "True") {
+            alert("Successfully Imported!");
+        } else if ('@ViewBag.Success' == "False") {
+            alert("Error Occurred. Please try again");
+        } else if ('@ViewBag.Success' == "Error") {
+            alert("Only CSV file is allowed");
+        }*@
+        $('#ResultForm').css("display", "none");
+        $("#ResultForm :input").attr("disabled", true);
+        $("#proceed").attr("disabled", false);
+        if ('@TempData["mesage"]' != null && '@TempData["mesage"]' != "") {
+            alert('@TempData["mesage"]');
+            
+        }
+    });
+
+
+
+    $('#btn-search').click(function () {
+        debugger
+
+
+        var CardNo = $('.CardNo').val();
+        if (CardNo == null || CardNo.trim() == "" || typeof (CardNo) == "undefined") {
+            $('.CardNo').css("border", "red solid 1px");
+            alert("Please Enter Card Number");
+            return false;
+        }
+        if (!NumberValue(CardNo)) {
+
+            alert("Only Numeric Value is Allowed");
+            return false;
+        }
+
+        if (!CheckLength(CardNo, 16)) {
+            $('.CardNo').css("border", "red solid 1px");
+            alert("Card number length should be equal to 16");
+            return false;
+        }
+
+        var Url = '@Url.Action("GetCardInfo", "CardHotMark")';
+        ShowLoader();
+        ajaxCall(Url, { CardNo: CardNo }, function (resp) {
+            debugger
+            HideLoader();
+            if (typeof (resp) === "object" && resp.ErrorMessage == '@CardIssuanceSystem.Core.Helpers.CustomMessages.Success') {
+                var data = '';
+                for (var i = 0; i < resp.DelinkInfo.length; i++) {
+                    data += resp.DelinkInfo[i].AccountNo + ',';
+
+                }
+
+                $('#LinkedAccounts').val(data);
+                $('#AccountNo').val(resp.Result[0].AccountNo)
+                $('.CardNo').val(resp.Result[0].CardNo);
+                $('#CardTitle').val(resp.Result[0].CardTitle);
+                var CardIssuance = resp.CardIssuance.substring(0, 10);
+                var CardExpiry = resp.CardExpiry.substring(0, 10);
+                $('#CardIssuance').val(CardIssuance);
+                $('#CardExpiry').val(CardExpiry);
+                debugger
+                $('#CardType').val(resp.CardType);
+
+                if (resp.Result[0].CardStatusActive == true) {
+                    debugger
+                    $('#CardActive').prop('checked', true);
+                } else {
+                    $('#CardActive').prop('checked', false);
+
+                }
+
+                $('#CustomerId').val(resp.Result[0].CIF);
+                $('#CustomerName').val(resp.Result[0].CustomerName);
+                //$('#CardTitle').val(resp.Result[0].CustomerName);
+
+                if (resp.Result[0].AccountStatusActive == false) {
+                    debugger
+                    $('#AccountStatus').val('InActive');
+                } else {
+                    $('#AccountStatus').val('Active');
+                }
+
+                $('#AccountAddress').val(resp.Result[0].Address);
+                $('#CustomerAddress').val(resp.Result[0].Address2);
+                $('#OtherAddress').val(resp.Result[0].MainAddress);
+                $('#MobileNo').val(resp.Result[0].Mobile);
+                $('#PhoneRes').val(resp.Result[0].MainLandline);
+                $('#PhoneOff').val(resp.Result[0].PhoneOffice);
+
+                $('#Email').val(resp.Result[0].Email);
+                $('#FatherName').val(resp.Result[0].FatherName);
+                $('#MotherName').val(resp.Result[0].MotherMaidenName);
+                var DOB = resp.DOB.substring(0, 10);
+                $('#DateofBirth').val(DOB);
+                $('#Identification option:selected').text(resp.Result[0].IdentificationType);
+                $('#CNIC').val(resp.Result[0].CNIC);
+                //$('#OldCNIC').val();
+
+
+                $('#AccountTitle').val(resp.Result[0].AccountTitle);
+
+                $('#ResultForm').css("display", "block");
+
+            }
+            else
+            {
+                alert(resp.ErrorMessage);
+            } 
+        }, function (fail) {
+            HideLoader();
+            alert("Failure");
+        }, function (err) {
+            HideLoader();
+            alert("Error");
+        });
+
+    });
+
+
+
+    $('#proceed').click(function () {
+        ShowLoader();
+        var CardNo = $('.CardNo').val();
+
+        var Url = '@Url.Action("SubmitHotMarkRequest", "CardHotMark")';
+
+        if (CardNo == null || CardNo.trim() == "" || typeof (CardNo) === "undefined") {
+            alert("Card Number is required!")
+            HideLoader();
+            return false;
+        }
+
+        if (!NumberValue(CardNo)) {
+            alert("Only Numeric Value is Allowed!");
+            HideLoader();
+            return false;
+        }
+        if (!CheckLength(CardNo, 16)) {
+            $('.CardNo').css("border", "red solid 1px");
+            alert("Card number length should be equal to 16");
+            return false;
+        }
+
+        ajaxCall(Url, { CardNo: CardNo }, function (resp) {
+            debugger
+            HideLoader();
+            alert(resp.ErrorMessage);
+            location.reload();
+
+        }, function (fail) {
+            HideLoader();
+            alert("Failure");
+        }, function (err) {
+            HideLoader();
+            alert("Error");
+        });
+    });
+
+
+
+    $('#retrieve').click(function () {
+        //$('#div-upload').removeAttr("style");
+        //$('#div-upload').toggle();
+        var Url = '@Url.Action("AutomaticHotMark", "CardHotMark")';
+        ajaxCall(Url, null, function (resp) {
+            debugger
+            HideLoader();
+            alert(resp);
+            location.reload();
+
+        }, function (fail) {
+            HideLoader();
+            alert("Failure");
+        }, function (err) {
+            HideLoader();
+            alert("Error");
+        });
+    })
+</script>

@@ -1,0 +1,105 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.AuthorizationVM>
+@{
+
+}
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                @*<th>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                        </label>
+                    </div>
+                </th>*@
+                <th>Request #</th>
+                <th>Customer ID</th>
+                <th>Name</th>
+                <th>Card No</th>
+                <th>Card Type</th>
+                @*<th>Card Nature</th>*@
+                <th>Account #</th>
+                <th>Request Nature</th>
+                <th>Comment</th>
+                @*<th>Description</th>*@
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        @*<td>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                                </label>
+                            </div>
+                        </td>*@
+                        <td>@item.ID</td>
+                        <td>@item.CIFNo</td>
+                        <td>@item.CardTitle</td>
+                        <td>@item.CardNo</td>
+                        <td>@(item.CardType?.Title ?? string.Empty)</td>
+                        @*<td>Primary</td>*@
+                        <td>@item.AccountNo</td>
+                        <td>@(item.RequestType != "N" ? item.RequestType != "A" ? item.RequestType != "U" ? item.RequestType != "L" ? item.RequestType != "D" ? item.RequestType != "H" ? item.RequestType != "R" ? string.Empty : "Card Replacement Request" : "Card Hotmark Request" : "Card Delinking Request" : "Card Linking Request" : "Card Upgrade Request" : "Card Ammendment Request" : "New Card Request")</td>
+                        <td>@item.AuthorizationComments</td>
+                        @*<td>Debit Master Gold Card</td>*@
+                        <td>
+                            @ActionButton(item.RequestType, item.ID)
+                            @*<button class="btn btn-cstm"><i class="fa fa-eye"></i></button>*@
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr colspan="12">
+                    <td>No Record Found!</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div><!-- End table-responsive -->
+
+@helper ActionButton(string requestType, long id)
+{
+switch (requestType)
+{
+    case "N":
+            <a href="@Url.Action("CardIssuanceScreen","Request",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "R":
+            <a href="@Url.Action("CardReplacementScreen","Request",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "L":
+            <a href="@Url.Action("LinkingScreen","Request",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "D":
+            <a href="@Url.Action("DelinkingScreen","Request",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "A":
+            <a href="@Url.Action("CardAmendmentScreen","Request",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    case "U":
+            <a href="@Url.Action("CardUpgradeScreen","Request",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+
+    default:
+            <a href="@Url.Action("CardIssuanceScreen","Request",new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+}
+
+}

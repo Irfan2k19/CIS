@@ -1,0 +1,728 @@
+﻿@model CardIssuanceSystem.Core.ViewModel.UpdateRequestVM
+@{
+    ViewBag.Title = "Card Amendment Request";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var requestId = ViewBag.RequestId;
+}
+@section CustomJS{
+    <script src="@Url.Content("~/Content/jquery.mask.min.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#UnEditable :input").attr("disabled", true);
+            $('#ResultForm').css("display", "none");
+            $('#txtMainMobile').mask('0000-0000000');
+            $('#txtMainLandline').mask('0000-0000000');
+        });
+
+        $('.btn-search').click(function () {
+            var Url = '@Url.Action("SearchAccountByCardNo", "Request")';
+            var CardNumber = $('#CardNumber').val();
+
+            if (CardNumber === '' || CardNumber === null || typeof (CardNumber) === 'undefined') {
+                HideLoader();
+                $('#CardNumber').css("border", "red solid 1px");
+                alert("Please Enter Card Number");
+                return false;
+            }
+
+            if (!NumberValue(CardNumber)) {
+                HideLoader();
+                alert("Only Numeric Value is Allowed");
+                return false;
+            }
+            if (!CheckLength(CardNumber, 16)) {
+                HideLoader();
+                alert("Card number length should be equal to 16");
+                return false;
+            }
+
+
+            var Url_GetCard = '@Url.Action("SearchAccountByCardNo", "Request")';
+            ShowLoader();
+            ajaxCall(Url_GetCard, { CardNo: CardNumber }, function (resp) {
+
+                HideLoader();
+                if (resp.Message == '@CardIssuanceSystem.Core.Helpers.CustomMessages.Success') {
+                   // debugger;
+                    // $('#Salutation option:selected').text(resp.Salutation);
+                    $('#CardTitle').val(resp.CardInfo[0].CardTitle);
+                    $('#RequestDate').val('@(Model?.RequestData?.RequestDate)');
+                    $('#ExistingCardNumber').val(resp.CardInfo[0].CardNo);
+                    $('#DefaultAccountNo').val(resp.CardInfo[0].AccountNo);
+                    $('.AccountNo').val(resp.CardInfo[0].AccountNo);
+                    $('#DefaultAccountTitle').val(resp.CardInfo[0].AccountTitle);
+                    $('#AccountTitle').val(resp.AccountInfo.AccountTitle);
+                    $('#CustomerId').val(resp.AccountInfo.CustomerID);
+                    $('#CustomerName').val(resp.AccountInfo.CustomerName);
+                    // $('#AddressType option:selected').text(resp[0].AddressType);
+                    //$('#Correspondence').val(resp[0].Correspondence);
+
+                    $('#AccountAddress').val(resp.AccountInfo.AccountAddress);
+                    $('#CustomerAddress').val(resp.AccountInfo.CustomerAddress1);
+                    $('#Address').val(resp.AccountInfo.CustomerAddress2);
+                    $('#MobileNo').val(resp.AccountInfo.AccountMobile);
+                    $('#MobileNo1').val(resp.AccountInfo.SMS);
+                    $('#MobileNo2').val(resp.AccountInfo.SMS2);
+                    $('#MobileNo3').val(resp.AccountInfo.SMS3);
+                    $('#PhoneRes').val(resp.AccountInfo.PhoneResidence);
+                    $('#PhoneOff').val(resp.AccountInfo.OffPhone);
+                    $('#FaxNo').val();
+                    $('#Email').val(resp.AccountInfo.Email);
+                    $('#FatherName').val(resp.AccountInfo.FathersName);
+                    $('#MotherName').val(resp.AccountInfo.MothersName);
+                    $('#DateofBirth').val(resp.AccountInfo.CustomerDOB);
+                    $('#Identification option:selected').text(resp.AccountInfo.IdentificationType);
+                    $('#CNIC').val(resp.AccountInfo.IdentificationNo);
+                    $('#Passport').val(resp.AccountInfo.Passport);
+                    $('#hfAccountNumber').val(resp.CardInfo[0].AccountNo);
+                    $('#ExistingCardType').val(resp.CardInfo[0].CardTypeID);
+                    $('#hfCardTypeId').val(resp.CardInfo[0].CardTypeID);
+                    $('#Sector').val(resp.AccountInfo.Sector);
+                    $('#Product').val(resp.AccountInfo.Product);
+                    $('#OperatingInst').val(resp.AccountInfo.OpInstructions);
+                    $('#Nationality').val(resp.AccountInfo.Nationality);
+                    $('#Residence').val(resp.AccountInfo.ResidenceStatus);
+                    //$('#OldNIC').val();
+                   
+                    $('#ResultForm').css("display", "block");
+                }
+                else {
+                    HideLoader();
+                    alert(resp.Message);
+                    
+                    $('#ResultForm').css("display", "none");
+                    return false;
+                }
+            }, function (fail) {
+                HideLoader();
+                alert(fail.responseText);
+                return false;
+            }, function (err) {
+                HideLoader();
+                alert(err.responseText);
+                return false;
+            });
+
+        });
+
+        $('#btnProceed').click(function () {
+            debugger
+
+            var Url = '@Url.Action("AddUpdateCardAmendmentScreen", "Request")';
+            if (parseInt('@requestId') > 0) {
+                Url = '@Url.Action("UpdateReviewRequest", "Request")';
+            }
+            var ID = parseInt('@requestId');
+            var CardNumber = $('#CardNumber').val();
+            //var RequestDate = $('#RequestDate').val();
+            //var Salutation = $('#Salutation option:selected').text();
+            //var CardTitle = $('#CardTitle').val();
+            // var ExistingCardNumber = $('#ExistingCardNumber').val();
+
+            var RequestDate = $('#RequestDate').val();
+            var CardTitle = $('#CardTitle').val();
+            //var MainAddress = $('#txtMainAddress').val();
+            //var MainMobile = $('#txtMainMobile').val();
+            //var MainLandline = $('#txtMainLandline').val();
+
+            var MainAddress = $('#MainAddress option:selected').text();
+            var MainMobile = $('#MainMobile option:selected').text();
+            var MainLandline = "";//$('#MainLandline option:selected').text();
+
+            var Passport = $('#Passport').val();
+
+            var CustomerId = $('#CustomerId').val();
+            var CustomerName = $('#CustomerName').val();
+            var AddressType = $('#AddressType').val();
+            var Correspondence = $('#Correspondence').val();
+            var AccountAddress = $('#AccountAddress').val();
+            var CustomerAddress = $('#CustomerAddress').val();
+            var Address = $('#Address').val();
+            var MobileNo = $('#MobileNo').val();
+            var MobileNo1 = $('#MobileNo1').val();
+            var MobileNo2 = $('#MobileNo2').val();
+            var MobileNo3 = $('#MobileNo3').val();
+            var PhoneRes = $('#PhoneRes').val();
+            var PhoneOff = $('#PhoneOff').val();
+            var FaxNo = $('#FaxNo').val();
+            var Email = $('#Email').val();
+            var FatherName = $('#FatherName').val();
+            var MotherName = $('#MotherName').val();
+            var DateofBirth = $('#DateofBirth').val();
+            var Identification = $('#Identification').val();
+            var CNIC = $('#CNIC').val();
+            var OldCNIC = $('#OldCNIC').val();
+            var Waive = 0;
+            var CardTypeId = $('#hfCardTypeId').val();
+            var AccountNo = $('.AccountNo').val();
+            var CustomerRequestId = '@(ViewBag.RequestCustomerInfo?.ID ?? 0)';
+            var CIFNo = CustomerId;
+            var SetAddress = $('#SetAddress').val();
+            var SetMobileNo = $('#SetMobileNo').val();
+            var MainLandlineNo = $('#MainLandlineNo option:selected').text();
+            var SetLandlineNo = $('#SetLandlineNo').val();
+            var MainOfficeNo = $('#MainOfficeNo option:selected').text();
+            var SetOfficeNo = $('#SetOfficeNo').val();
+            //};
+            debugger
+            //SetAddress = SetAddress.replace(/[^a-z0-9A-Z  ]/gi, ' ');
+            // SetAddress = SetAddress.replace(/^[A-Za-z0-9 \/,.()#_&\\-]*$/gi, ' ');
+            SetAddress = SetAddress.replace(/[^a-z0-9A-Z  \/,.()#_&\\-]/gi, ' ');
+            SetMobileNo = SetMobileNo.replace(/[^0-9]/gi, '');
+            SetLandlineNo = SetLandlineNo.replace(/[^0-9]/gi, '');
+            SetOfficeNo = SetOfficeNo.replace(/[^0-9]/gi, '');
+            
+            if (CardNumber === "") {
+                $('#CardNumber').css("border", "red solid 1px");
+                alert("Please Enter Card Number");
+                return false;
+            }
+            if (!CheckLength(CardNumber, 16)) {
+                $('#CardNumber').css("border", "red solid 1px");
+                alert("Card number length should be equal to 16");
+                return false;
+            }
+            debugger
+            if (CardTitle === "") {
+                $('#CardTitle').css("border", "red solid 1px");
+                alert("Please Enter Card Title");
+                return false;
+            }
+           
+            if (MainAddress === "--Please Select--") {
+                $('#MainAddress').css("border", "red solid 1px");
+                alert("Please Enter Main Address");
+                return false;
+            }
+            else if (MainAddress.trim() == 'Other') {
+                if (SetAddress.trim() == "" || SetAddress.trim() == null || SetAddress == 'undfefined') {
+                    alert("Please Set Address");
+                    return false;
+                } else {
+                    MainAddress = SetAddress;
+                }
+            }
+
+            if (MainMobile === "--Please Select--") {
+                $('#MainMobile').css("border", "red solid 1px");
+                alert("Please Enter Mobile Number");
+                return false;
+            }
+            else if (MainMobile.trim() == 'Other') {
+                if (SetMobileNo.trim() == "" || SetMobileNo.trim() == null || SetMobileNo == 'undfefined') {
+                    alert("Please Set Mobile Number");
+                    return false;
+                } else {
+                    MainMobile = SetMobileNo;
+                }
+            }
+
+            if (MainLandlineNo === "--Please Select--") {
+                $('#MainLandlineNo').css("border", "red solid 1px");
+                alert("Please Enter Landline Number");
+                return false;
+            }
+            else if (MainLandlineNo.trim() == 'Other') {
+                if (SetLandlineNo.trim() == "" || SetLandlineNo.trim() == null || SetLandlineNo == 'undfefined') {
+                    alert("Please Set Landline Number");
+                    return false;
+                } else {
+                    MainLandlineNo = SetLandlineNo;
+                }
+            }
+            if (MainOfficeNo === "--Please Select--") {
+                $('#MainOfficeNo').css("border", "red solid 1px");
+                alert("Please Enter Office Number");
+                return false;
+            }
+            else if (MainOfficeNo.trim() == 'Other') {
+                if (SetOfficeNo.trim() == "" || SetOfficeNo.trim() == null || SetOfficeNo == 'undfefined') {
+                    alert("Please Set Office Number");
+                    return false;
+                } else {
+                    MainOfficeNo = SetOfficeNo;
+                }
+            }
+            //if (MainLandline === "Please Select") {
+            //    $('#MainLandline').css("border", "red solid 1px");
+            //    alert("Please Enter Landline Number");
+            //    return false;
+            //}
+
+            if (!CheckCharacterLength(CardTitle)) {
+                $('#CardTitle').css("border", "red solid 1px");
+                alert("Invalid Card Title");
+                return false;
+            }
+
+            if (CardTitleValue(CardTitle) == false) {
+                alert("Please Enter Valid Card Title");
+                return false;
+            }
+            if (CNIC === "" && Passport === "") {
+                alert("Please Enter CNIC Or Passport Number");
+                return false;
+            }
+
+            ShowLoader();
+            ajaxCall(Url, {
+                ID: ID,
+                RequestDate: RequestDate,
+                //Salutation: Salutation,
+                MainAddress: MainAddress,
+                MainMobile: MainMobile,
+                MainLandline: MainLandline,
+                LandlineNo: MainLandlineNo,
+                CardTitle: CardTitle,
+                CustomerId: CustomerId,
+                CustomerName: CustomerName,
+                AddressType: AddressType,
+                Correspondence: Correspondence,
+                AccountAddress: AccountAddress,
+                CustomerAddress: CustomerAddress,
+                Address: Address,
+                MobileNo: MobileNo,
+                MobileNo1: MobileNo1,
+                MobileNo2: MobileNo2,
+                MobileNo3: MobileNo3,
+                PhoneRes: PhoneRes,
+                PhoneOff: MainOfficeNo,
+                FaxNo: FaxNo,
+                Email: Email,
+                FatherName: FatherName,
+                MotherName: MotherName,
+                DateofBirth: DateofBirth,
+                Identification: Identification,
+                CNIC: CNIC,
+                OldCNIC: OldCNIC,
+                Waive: Waive,
+                CardNumber: CardNumber,
+                //ExistingCardNumber: ExistingCardNumber,
+                RequestType: "A",
+                CardType: CardTypeId,
+                CardTypeId: CardTypeId,
+                AccountNo: AccountNo,
+                CardNo: CardNumber,
+                Passport: Passport,
+                CustomerRequestId: CustomerRequestId,
+                CIFNo: CIFNo
+            }, function (resp) {
+                HideLoader();
+                //debugger;
+
+                if (typeof (resp) === "object" && resp.ErrorMessage === "@CardIssuanceSystem.Core.Helpers.CustomMessages.Success") {
+                    alert(resp.ErrorMessage + " !" + " Request Id: " + resp.IsSuccess);
+                    //alert("Success");
+                    location.reload();
+                }
+                else if (typeof (resp) === "boolean") {
+                    alert(resp);
+                    if (resp === true) {
+                        location.reload();
+                    }
+                }
+                else if (typeof (resp) === "object") {
+                    if (typeof (resp.IsSuccess) === "boolean") {
+                        alert(resp.ErrorMessage);
+                        location.reload();
+                    }
+                    else {
+                        alert(resp.ErrorMessage + " !" + " Request Id: " + resp.IsSuccess);
+                        location.reload();
+                    }
+                }
+                else {
+                    //alert(resp.ErrorMessage);
+                    alert(resp.ErrorMessage + " !" + " Request Id: " + resp.IsSuccess);
+                    location.reload();
+                }
+            }, function (fail) {
+                HideLoader();
+                alert("Failure");
+            }, function (err) {
+                HideLoader();
+                alert("Error");
+            });
+        });
+
+        function CheckCharacterLength(val) {
+            return /^([a-zA-Z ]){1,30}$/.test(val);
+        }
+
+        function GetCustomerDetail(Url, CardNo) {
+            ShowLoader();
+            ajaxCall(Url, { CardNo: CardNo }, function (resp) {
+                HideLoader();
+                if (typeof (resp) === "object" && resp.length > 0) {
+                    //debugger;
+                    $('#CardNumber').val($('#CardNumber').val());
+                    $('#RequestDate').val('@(Model?.RequestData?.RequestDate ?? DateTime.Now)');
+                    $('#ExistingCardNumber').val($('#CardNumber').val());
+                    $('#CustomerId').val(resp[0].CIF);
+                    $('#CustomerName').val(resp[0].AccountTitle);
+                    $('#AddressType').val(resp[0].AddressType);
+                    $('#Correspondence').val(resp[0].Correspondence);
+                    $('#AccountAddress').val(resp[0].Address);
+                    $('#CustomerAddress').val(resp[0].Address);
+                    $('#Address').val(resp[0].Address);
+                    $('#MobileNo').val(resp[0].Mobile);
+                    $('#PhoneRes').val();
+                    $('#PhoneOff').val();
+                    $('#FaxNo').val();
+                    $('#Email').val();
+                    $('#FatherName').val();
+                    $('#MotherName').val(resp[0].MotherMaidenName);
+                    $('#DateofBirth').val(resp[0].DateofBirth);
+                    $('#Identification').val();
+                    $('#CNIC').val(resp[0].CNIC);
+                    $('#OldCNIC').val();
+                    $('#Passport').val(resp[0].Passport);
+                }
+                else {
+                    console.log("Record Not Exist");
+                }
+            }, function (fail) {
+                HideLoader();
+                alert("Failure");
+            }, function (err) {
+                HideLoader();
+                alert("Error");
+            });
+        }
+
+        $(window).on('load', function () {
+            if (parseInt('@requestId') > 0) {
+                $('#CardNumber').val('@(Model?.RequestData?.CardNo ?? string.Empty)');
+                $('.btn-search').trigger('click');
+                $('.btn-search').attr("disabled", true);
+                $('#CardNumber').attr("disabled", true);
+                @*$('#MainMobile option:selected').text('@ViewBag.MainMobile');
+                $('#MainAddress option:selected').text('@ViewBag.MainAddress');
+                $('#MainLandline option:selected').text('@ViewBag.MainLandline');*@
+                $('#SetAddress').val('@ViewBag.SetAddress');
+
+                $('#SetMobileNo').val('@ViewBag.SetMobileNo');
+                $('#SetLandlineNo').val('@ViewBag.SetLandlineNo');
+                $('#SetOfficeNo').val('@ViewBag.SetOfficeNo');
+
+                $('#MainMobile option').map(function () {
+                    if ($(this).text() == '@ViewBag.MainMobile') return this;
+                }).attr('selected', 'selected');
+
+                $('#MainAddress option').map(function () {
+                    if ($(this).text() == '@ViewBag.MainAddress') return this;
+                }).attr('selected', 'selected');
+
+                $('#MainLandlineNo option').map(function () {
+                    if ($(this).text() == '@ViewBag.MainLandlineNo') return this;
+                }).attr('selected', 'selected');
+
+                $('#MainOfficeNo option').map(function () {
+                    if ($(this).text() == '@ViewBag.MainOfficeNo') return this;
+                }).attr('selected', 'selected');
+
+                @*$('#MainLandline option').map(function () {
+                    if ($(this).text() == '@ViewBag.MainLandline') return this;
+                }).attr('selected', 'selected');*@
+            }
+        });
+    </script>
+}
+<div class="container">
+    <div class="form-group row">
+        <div class="col-sm-3">
+            <label class="control-label">Card Number</label>
+            <input id="CardNumber" type="text" class="form-control">
+            @Html.Hidden("hfAccountNumber", Model?.RequestData?.AccountNo)
+            @Html.Hidden("hfCardTypeId")
+        </div><!-- End col-sm-3 -->
+
+        <div class="col-sm-9">
+            <button class="btn btn-cstm btn-search">Search</button>
+        </div><!-- End col-sm-9 -->
+    </div><!-- End row -->
+    <div id="ResultForm" style="display:none">
+        <div class="row form-group">
+            <div class="col-sm-3" style="display:none;">
+                <label class="control-label">Request No</label>
+                <input id="RequestNumber" type="text" class="form-control">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Card Title</label>
+                <input id="CardTitle" type="text" class="form-control" maxlength="19" disabled>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                    <label class="control-label">Existing Card Type</label>
+                    <select class="form-control" id="ExistingCardType" disabled>
+                        @foreach (var item in (ViewBag.CardTypes))
+                        {
+                            <option value="@item.ID">@item.Title</option>
+                        }
+                    </select>
+                </div><!-- End col-sm-3 -->
+            @*<div class="col-sm-3">
+                    <label class="control-label">Main Address</label>
+                    <input type="text" class="form-control" id="txtMainAddress" value="@(ViewBag.RequestCustomerInfo?.MainAddress)">
+                </div>
+
+                <div class="col-sm-3">
+                    <label class="control-label">Main Mobile </label>
+                    <input type="text" class="form-control" id="txtMainMobile" value="@(ViewBag.RequestCustomerInfo?.MainMobile)">
+                </div>
+
+                <div class="col-sm-3">
+                    <label class="control-label">Main Landline </label>
+                    <input type="text" class="form-control" id="txtMainLandline" value="@(ViewBag.RequestCustomerInfo?.MainLandline)">
+                </div>*@
+        </div><!-- End row -->
+
+        <div class="row form-group">
+            <div class="col-sm-3" style="display:@(requestId == 0 ? "none" : "block")">
+                <label class="control-label">Request Date</label>
+                <div class='input-group date datetimepicker1'>
+                    <input type='text' id="RequestDate" class="form-control" readonly @(requestId == null ? "" : "disabled") />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div><!-- End datepicker -->
+                <!-- End col-sm-3 -->
+            </div>
+            @*<div class="col-sm-3">
+                <label class="control-label">LandLine</label>
+                <select class="form-control" id="MainLandline">
+                    <option value="0">Please Select</option>
+                    <option value="1">Residence</option>
+                    <option value="2">Office</option>*@
+                    @*<option value="3">Other Landline</option>*@
+                @*</select>
+            </div>*@<!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Mobile</label>
+                <select class="form-control" id="MainMobile">
+                    <option value="0">--Please Select--</option>
+                    <option value="1">Mobile</option>
+                    <option value="2">Mobile 1</option>
+                    <option value="3">Mobile 2</option>
+                    <option value="4">Mobile 3</option>
+                    <option value="5">Other</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Set Mobile Number</label>
+                @*<input type="text" class="form-control" id="SetAddress">*@
+                <input type="text" class="form-control" id="SetMobileNo" maxlength="49" />
+            </div><!-- End col-sm-3 -->
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Select Landline No</label>
+                <select class="form-control" id="MainLandlineNo">
+                    <option value="1">Landline No</option>
+                    <option value="2">Other</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Set Landline Number</label>
+                @*<input type="text" class="form-control" id="SetAddress">*@
+                <input type="text" class="form-control" id="SetLandlineNo" maxlength="49"/>
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Select Office No</label>
+                <select class="form-control" id="MainOfficeNo">
+                    <option value="1">Office No</option>
+                    <option value="2">Other</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Set Office Number</label>
+                @*<input type="text" class="form-control" id="SetAddress">*@
+                <input type="text" class="form-control" id="SetOfficeNo" maxlength="49"/>
+            </div><!-- End col-sm-3 -->
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Address</label>
+                <select class="form-control" id="MainAddress">
+                    <option value="0">--Please Select--</option>
+                    <option value="1">Account Address</option>
+                    <option value="2">Customer Address 1</option>
+                    <option value="3">Customer Address 2</option>
+                    <option value="4">Other</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-9">
+                <label class="control-label">Set Address</label>
+                @*<input type="text" class="form-control" id="SetAddress">*@
+                <textarea class="form-control address-limit" id="SetAddress" rows="3" cols="8" maxlength="498"></textarea>
+            </div><!-- End col-sm-3 -->
+        </div>
+
+        <h4 class="main_hdng">Customer Information</h4>
+        <div id="UnEditable">
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Customer ID</label>
+                    <input id="CustomerId" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Customer Name</label>
+                    <input id="CustomerName" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Account No</label>
+                    <input type="text" class="form-control AccountNo">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Account Title</label>
+                    <input type="text" class="form-control" id="AccountTitle">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3" style="display:none">
+                    <label class="control-label">Address Type</label>
+                    <select id="AddressType" class="form-control">
+                        <option>Address Type</option>
+                    </select>
+                </div><!-- End col-sm-3 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Account Address</label>
+                    <input id="AccountAddress" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Customer Address 1</label>
+                    <input id="CustomerAddress" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Customer Address 2</label>
+                    <input id="Address" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+            </div>
+                <div class="row form-group">
+                    <div class="col-sm-3">
+                        <label class="control-label">Mobile No</label>
+                        <input id="MobileNo" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                    <div class="col-sm-3">
+                        <label class="control-label">Mobile No 1</label>
+                        <input id="MobileNo1" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                    <div class="col-sm-3">
+                        <label class="control-label">Mobile No 2</label>
+                        <input id="MobileNo2" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                    <div class="col-sm-3">
+                        <label class="control-label">Mobile No 3</label>
+                        <input id="MobileNo3" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                    
+                </div><!-- End row -->
+
+                <div class="row form-group">
+                    <div class="col-sm-3">
+                        <label class="control-label">Phone Res</label>
+                        <input id="PhoneRes" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                    @*<div class="col-sm-3">
+                    <label class="control-label">Phone Res</label>
+                    <input id="PhoneRes" type="text" class="form-control">
+                </div>*@<!-- End col-sm-3 -->
+
+                    <div class="col-sm-3">
+                        <label class="control-label">Phone Off</label>
+                        <input id="PhoneOff" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                    @*<div class="col-sm-3">
+                    <label class="control-label">Fax No</label>
+                    <input id="FaxNo" type="text" class="form-control">
+                </div>*@<!-- End col-sm-3 -->
+
+                    <div class="col-sm-3">
+                        <label class="control-label">Email</label>
+                        <input id="Email" type="email" class="form-control">
+                    </div><!-- End col-sm-3 -->
+
+                    <div class="col-sm-3">
+                        <label class="control-label">Mother's Maiden Name</label>
+                        <input id="MotherName" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                </div><!-- End row -->
+
+                <div class="row form-group">
+                    <div class="col-sm-3">
+                        <label class="control-label">Date of Birth</label>
+                        <div class='input-group date'>
+                            <input id="DateofBirth" type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div><!-- End datepicker -->
+                    </div><!-- End col-sm-3 -->
+                    <div class="col-sm-3">
+                        <label class="control-label">Identification</label>
+                        <select id="Identification" class="form-control">
+                            <option>Identification</option>
+                        </select>
+                    </div><!-- End col-sm-3 -->
+
+                    <div class="col-sm-3">
+                        <label class="control-label">Identification No</label>
+                        <input id="CNIC" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                    @*<div class="col-sm-3">
+                    <label class="control-label">Old NIC</label>
+                    <input id="OldCNIC" type="text" class="form-control">
+                </div>*@<!-- End col-sm-3 -->
+
+                    <div class="col-sm-3">
+                        <label class="control-label">Passport No</label>
+                        <input id="Passport" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+
+                </div><!-- End row -->
+                <div class="row form-group">
+                    <div class="col-sm-3">
+                        <label class="control-label">Product</label>
+                        <input id="Product" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                    <div class="col-sm-3">
+                        <label class="control-label">Operating Instruction</label>
+                        <input id="OperatingInst" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                    <div class="col-sm-3">
+                        <label class="control-label">Sector</label>
+                        <input id="Sector" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+
+                    <div class="col-sm-3">
+                        <label class="control-label">Nationality</label>
+                        <input id="Nationality" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-3">
+                        <label class="control-label">Residence</label>
+                        <input id="Residence" type="text" class="form-control">
+                    </div><!-- End col-sm-3 -->
+                </div>
+            </div>
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <div class="btns_right">
+                    <button id="btnProceed" class="btn btn-cstm">Proceed</button>
+                    <button id="btnCancel" class="btn btn-cstm btn-light" onclick="location.reload();">Cancel</button>
+                </div><!-- End btns_right -->
+            </div><!-- End col-sm-3 -->
+        </div><!-- End row -->
+
+    </div>
+</div><!-- End container -->

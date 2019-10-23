@@ -1,0 +1,12 @@
+.text-center{text-align: center;}
+.bootstrap-datetimepicker-widget table td span.active{background: #ffc423 !important;}
+.bootstrap-datetimepicker-widget table thead tr:first-child th:hover{background: #ffc423 !important;opacity: 0.8 !important;}
+.form-control:focus{border-color: #ffc423 !important;}
+.navbar-default .navbar-nav > li > a{background: #ffc423 !important;}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus{background:#ffc423 !important;}
+.checkbox input[type=checkbox]:checked+.checkbox-material .check{background: #ffc423 !important;}
+.top_Logo{margin: 10px 0 !important;}
+.table > tbody > tr:nth-of-type(even){background: #fbe9b8 !important;}
+th{background: #ffc423 !important;}
+.input-group-addon{background-color: #ffc423 !important;}
+.navbar-default{border-bottom: 5px solid #ffc423 !important;}

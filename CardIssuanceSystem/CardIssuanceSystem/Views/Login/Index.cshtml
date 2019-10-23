@@ -1,0 +1,132 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+@section CustomJS{
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('#lbl_usererror').text('');
+        $('#lbl_userpass').text('');
+
+        $('.formname').change(function () {
+            //debugger
+            $('#lbl_usererror').text('');
+            $('#lbl_userpass').text('');
+        });
+
+        $('#UserName').on('keyup', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                $('#Login').trigger('click');
+            }
+        });
+
+        $('#Password').on('keyup', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                $('#Login').trigger('click');
+            }
+        });
+    });
+
+    $('#Login').click(function () {
+        //debugger
+
+        
+        var UserName = $('#UserName').val();
+        var Password = $('#Password').val();
+        if (UserName== null || UserName == "" || typeof (UserName) == undefined || UserName == "undefined" || UserName == '')
+        {
+            //alert("Please Enter UserName");
+            $('#lbl_usererror').text("Please Enter UserName");
+            return false;
+        }
+
+        if (Password == null || Password == "" || typeof (Password) == undefined || Password == "undefined" || Password == '')
+        {
+            //alert("Please Enter Password");
+            $('#lbl_userpass').text("Please Enter Password");
+            return false;
+        }
+        var Url = '@Url.Action("Login", "Login")';
+
+        ShowLoader();
+        ajaxCall(Url, { UserName: UserName, Password:Password }, function (resp) {
+            //debugger;
+            if (typeof (resp) === "object" && resp.IsSuccess) {
+                window.location.pathname = resp.Response;
+            }
+            else {
+                HideLoader();
+                alert(resp.ErrorMessage);
+            }
+
+        }, function (fail) {
+            HideLoader();
+            alert(genericMessage);
+            console.log(fail.responseText);
+        }, function (err) {
+            HideLoader();
+            alert(genericMessage);
+            console.log(err.responseText);
+        });
+    });
+
+
+       
+</script>
+    }
+
+    <div class="login-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                </div><!-- End col-md-2 -->
+
+                <div class="col-md-8">
+                    <div class="sidebar-login">
+                        <div class="logo-row">
+                            <img class="img-logo" src="~/assets/images/logo.png">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="login-form">
+                                    <h1 class="login-hdng">Login</h1>
+
+                                    <div class="form-group">
+                                        <input type="email" name="UserName" id="UserName" class="form-control" placeholder="Email" required>
+                                        <span class="glyphicon glyphicon-user"></span>
+                                        <label id="lbl_usererror" style="color:red;"></label>
+                                    </div><!-- End form-group -->
+
+                                    <div class="form-group">
+                                        <input type="password" name="Password" id="Password" class="form-control" placeholder="Password" required>
+                                        <span class="glyphicon glyphicon-lock"></span>
+                                        <label id="lbl_userpass" style="color:red;"></label>
+                                    </div><!-- End form-group -->
+
+                                    <div class="form-group">
+                                        <button class="btn btn-cstm btn-login btn-search" id="Login">Login</button>
+                                    </div><!-- End form-group -->
+                                    
+                                </div>
+                            </div><!-- End col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <h1 class="cntnt_hdng">Card Issuance System</h1>
+                                <p class="cntnt">
+                                    Find out how Soneri Bank can help you achieve all your financial goals.
+                                </p>
+                            </div><!-- End col-sm-6 -->
+                            <div class="clearfix"></div>
+                        </div><!-- End row -->
+
+
+                    </div><!-- End sidebar-login -->
+                </div><!-- End col-md-8 -->
+            </div><!-- End row -->
+        </div><!-- End container-fluid -->
+        <div class="clearfix"></div>
+    </div><!-- End login-bg -->

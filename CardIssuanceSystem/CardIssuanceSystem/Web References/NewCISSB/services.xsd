@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://temenos.com/SON.CARD.OPS" xmlns:ns1="http://temenos.com/SONFETCHCARDINFO" targetNamespace="http://temenos.com/SON.CARD.OPS" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://10.35.1.154:9092/SON.CARD.OPS/services?xsd=1" namespace="http://temenos.com/SONFETCHCARDINFO" />
+  <xs:element name="CARDOPS" type="tns:CARDOPS" />
+  <xs:element name="CARDOPSResponse" type="tns:CARDOPSResponse" />
+  <xs:complexType name="CARDOPS">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="WebRequestCommon" type="tns:webRequestCommon" />
+      <xs:element minOccurs="0" name="SONFETCHCARDINFOType" type="tns:enquiryInput" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="webRequestCommon">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="company" type="xs:string" />
+      <xs:element name="password" type="xs:string" />
+      <xs:element name="userName" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="enquiryInput">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="enquiryInputCollection" nillable="true" type="tns:enquiryInputCollection" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="enquiryInputCollection">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="columnName" type="xs:string" />
+      <xs:element minOccurs="0" name="criteriaValue" type="xs:string" />
+      <xs:element minOccurs="0" name="operand" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CARDOPSResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Status" type="tns:Status" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SONFETCHCARDINFOType" type="ns1:SONFETCHCARDINFOType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Status">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="transactionId" type="xs:string" />
+      <xs:element minOccurs="0" name="messageId" type="xs:string" />
+      <xs:element minOccurs="0" name="successIndicator" type="tns:successIndicator" />
+      <xs:element minOccurs="0" name="application" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="messages" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="successIndicator">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Success" />
+      <xs:enumeration value="TWSError" />
+      <xs:enumeration value="T24Error" />
+      <xs:enumeration value="T24Override" />
+      <xs:enumeration value="T24Offline" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

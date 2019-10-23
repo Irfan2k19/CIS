@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewBag.Title = "File Export";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var requestId = ViewBag.RequestId;
+}
+@section CustomJS{
+    <script>
+        $(function () {
+            $('.btn-generate').on('click', function () {
+                var url = '@Url.Action("AddUpdateFileExport","FileExport")';
+                var id = parseInt('@requestId');
+                var code = $('#cmbxbranchcode').val();
+                var cardtype = $('#cmbxcardtype').val();
+                var cardrequest = $('#cmbxcardrequest').val();
+                var cardtypename = $('#cmbxcardtype :selected').text();
+                var cardrequestname = $('#cmbxcardrequest :selected').text();
+                ShowLoader();
+                ajaxCall(url, { ID: id, CardTypes: cardtype, BranchCodes: code, RequestTypes: cardrequest, requestTypeName: cardrequestname, cardTypeName: cardtypename }, function (resp) {
+                    HideLoader();
+                    alert(resp.ErrorMessage);
+                    if (resp.IsSuccess) {
+                        //alert(resp.ErrorMessage);
+                        //alert("Record Added Successfully");
+                    }
+                }, function (fail) {
+                    HideLoader();
+                    if (fail.responseJSON) {
+                        alert("Some Error Occured\nError: " + fail.responseJSON.ErrorMessage);
+                    }
+                    console.log(fail.responseText);
+                    return false;
+                }, function (err) {
+                    HideLoader();
+                    if (err.responseJSON) {
+                        alert("Some Error Occured\nError: " + err.responseJSON.ErrorMessage);
+                    }
+                    console.log(err.responseText);
+                    return false;
+                });
+            });
+        });
+    </script>
+    }
+<div class="container">
+    @*<h4 class="main_hdng">File Export</h4>*@
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <label class="control-label">Branch Code</label>
+            <select class="form-control" id="cmbxbranchcode">
+                <option value="-1">All</option>
+                @foreach (var item in (ViewBag.Branches))
+                {
+                    <option value="@item.Description">@(string.Format("{0} - {1}", item.Description, item.Title))</option>
+                }
+            </select>
+        </div><!-- End col-sm-6 -->
+
+        <div class="col-sm-6">
+            <label class="control-label">Card Type</label>
+            <select class="form-control" id="cmbxcardtype">
+                @foreach (var item in (ViewBag.CardTypes))
+                {
+                    <option value="@item.ID">@item.Title</option>
+                }
+            </select>
+        </div><!-- End col-sm-6 -->
+    </div><!-- End row -->
+
+
+
+
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <label class="control-label">Request Type</label>
+            <select class="form-control" id="cmbxcardrequest">
+                <option value="N">New Card Request</option>
+                <option value="R">Card Replacement Request</option>
+                <option value="A">Card Ammendment Request</option>
+                <option value="U">Card Upgrade Request</option>
+                <option value="L">Linking Request</option>
+                <option value="D">Delinking Request</option>
+            </select>
+        </div><!-- End col-sm-6 -->
+
+        <div class="col-sm-6">
+            <div class="btns_right">
+                <button class="btn btn-cstm btn-generate">Generate</button>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-6 -->
+    </div><!-- End row -->
+</div><!-- End container -->
+

@@ -1,0 +1,198 @@
+﻿
+@{
+    ViewBag.Title = "Posting Restriction Configuration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="form-group row">
+        <div class="col-sm-3">
+            <label class="control-label">Code Number</label>
+            <input id="CodeNumber" type="text" class="form-control" placeholder="Code Number">
+        </div>
+        <div class="col-sm-9">
+            <button class="btn btn-cstm btn-search">Search</button>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <label class="control-label">Posting Restriction</label>
+            <input id="PostingRestriction" type="text" class="form-control" placeholder="Posting Restriction">
+        </div><!-- End col-sm-3 -->
+    </div>
+
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="IsActive" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                    Is Active
+                </label>
+            </div>
+        </div><!-- End col-sm-3 -->
+    </div>
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="btns_right">
+                <button id="btnAdd" class="btn btn-cstm" style="display:none;">Add</button>
+                <button id="btnUpdate" class="btn btn-cstm" style="display:none;">Update</button>
+                <button id="btnCancel" class="btn btn-cstm btn-light" onclick="location.reload();">Cancel</button>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-3 -->
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('.btn-search').click(function () {
+        $('#btnAdd').css("display", "none");
+        $('#btnUpdate').css("display", "none");
+        var CodeNumber = $('#CodeNumber').val();
+
+        var Url = '@Url.Action("SearchPostResByCodeNo", "Configuration")';
+        if (CodeNumber === '' || CodeNumber === null || typeof (CodeNumber) === 'undefined') {
+            $('#CodeNumber').css("border", "red solid 1px");
+            alert("Please Enter Code Number");
+            return false;
+        }
+
+        ShowLoader();
+        ajaxCall(Url, { CodeNumber: CodeNumber }, function (resp) {
+            HideLoader();
+            if (resp.ErrorMessage == '@CardIssuanceSystem.Core.Helpers.CustomMessages.Success') {
+                $('#PostingRestriction').val(resp.result.Description);
+                $('#IsActive').val('');
+                if (resp.result.IsActive == true) {
+                    $('#IsActive').prop('checked', true);
+                }
+                else {
+                    $('#IsActive').prop('checked', false);
+                }
+                $('#btnUpdate').removeAttr("style");
+            }
+            else {
+                alert(resp.ErrorMessage);
+                $('#PostingRestriction').val('');
+                $('#IsActive').attr('checked', false);
+                $('#btnAdd').removeAttr("style");
+            }
+        }, function (fail) {
+            HideLoader();
+            alert(fail.responseText);
+            return false;
+        }, function (err) {
+            HideLoader();
+            alert(err.responseText);
+            return false;
+        });
+    });
+
+    $('#btnAdd').click(function () {
+        var Code = $('#CodeNumber').val();
+        var PostingRestriction = $('#PostingRestriction').val();
+
+        var IsActive;
+        if ($('#IsActive').is(":checked")) {
+            IsActive = true
+        }
+        else {
+            IsActive = false;
+        }
+
+        var Url = '@Url.Action("AddPostingRestriction", "Configuration")';
+        if (Code === '' || Code === null || typeof (Code) === 'undefined') {
+            $('#CodeNumber').css("border", "red solid 1px");
+            alert("Please Enter Code Number");
+            return false;
+        }
+        if (PostingRestriction === '' || PostingRestriction === null || typeof (PostingRestriction) === 'undefined') {
+            $('#PostingRestriction').css("border", "red solid 1px");
+            alert("Please Enter Posting Restriction");
+            return false;
+        }
+        if (!CheckStrLength(Code, 50)) {
+            alert("Code Number Length should be less than or equal to 50");
+            return false;
+        }
+        if (!CheckStrLength(PostingRestriction, 500)) {
+            alert("Posting Restriction Length should be less than or equal to 500");
+            return false;
+        }
+
+        ShowLoader();
+        ajaxCall(Url, { Code: Code, PostingRestriction: PostingRestriction, IsActive: IsActive }, function (resp) {
+            HideLoader();
+            if (resp.ErrorMessage == '@CardIssuanceSystem.Core.Helpers.CustomMessages.Success') {
+                alert(resp.ErrorMessage);
+                location.reload();
+            }
+            else {
+                alert(resp.ErrorMessage);
+            }
+
+        }, function (fail) {
+            HideLoader();
+            alert(fail.responseText);
+            return false;
+        }, function (err) {
+            HideLoader();
+            alert(err.responseText);
+            return false;
+        });
+    });
+
+    $('#btnUpdate').click(function () {
+        var Code = $('#CodeNumber').val();
+        var PostingRestriction = $('#PostingRestriction').val();
+        var IsActive;
+        if ($('#IsActive').is(":checked")) {
+            IsActive = true
+        }
+        else {
+            IsActive = false;
+        }
+
+        var Url = '@Url.Action("UpdatePostingRestriction", "Configuration")';
+        if (Code === '' || Code === null || typeof (Code) === 'undefined') {
+            $('#CodeNumber').css("border", "red solid 1px");
+            alert("Please Enter Code Number");
+            return false;
+        }
+        if (PostingRestriction === '' || PostingRestriction === null || typeof (PostingRestriction) === 'undefined') {
+            $('#PostingRestriction').css("border", "red solid 1px");
+            alert("Please Enter Posting Restriction");
+            return false;
+        }
+        if (!CheckStrLength(Code, 50)) {
+            alert("Code Length should be less than or equal to 50");
+            return false;
+        }
+        if (!CheckStrLength(PostingRestriction, 500)) {
+            alert("Posting Restriction Length should be less than or equal to 500");
+            return false;
+        }
+
+        ShowLoader();
+        ajaxCall(Url, { Code: Code, PostingRestriction: PostingRestriction, IsActive: IsActive }, function (resp) {
+            HideLoader();
+            if (resp.ErrorMessage == '@CardIssuanceSystem.Core.Helpers.CustomMessages.Success') {
+                alert(resp.ErrorMessage);
+                location.reload();
+            }
+            else {
+                alert(resp.ErrorMessage);
+            }
+
+        }, function (fail) {
+            HideLoader();
+            alert(fail.responseText);
+            return false;
+        }, function (err) {
+            HideLoader();
+            alert(err.responseText);
+            return false;
+        });
+    });
+</script>
+

@@ -1,0 +1,436 @@
+﻿@using CardIssuanceSystem.DAL
+@model CardIssuanceSystem.DAL.tbl_Requests
+@{
+    ViewBag.Title = "Card Amendment Authorization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    //var existingCard = ViewBag.ExistingCardNumber as tbl_Customer_Cards;
+}
+@section CustomJS{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#UnEditable :input").attr("disabled", true);
+            var MainMobile = '@ViewBag.MainMobile';
+            if (MainMobile == "Mobile") {
+                $('#Mobile').css("background-color", "#ffc423");
+                $('#Mobile').css("color", "#ffffff");
+            }
+            else if (MainMobile == "Mobile 1") {
+                $('#Mobile1').css("background-color", "#ffc423");
+                $('#Mobile1').css("color", "#ffffff");
+            }
+            else if (MainMobile == "Mobile 2") {
+                $('#Mobile2').css("background-color", "#ffc423");
+                $('#Mobile2').css("color", "#ffffff");
+            }
+            else if (MainMobile == "Mobile 3") {
+                $('#Mobile3').css("background-color", "#ffc423");
+                $('#Mobile3').css("color", "#ffffff");
+            }
+            else if (MainMobile == "Other") {
+                $('#SetMobileNo').css("background-color", "#ffc423");
+                $('#SetMobileNo').css("color", "#ffffff");
+            }
+
+
+
+            var MainLandline = '@ViewBag.MainLandline';
+            if (MainLandline == "Residence") {
+                $('#PhoneResidence').css("background-color", "#ffc423");
+                $('#PhoneResidence').css("color", "#ffffff");
+            }
+            else if (MainLandline == "Office") {
+                $('#PhoneOffice').css("background-color", "#ffc423");
+                $('#PhoneOffice').css("color", "#ffffff");
+            }
+
+            var MainLandlineNo = '@ViewBag.MainLandlineNo';
+            if (MainLandlineNo == "Landline No") {
+                $('#PhoneResidence').css("background-color", "#ffc423");
+                $('#PhoneResidence').css("color", "#ffffff");
+            }
+            else if (MainLandlineNo == "Other") {
+                $('#SetLandlineNo').css("background-color", "#ffc423");
+                $('#SetLandlineNo').css("color", "#ffffff");
+            }
+
+            var MainOfficeNo = '@ViewBag.MainOfficeNo';
+            if (MainOfficeNo == "Office No") {
+                $('#PhoneOffice').css("background-color", "#ffc423");
+                $('#PhoneOffice').css("color", "#ffffff");
+            }
+            else if (MainOfficeNo == "Other") {
+                $('#SetOfficeNo').css("background-color", "#ffc423");
+                $('#SetOfficeNo').css("color", "#ffffff");
+            }
+
+
+            var MainAddress = '@ViewBag.MainAddress';
+            if (MainAddress == "Account Address") {
+                $('#AccountAddress').css("background-color", "#ffc423");
+                $('#AccountAddress').css("color", "#ffffff");
+            }
+            else if (MainAddress == "Customer Address 1") {
+                $('#CustomerAddress1').css("background-color", "#ffc423");
+                $('#CustomerAddress1').css("color", "#ffffff");
+            }
+            else if (MainAddress == "Customer Address 2") {
+                $('#CustomerAddress2').css("background-color", "#ffc423");
+                $('#CustomerAddress2').css("color", "#ffffff");
+            }
+            else {
+                $('#SetAddress').css("background-color", "#ffc423");
+                $('#SetAddress').css("color", "#ffffff");
+            }
+        });
+
+        $('#btnproceed').click(function () {
+            ShowLoader();
+            var RequestId = '@Model.ID';
+            var RequestType = '@Model.RequestType';
+            var AuthorizationStatus = $('input[name=correct-ans]:checked').val();
+            var AuthorizeComments = $('#AuthorizeComments').val();
+            var Url = '@Url.Action("AuthorizeAmmendRequest", "Authorization")';
+            var AccountStatus = '@(ViewBag.T24AccountInfo?.AccountStatus ?? "Y")';
+            var AvailableBalance = '@(ViewBag.T24AccountInfo?.AvailableBalance ?? "0")';
+            var DrCustomerAccountNumber = '@Model.AccountNo';
+            var CardTypeId = '@Model.CardTypeID';
+            var MainAddress = $('#txtMainAddress').val();
+            var MainMobile = $('#txtMainMobile').val();
+            var MainLandline = $('#txtMainLandline').val();
+            var CIF = '@(ViewBag.AccountInfo?.CIF ?? string.Empty)';
+            var MainAddress = '@ViewBag.MainAddress';
+            var MainLandline = '@ViewBag.MainLandline';
+            var MainMobile = '@ViewBag.MainMobile';
+            var MainLandlineNo = '@ViewBag.MainLandlineNo';
+            var MainOfficeNo = '@ViewBag.MainOfficeNo';
+             var SetAddress = '@(ViewBag.SetAddress!=null?ViewBag.SetAddress.Trim(): ViewBag.SetAddress)';
+        var SetMobileNo = '@(ViewBag.SetMobileNo!=null ? ViewBag.SetMobileNo.Trim(): ViewBag.SetMobileNo)';
+        var SetLandlineNo = '@(ViewBag.SetLandlineNo!=null ? ViewBag.SetLandlineNo.Trim(): ViewBag.SetLandlineNo)';
+        var SetOfficeNo = '@(ViewBag.SetOfficeNo!=null ? ViewBag.SetOfficeNo.Trim(): ViewBag.SetOfficeNo)';
+
+        if (SetAddress != '') {
+            MainAddress = '@(ViewBag.SetAddress!=null?ViewBag.SetAddress.Trim(): ViewBag.SetAddress)';
+        }
+        if (SetMobileNo != '') {
+            MainMobile = '@(ViewBag.SetMobileNo!=null ? ViewBag.SetMobileNo.Trim(): ViewBag.SetMobileNo)';
+        }
+        if (SetLandlineNo != '') {
+            MainLandlineNo = '@(ViewBag.SetLandlineNo!=null ? ViewBag.SetLandlineNo.Trim(): ViewBag.SetLandlineNo)';
+        }
+        if (SetOfficeNo != '') {
+            MainOfficeNo = '@(ViewBag.SetOfficeNo!=null ? ViewBag.SetOfficeNo.Trim(): ViewBag.SetOfficeNo)';
+        }
+
+            if ($('input[name=correct-ans]:checked').val() === undefined || $('input[name=correct-ans]:checked').val() === "") {
+                alert("Action required!");
+                HideLoader();
+                return false;
+            }
+
+            if (AuthorizationStatus == "C") {
+
+                Url = '@Url.Action("UpdateRequestAuthorization", "Authorization")';
+            }
+
+
+            if (AuthorizationStatus === "R" && AuthorizeComments === "") {
+                alert("Comment required!");
+                HideLoader();
+                return false;
+            }
+            else {
+                ajaxCall(Url, { RequestId: RequestId, RequestType: RequestType, AuthorizationStatus: AuthorizationStatus, AuthorizeComments: AuthorizeComments, AccountStatus: AccountStatus, AvailableBalance: AvailableBalance, DrCustomerAccountNumber: DrCustomerAccountNumber, CardTypeId: CardTypeId, MainAddress: MainAddress, MainMobile: MainMobile, MainLandline: MainLandline, CIF: CIF, MainAddress: MainAddress, MainMobile: MainMobile, MainLandline: MainLandline, LandlineNo: MainLandlineNo, PhoneOff: MainOfficeNo }, function (resp) {
+                    HideLoader();
+                    alert(resp.ErrorMessage);
+                    if (resp.IsSuccess) {
+                        location.reload();
+                    }
+                }, function (fail) {
+                    HideLoader();
+                    alert("Failure");
+                }, function (err) {
+                    HideLoader();
+                    alert("Error");
+                });
+            }
+        });
+    </script>
+}
+<div class="container">
+    <div id="UnEditable">
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Request Date</label>
+                <div class='input-group date datetimepicker1'>
+                    <input type='text' id="RequestDate" class="form-control" value="@Model.RequestDate" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div><!-- End datepicker -->
+                <!-- End col-sm-3 -->
+            </div>
+
+            <div class="col-sm-3">
+                <label class="control-label">Card Title</label>
+                <input id="CardTitle" type="text" class="form-control" maxlength="30" value="@Model.CardTitle">
+            </div><!-- End col-sm-3 -->
+
+
+        </div>
+
+        <div class="row form-group">           
+            <div class="col-sm-3">
+                <label class="control-label">Mobile</label>
+                <select class="form-control" id="MainMobile">
+                    <option>@ViewBag.MainMobile</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Set Mobile Number</label>
+                @*<input type="text" class="form-control" id="SetAddress">*@
+                <input type="text" class="form-control" id="SetMobileNo" value="@ViewBag.SetMobileNo" />
+            </div><!-- End col-sm-3 -->
+           @*<div class="col-sm-3">
+                <label class="control-label">LandLine</label>
+                <select class="form-control" id="MainLandline">
+                    <option value="0">@ViewBag.MainLandline</option>
+                </select>
+            </div>*@<!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Landline No</label>
+                <select class="form-control" id="MainLandlineNo">
+                    <option>@ViewBag.MainLandlineNo</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Set Landline Number</label>
+                @*<input type="text" class="form-control" id="SetAddress">*@
+                <input type="text" class="form-control" id="SetLandlineNo" value="@ViewBag.SetLandlineNo" />
+            </div><!-- End col-sm-3 -->
+
+        </div><!-- End row -->
+
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Office No</label>
+                <select class="form-control" id="MainOfficeNo">
+                    <option>@ViewBag.MainOfficeNo</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Set Office Number</label>
+                @*<input type="text" class="form-control" id="SetAddress">*@
+                <input type="text" class="form-control" id="SetOfficeNo" value="@ViewBag.SetOfficeNo" />
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Address</label>
+                <select class="form-control" id="MainAddress">
+                    <option>@ViewBag.MainAddress</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Set Address</label>
+                @*<input type="text" class="form-control" id="SetAddress">*@
+                <textarea class="form-control" id="SetAddress" rows="3" cols="8">@ViewBag.SetAddress</textarea>
+            </div><!-- End col-sm-3 -->
+        </div>
+        
+
+        <h4 class="main_hdng">Customer Information</h4>
+
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Customer ID</label>
+                <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.CIF ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Customer Name</label>
+                <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.CustomerName ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Account Number</label>
+                <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.AccountNo ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+                <label class="control-label">Account Title</label>
+                <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.AccountTitle ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3" style="display:none">
+                <label class="control-label">Address Type</label>
+                <select class="form-control">
+                    <option>Address type</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+
+            @*<div class="col-sm-3">
+                <label class="control-label">Correspondence</label>
+                <input type="text" class="form-control" >
+            </div>*@<!-- End col-sm-3 -->
+        </div><!-- End row -->
+        <div class="row form-group">
+
+            <div class="col-sm-12">
+                <label class="control-label">Account Address</label>
+                <input type="text" class="form-control" id="AccountAddress" value="@ViewBag.AccountInfo.Address">
+            </div><!-- End col-sm-3 -->
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <label class="control-label">Customer Address 1</label>
+                <input type="text" class="form-control" id="CustomerAddress1" value="@ViewBag.AccountInfo.Address2">
+            </div><!-- End col-sm-3 -->
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <label class="control-label">Customer Address 2</label>
+                <input type="text" class="form-control" id="CustomerAddress2" value="@ViewBag.AccountInfo.Address3">
+            </div><!-- End col-sm-3 -->
+        </div>
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No</label>
+                    <input id="Mobile" type="text" class="form-control" value="@(ViewBag.AccountInfo?.Mobile ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 1</label>
+                    <input id="Mobile1" type="text" class="form-control" value="@(ViewBag.AccountInfo?.Mobile2 ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 2</label>
+                    <input id="Mobile2" type="text" class="form-control" value="@(ViewBag.AccountInfo?.Mobile3 ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 3</label>
+                    <input id="Mobile3" type="text" class="form-control" value="@(ViewBag.AccountInfo?.Mobile4 ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                
+                @*<div class="col-sm-3">
+                    <label class="control-label">Mobile No</label>
+                    <input type="text" class="form-control" value="@ViewBag.AccountInfo.AccountMobile">
+                </div>*@<!-- End col-sm-3 -->
+
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Phone Res</label>
+                    <input type="text" class="form-control" id="PhoneResidence" value="@ViewBag.AccountInfo.LandlineNo">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Phone Off</label>
+                    <input type="text" class="form-control" id="PhoneOffice" value="@ViewBag.AccountInfo.PhoneOffice">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Email</label>
+                    <input type="email" class="form-control" value="@(ViewBag.AccountInfo?.Email ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mother's Maiden Name</label>
+                    <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.MotherMaidenName ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Date of Birth</label>
+                    <div class='input-group date'>
+                        <input type='text' class="form-control" value="@(ViewBag.AccountInfo?.DateofBirth == null ? string.Empty : ViewBag.AccountInfo?.DateofBirth.ToString("dd/MM/yyyy"))" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Identification</label>
+                    <select class="form-control">
+                        <option>@(ViewBag.AccountInfo?.IdentificationType ?? string.Empty)</option>
+                    </select>
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Identification No</label>
+                    <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.Identification ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                @*<div class="col-sm-3">
+                    <label class="control-label">Old NIC</label>
+                    <input type="text" class="form-control">
+                </div>*@<!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Passport No</label>
+                    <input id="Passport" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+            </div><!-- End row -->
+
+            <div class="row form-group">
+
+                <div class="col-sm-3">
+                    <label class="control-label">Product</label>
+                    <input id="Product" type="text" class="form-control" value="@(ViewBag.T24AccountInfo?.Product ?? string.Empty)" />
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Operating Instruction</label>
+                    <input id="OperatingInst" type="text" class="form-control" value="@(ViewBag.T24AccountInfo?.OpInstructions ?? string.Empty)" />
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Sector</label>
+                    <input id="Sector" type="text" class="form-control" value="@(ViewBag.T24AccountInfo?.Sector ?? string.Empty)" />
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Nationality</label>
+                    <input id="Nationality" type="text" class="form-control" value="@(ViewBag.AccountInfo?.Nationality ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Residence</label>
+                    <input id="Residence" type="text" class="form-control" value="@(ViewBag.AccountInfo?.ResidenceStatus ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+            </div>
+        </div>
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="correct-ans" value="A"><span class="checkbox-material"><span class="check"></span></span>
+                    Approved
+                </label>
+
+                <label>
+                    <input type="radio" name="correct-ans" value="C"><span class="checkbox-material"><span class="check"></span></span>
+                    Reject
+                </label>
+
+                <label>
+                    <input type="radio" name="correct-ans" value="R"><span class="checkbox-material"><span class="check"></span></span>
+                    To be corrected
+                </label>
+            </div>
+        </div><!-- End col-sm-12 -->
+    </div><!-- End row -->
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <textarea class="form-control" rows="5" id="AuthorizeComments" maxlength="50"></textarea>
+        </div><!-- End col-sm-12 -->
+    </div><!-- End row -->
+
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="btns_right">
+                <button class="btn btn-cstm" id="btnproceed">Proceed</button>
+                <a class="btn btn-cstm btn-light" id="btncancel" href="@Url.Action("AuthorizeCardAmendmentScreen", "Request")">Cancel</a>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-3 -->
+    </div><!-- End row -->
+</div><!-- End container -->

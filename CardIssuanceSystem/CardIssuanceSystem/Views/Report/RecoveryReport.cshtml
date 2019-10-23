@@ -1,0 +1,260 @@
+﻿@using CardIssuanceSystem.DAL
+@{
+    ViewBag.Title = "Recovery Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var branches = ViewData["Branches"] as List<tbl_Region>;
+}
+
+@section CustomCSS{
+    <style type="text/css">
+        .table-responsive {
+            overflow: scroll;
+            max-height: 345px;
+        }
+
+        #btnSubmit {
+            margin: 5px 0px 0px 0px;
+        }
+    </style>
+}
+
+@section CustomJS{
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.7.12/xlsx.core.min.js"></script>
+        <script src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/3.3.5/js/tableexport.min.js"></script>*@
+    <script src="@Url.Content("~/assets/js/xlsx.core.min.js")"></script>
+    <script src="@Url.Content("~/assets/js/FileSaver.min.js")"></script>
+    <script src="@Url.Content("~/assets/js/tableexport.min.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.datetimepicker3').datetimepicker({ ignoreReadonly: true, format: 'MM/DD/YYYY', minDate: '06/30/2018' });
+        });
+        var currentDate = new Date();
+        var filename = "Recovery Report " + currentDate.getFullYear() + (currentDate.getMonth() + 1) + currentDate.getDate() + "_" + currentDate.getTime();
+
+        $(document).on('click', '#btnExport', function () {
+            $("input[name='GridHtml']").val($("#GridHtml").html());
+            $("input[name='GridCss']").val('.table{border-collapse: collapse;width: 100%;font-size: x-small;}.table td, .table th {border: 1px solid #ddd;padding: 5px;}.table tr:nth-child(even){background-color: #f2f2f2;}.table tr:hover {background-color: #ddd;}.table th {padding-top: 12px;padding-bottom: 12px;text-align: left;background-color: #ffc423;color: white;}');
+        });
+
+        $(function () {
+            $('#btnSubmit').click(function () {
+                Filter();
+            });
+
+
+        });
+
+        function Filter() {
+            debugger
+            var AccountNo = $('#txtAccountNo').val();
+            var CardNo = $('#txtCardNo').val();
+            var CIF=$('#txtCIF').val();
+
+            var ApplicableDateFrom = $('#txtStartDate').val();
+            var ApplicableDateTo = $('#txtEndDate').val();
+            var RequestType = $('#txtRequestType option:selected').val();
+            var TransDate = $('#txtTransDate').val();
+            var BranchCode = $('#txtBranchCode').val();
+            var ReportType = $('#txtReportType option:selected').val();
+            if (ReportType == '0')
+            {
+                alert("Please Select Report Type");
+                return false;
+            }
+            else if (ReportType == '1')
+            {
+                var url = '@Url.Action("PartialRecoveryReport", "Report")';
+                if (!ApplicableDateFrom)
+                {
+                    alert("Please select Applicable Date From");
+                    return false;
+                }
+                if (!ApplicableDateTo)
+                {
+                    alert("Please select Applicable Date To");
+                    return false;
+                }
+            }
+            else if (ReportType == '2')
+            {
+                var url = '@Url.Action("PartialCurrentRecoveryReport", "Report")';
+                if (!ApplicableDateFrom) {
+                    alert("Please select Applicable Date From");
+                    return false;
+                }
+                if (!ApplicableDateTo) {
+                    alert("Please select Applicable Date To");
+                    return false;
+                }
+            }
+            else if (ReportType == '3')
+            {
+                var url = '@Url.Action("PartialDailyIncomeReport", "Report")';
+                if (!TransDate) {
+                    alert("Please select Transaction Date");
+                    return false;
+                }
+            }
+            else if (ReportType == '4')
+            {
+                var url = '@Url.Action("PartialDailyReversalReport", "Report")';
+                if (!TransDate) {
+                    alert("Please select Transaction Date");
+                    return false;
+                }
+            }
+            else if (ReportType == '5')
+            {
+                if (!TransDate) {
+                    alert("Please select Transaction Date");
+                    return false;
+                }
+                var url = '@Url.Action("PartialDailyTransactionReport", "Report")';
+            }
+            else if (ReportType == '6')
+            {
+                if (!TransDate) {
+                    alert("Please select Transaction Date");
+                    return false;
+                }
+                var url = '@Url.Action("PartialRecoveryExceptionReport", "Report")';
+            }
+
+
+            ShowLoader();
+            //debugger
+            LoadPartial('.table-responsive', url, { AccountNo: AccountNo, CardNo: CardNo, CIF: CIF, StartDate: ApplicableDateFrom, EndDate: ApplicableDateTo, RequestType: RequestType, TransDate: TransDate, BranchCode: BranchCode }, true, "Export", ".table-responsive table", filename);
+
+        }
+    </script>
+}
+
+<div class="container">
+    <iframe id="txtArea1" style="display:none"></iframe>
+    <div class="row">
+        <div class="col-sm-12">
+            @*<h4 class="main_hdng">RECOVERY REPORT</h4>*@
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="control-label">Account No</label>
+                    <input type="text" id="txtAccountNo" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label">Card No</label>
+                    <input type="text" id="txtCardNo" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label">CIF</label>
+                    <input type="text" id="txtCIF" class="form-control" />
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="control-label">Applicable Date From</label>
+                    <div class='input-group date
+                         datetimepicker3'>
+                        <input type="text" id="txtStartDate" class="form-control" readonly />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label">Applicable Date From</label>
+                    <div class='input-group date
+                         datetimepicker3'>
+                        <input type="text" id="txtEndDate" class="form-control" readonly />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label">Request Type</label>
+                    <select class="form-control" id="txtRequestType">
+                        <option value="">Please Select</option>
+                        <option value="">All</option>
+                        <option value="F">Full</option>
+                        <option value="P">Partial</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="control-label">Transaction Date</label>
+                    <div class='input-group date
+                         datetimepicker3'>
+                        <input type="text" id="txtTransDate" class="form-control" readonly />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div>
+
+                <div class="col-md-4">
+                    <label class="control-label">Branch</label>
+                    <select class="form-control" id="txtBranchCode">
+                        <option value="">Select Branch</option>
+                        @foreach (var item in branches)
+                        {
+                            <option value="@item.Description">@($"{item.Description} - {item.Title}")</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="control-label">Recovery Type</label>
+                    <select class="form-control" id="txtReportType">
+                        <option value="0">Please Select</option>
+                        <option value="1">Recovery Report</option>
+                        <option value="2">Current Recovery Report</option>
+                        <option value="3">Daily Income Report</option>
+                        <option value="4">Daily Reversal Report</option>
+                        <option value="5">Daily Transaction Report</option>
+                        <option value="6">Recovery Exception Report</option>
+                    </select>
+                </div>
+
+
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-4 left">
+                    <label class="control-label"></label>
+                    <input type="submit" class="form-control btn btn-default" id="btnSubmit" />
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-sm-12">
+            <div class="table-responsive" id="table-responsive">
+                @using (Html.BeginForm("Export", "Report", FormMethod.Post, new { }))
+                {
+                    <input type="hidden" name="GridHtml" />
+                    <input type="hidden" name="GridCss" />
+                    <input type="submit" id="btnExport" class="btn btn-default" value="Export to pdf" style="margin: 0px 0px 2px 21px;" />
+                }
+                <div id="GridHtml">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="1">No Record Found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- End container -->

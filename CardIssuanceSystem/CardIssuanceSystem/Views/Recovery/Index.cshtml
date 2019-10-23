@@ -1,0 +1,220 @@
+﻿@model IEnumerable<CardIssuanceSystem.DAL.tbl_Region>
+@{
+    ViewBag.Title = "Recovery";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section CustomJS{
+    <script>
+        function isNumber(evt)
+        {
+            debugger;
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+        $(function () {
+            $('.btn-generate').on('click', function () {
+
+                $('.btn-result').attr("disabled", "true");
+                $('.btn-generate').attr("disabled", "true");
+                $('.btn-stop').removeAttr('disabled');
+                $('#inprog').css("display", "block");
+                debugger;
+                var url = '@Url.Action("RunRecovery", "Recovery")';
+                var BranchFrom = $('#from option:selected').val();
+                var BranchTo = $('#to option:selected').val();
+                var IsFullRecovery;
+                if (document.getElementById('fullrecovery').checked)
+                {
+                    IsFullRecovery = true;
+                }
+                else
+                {
+                    IsFullRecovery = false;
+                }
+                //ShowLoader();
+                ajaxCall(url, { IsFullRecovery: IsFullRecovery, FromBranchCode: BranchFrom, ToBranchCode: BranchTo }, function (resp) {
+                    debugger
+                    if (resp.IsSuccess)
+                    {
+                        //HideLoader();
+                        $('#Total').text(resp.result1.Total);
+                        $('#Full').text(resp.result1.Full);
+                        $('#Partial').text(resp.result1.Partial);
+                        $('.btn-result').removeAttr('disabled');
+                        $('.btn-generate').removeAttr('disabled');
+                        $('.btn-stop').attr("disabled", "true");
+                        $('#inprog').css("display", "none");
+                        alert("Recovery Run Successfully");
+                    } else
+                    {
+                        //HideLoader();
+                        alert(resp.ErrorMessage);
+
+                    }
+                }, function (fail) {
+                    HideLoader();
+                    console.log(fail.responseText);
+                    return false;
+                }, function (err) {
+                    HideLoader();
+                    console.log(fail.responseText);
+                    return false;
+                });
+
+            });
+        });
+
+
+
+        ///recoveryCount
+
+        $('.btn-result').on('click', function () {
+            debugger;
+            var url = '@Url.Action("GetPendingRecoveryCount", "Recovery")';
+            var BranchFrom = $('#from option:selected').val();
+            var BranchTo = $('#to option:selected').val();
+            var IsFullRecovery;
+            if (document.getElementById('fullrecovery').checked) {
+                IsFullRecovery = true;
+            }
+            else {
+                IsFullRecovery = false;
+            }
+            ShowLoader();
+            ajaxCall(url, { IsFullRecovery: IsFullRecovery, FromBranchCode: BranchFrom, ToBranchCode: BranchTo }, function (resp) {
+                debugger
+
+                    HideLoader();
+
+                    alert("Recovery Count:  " +resp.result);
+
+            }, function (fail) {
+                HideLoader();
+                console.log(fail.responseText);
+                return false;
+            }, function (err) {
+                HideLoader();
+                console.log(fail.responseText);
+                return false;
+            });
+
+        });
+
+
+        $('.btn-stop').click(function () {
+            ShowLoader();
+            var url = '@Url.Action("UpdateIsStop", "Recovery")';
+            ajaxCall(url, {val:'true' }, function (resp) {
+                debugger
+
+
+                $('.btn-result').removeAttr('disabled');
+                $('.btn-generate').removeAttr('disabled');
+                $('.btn-stop').attr("disabled", "true");
+                $('#inprog').css("display", "none");
+                HideLoader();
+                alert("Process Stopped");
+
+            }, function (fail) {
+                HideLoader();
+                console.log(fail.responseText);
+                return false;
+            }, function (err) {
+                HideLoader();
+                console.log(fail.responseText);
+                return false;
+            });
+
+        });
+    </script>
+}
+
+<div class="container">
+    <h4 class="main_hdng">Recovery</h4>
+
+    <div class="row form-group" style="margin-right:74px;">
+        <div class="col-sm-2">
+            <label>From Branch Code</label><br />
+            @*<input type="text" id="from" class="form-control" maxlength="4" onkeypress="return isNumber(event)"/>*@
+            <select id="from" class="form-control">
+                @foreach (var item in Model)
+            {
+                    <option value="@item.Description">@item.Title</option>
+                }
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <label>To Branch Code</label><br />
+            @*<input type="text" id="to" class="form-control" maxlength="4" onkeypress="return isNumber(event)" />*@
+            <select id="to" class="form-control">
+                @foreach (var item in Model)
+            {
+                    <option value="@item.Description">@item.Title</option>
+                }
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <ul class="nav nav-tabs radio">
+                <li class="active li-new-cardcharges">
+
+                    <label>
+                        <input type="radio" name="tbs" id="fullrecovery" checked><span class="checkbox-material"><span class="check"></span></span>
+                        Full Recovery
+                    </label>
+
+                </li>
+                <li class="li-update-cardcharges">
+
+                    <label>
+                        <input type="radio" name="tbs" id="partialrecovery"><span class="checkbox-material"><span class="check"></span></span>
+                        Partial Recovery
+                    </label>
+
+                </li>
+            </ul>
+
+            @*<input type="checkbox" name="fullrecovery" id="fullrecovery"  value="fullrecovery"> Full Recovery
+                <input type="checkbox" name="partialrecovery"  id="partialrecovery"  value="partialrecovery"> Partial Recovery*@
+        </div>
+
+
+        <div class="col-sm-2">
+            <div class="btns_right">
+                <button class="btn btn-cstm btn-generate">Run Recovery</button>
+            </div><!-- End btns_right -->
+
+
+        </div><!-- End col-sm-6 -->
+
+        <div class="col-sm-2">
+            <div class="btns_right">
+                <button class="btn btn-cstm btn-stop" disabled>Stop Recovery</button>
+            </div>
+        </div>
+
+
+        <div class="col-sm-2">
+            <div class="btns_right">
+                <button class="btn btn-cstm btn-result">Check Result</button>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-6 -->
+
+    </div><!-- End row -->
+    <h2 id="inprog" style="display:none;">Recovery In Progress...</h2>
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <div class="second-heading">Cards with due amount:</div><label class="control-label" id="Total"></label>
+        </div>
+
+        <div class="col-sm-6">
+            <p>Full Recovery: </p><label class="control-label" id="Full"></label>
+            <p>Partial Recovery:</p><label class="control-label" id="Partial"></label>
+        </div>
+
+    </div>
+
+</div><!-- End container -->

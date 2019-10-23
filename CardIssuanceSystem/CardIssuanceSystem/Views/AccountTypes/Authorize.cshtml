@@ -1,0 +1,60 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.AccountTypeVM>
+@{
+    ViewBag.Title = "Account Type Authorization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var accountTypes = ViewBag.AccountTypes;
+}
+
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            $('.btn-search').on('click', function () {
+                var url = '@(Url.Action("FilterAuthorize", "AccountTypes"))';
+                var accountTypeId = $('.cmbx-account-type').val();
+                var accountTypeCode = $('.txt-account-type-code').val();
+                var RequestType = $('.cmbx-request-type').val();
+                ShowLoader();
+                LoadPartial("#div-table", url, { AccountTypeId: accountTypeId, AccountTypeCode: accountTypeCode,RequestType:RequestType }, false, null, null, null);
+                HideLoader();
+            });
+        });
+    </script>
+}
+
+<div class="container">
+    <div class="row form-group">
+        <div class="col-md-2">
+            <label class="control-label">Account Type Name</label>
+            <select class="form-control cmbx-account-type">
+                <option value="">Select Account Type</option>
+                @foreach (var item in accountTypes)
+                {
+                    <option value="@item.ID">@item.Name</option>
+                }
+            </select>
+        </div><!-- End col-md-2 -->
+
+        <div class="col-md-2">
+            <label class="control-label">Account Type Code</label>
+            <input type="text" class="form-control txt-account-type-code" placeholder="344565">
+        </div><!-- End col-md-2 -->
+
+        <div class="col-md-2">
+            <label class="control-label">Request Type</label>
+            <select class="form-control cmbx-request-type">
+                <option value="Add">Add</option>
+                <option value="Update">Update</option>
+                </select>
+</div><!-- End col-md-2 -->
+
+        <div class="col-md-2">
+            <button class="btn btn-cstm btn-search">Search</button>
+        </div><!-- End col-md-2 -->
+    </div><!-- End row -->
+
+    <div id="div-table">
+        @Html.Partial("_partialAuthorizeAccountTypeAddView", Model)
+    </div>
+
+</div><!-- End container -->
+

@@ -1,0 +1,57 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.AuthorizationVM>
+@{
+    ViewBag.Title = "Review Card Replacement Request";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section CustomJS{
+    <script src="~/Content/ReviewJS.js"></script>
+
+}
+
+<div class="container">
+    <div class="row form-group">
+        <div class="col-md-2">
+            <label class="control-label">Request Date From</label>
+            <div class='input-group date datetimepicker1'>
+                <input type='text' class="form-control from_date" readonly/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div><!-- End col-md-2 -->
+
+        <div class="col-md-2">
+            <label class="control-label">Request Date To</label>
+            <div class='input-group date datetimepicker1'>
+                <input type='text' class="form-control to_date" readonly/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div><!-- End col-md-2 -->
+
+        <div class="col-md-2">
+            <label class="control-label">Request No</label>
+            <input type="text" class="form-control request_number" placeholder="365445">
+        </div><!-- End col-md-2 -->
+
+        <div class="col-md-2">
+            <label class="control-label">CIF #</label>
+            <input type="text" class="form-control cif_number" placeholder="365445">
+        </div><!-- End col-md-2 -->
+
+        <div class="col-md-2">
+            <label class="control-label">Account #</label>
+            <input type="text" class="form-control account_number" placeholder="365445">
+            @Html.Hidden("hfrequest_type", "R")
+        </div><!-- End col-md-2 -->
+
+        <div class="col-md-2">
+            <button id="btnFilterRequestData" class="btn btn-cstm">Search</button>
+        </div><!-- End col-md-2 -->
+    </div><!-- End row -->
+    <div class="divTableData">
+        @Html.Partial("_partialReviewAuthorizeView", Model)
+    </div>
+</div><!-- End container -->

@@ -1,0 +1,272 @@
+﻿@model CardIssuanceSystem.Core.ViewModel.CardChargesVM
+@{
+    ViewBag.Title = "Card Charges Authorization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var requestId = ViewBag.RequestId;
+    var requestType = ViewBag.CardChargesRequestType;
+}
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            $('.btn-proceed').on('click', function () {
+                var status = $('.rb-val').find('input[type="radio"]:checked').val();
+                var comment = $('.txt-desc').val();
+                var id = '@requestId';
+                var url = '@requestType' === "Add" ? '@Url.Action("UpdateACAuthorizeScreen", "Authorization")' : '@Url.Action("UpdateACAuthorizeScreenForUpdateRequest", "Authorization")';
+                if (status === undefined || status === "") {
+                    alert("Action required!");
+                    return false;
+                }
+                if (status === "R" && comment === "") {
+                    alert("Comment required!");
+                    return false;
+                }
+                else {
+                    ShowLoader();
+                    ajaxCall(url, { RequestId: id, RequestType: "CardCharges", AuthorizationStatus: status, AuthorizeComments: comment }, function (resp) {
+                        //debugger;
+                        if (resp == true) {
+                            HideLoader();
+                            alert("Success");
+                            location.reload();
+                        }
+                        else {
+                            HideLoader();
+                            //alert("Failure");
+                            alert(resp.ErrorMessage);
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        alert("Failure");
+                    }, function (err) {
+                        HideLoader();
+                        alert("Error");
+                    });
+                }
+            });
+
+            $('#cmbxRegion').on('change', function () {
+                var regionUrl = '@Url.Action("GetRegionalChargesDetail", "CardCharges")';
+                var id = parseInt($(this).val());
+                var cardChargeId = '@requestId';
+                if (!isNaN(id) && !isNaN(cardChargeId)) {
+                    ShowLoader();
+                    ajaxCall(regionUrl, { cardChargeID: cardChargeId, regionID: id }, function (resp) {
+                        if (typeof (resp) === 'object') {
+                            if (resp.IsSuccess) {
+                                HideLoader();
+                                $('#txtRegionPercent').val(resp.Response.PercentageAmount);
+                            }
+                            else {
+                                HideLoader();
+                                $('#txtRegionPercent').val("");
+                                console.log("fail");
+                                return false;
+                            }
+                        }
+                        else {
+                            HideLoader();
+                            console.log("fail");
+                            return false;
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        console.log("fail");
+                        return false;
+                    }, function (err) {
+                        HideLoader();
+                        console.log("fail");
+                        return false;
+                    });
+                }
+            });
+
+        });
+
+        $(window).on('load', function () {
+            if (parseInt('@requestId') > 0) {
+                $('.no-accept input').prop('disabled', 'disabled');
+                $('.no-accept select').prop('disabled', 'disabled');
+            }
+        });
+    </script>
+}
+
+<div class="container">
+    @*<h4 class="main_hdng">Card Charges</h4>*@
+
+    @*<ul class="nav nav-tabs radio">
+            <li class="active li-new-cardcharges">
+                <a data-toggle="tab" href="#newcardcharge">
+                    <label>
+                        <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                        New Card Charges
+                    </label>
+                </a>
+            </li>
+            <li class="li-update-cardcharges">
+                <a data-toggle="tab" href="#updateexsisting">
+                    <label>
+                        <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                        Update Existing
+                    </label>
+                </a>
+            </li>
+        </ul>*@
+
+    <div class="tab-content">
+        <div id="newcardcharge" class="tab-pane fade in active">
+            <div class="no-accept">
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <label class="control-label">Title</label>
+                        <input type="text" class="form-control" id="txtTitle" name="Title"  value="@(Model?.Title??string.Empty)">
+                    </div><!-- End col-sm-6 -->
+
+                    <div class="col-sm-6">
+                        <label class="control-label">Select Card Type</label>
+                        <select class="form-control" id="cmbxCardTypes" name="CardTypeId">
+                            <option value="">Select Card Type</option>
+                            @foreach (var item in ViewBag.CardTypes)
+                            {
+                                <option value="@item.ID" @(item.ID == Model.CardTypeID ? "selected" : string.Empty)>@item.Title</option>
+                            }
+
+                        </select>
+                    </div><!-- End col-sm-6 -->
+                </div><!-- End row -->
+
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <label class="control-label">Select Account Type</label>
+                        <select class="form-control" id="cmbxAccountTypes" name="AccountTypeId">
+                            <option value="">Select Account Type</option>
+                            @foreach (var item in ViewBag.AccountTypes)
+                            {
+                                <option value="@item.ID" @(item.ID == Model.AccountTypeID ? "selected" : string.Empty)>@item.Name</option>
+                            }
+
+                        </select>
+                    </div><!-- End col-sm-6 -->
+
+                    <div class="col-sm-6">
+                        <label class="control-label">Select Frequency</label>
+                        <select class="form-control" Id="cmbxFrequency" name="Frequency">
+                            <option value="">Select Frequency</option>
+                            <option value="0" @(Model.Frequency.Equals("0") ? "selected" : string.Empty)>One Time</option>
+                            <option value="6" @(Model.Frequency.Equals("6") ? "selected" : string.Empty)>6 Months</option>
+                            <option value="12" @(Model.Frequency.Equals("12") ? "selected" : string.Empty)>12 Months</option>
+                            <option value="24" @(Model.Frequency.Equals("24") ? "selected" : string.Empty)>24 Months</option>
+                        </select>
+                    </div><!-- End col-sm-6 -->
+                </div><!-- End row -->
+
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <label class="control-label">Amount</label>
+                        <input type="text" class="form-control" id="txtAmount" name="Amount" value="@(Model?.Amount)">
+                    </div><!-- End col-sm-6 -->
+
+                    <div class="col-sm-6">
+                        <label class="control-label">Is Card Charge Active</label>
+                        <div class="row chk_bxs chkUpgradeTypes">
+                            <div class="col-md-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="activeCheckbox" @((Model?.IsActive ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                        Active
+                                    </label>
+                                </div>
+                            </div><!-- End col-md-3 -->
+                        </div>
+                    </div><!-- End col-sm-6 -->
+                </div><!-- End row -->
+                <div class="row form-group">
+                    @*<div class="col-sm-6">
+                <label class="control-label">Select Region</label>
+                <select class="form-control" id="cmbxRegion" name="RegionId">
+                    <option value="">Select Region</option>
+                    @foreach (var item in ViewBag.Regions)
+                    {
+                        <option value="@item.ID">@item.Title</option>
+                    }
+                </select>
+            </div><!-- End col-sm-6 -->
+
+            <div class="col-sm-6">
+                <label class="control-label">Set Regional %</label>
+                <input type="text" class="form-control" id="txtRegionPercent" name="RegionPercent" disabled>
+            </div><!-- End col-sm-6 -->*@
+                    <div class="col-sm-6">
+                        <label class="control-label">FED & Replacement</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row chk_bxs chkFed">
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="fedCheckbox" @((Model?.IsFED ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                                Is FED
+                                            </label>
+                                        </div>
+                                    </div><!-- End col-md-3 -->
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                @*<label class="control-label">Is Replacement</label>*@
+                                <div class="row chk_bxs chkReplacement">
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="replacementCheckbox" @((Model?.IsReplacement ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                                Is Replacement
+                                            </label>
+                                        </div>
+                                    </div><!-- End col-md-3 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- End row -->
+            </div>
+           
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <div class="radio rb-val">
+                        <label>
+                            <input type="radio" name="correct-ans" value="A"><span class="checkbox-material"><span class="check"></span></span>
+                            Approved
+                        </label>
+
+                        <label>
+                            <input type="radio" name="correct-ans" value="C"><span class="checkbox-material"><span class="check"></span></span>
+                            Reject
+                        </label>
+
+                        <label>
+                            <input type="radio" name="correct-ans" value="R"><span class="checkbox-material"><span class="check"></span></span>
+                            To be corrected
+                        </label>
+                    </div>
+                </div><!-- End col-sm-12 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <textarea class="form-control txt-desc" rows="5" maxlength="50"></textarea>
+                </div><!-- End col-sm-12 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <div class="btns_right">
+                        <button class="btn btn-cstm btn-proceed">Proceed</button>
+                        <a class="btn btn-cstm btn-light btn-cancel" href="@Url.Action("Authorize", "CardCharges")">Cancel</a>
+                    </div><!-- End btns_right -->
+                </div><!-- End col-sm-3 -->
+            </div><!-- End row -->
+        </div>
+
+    </div>
+</div><!-- End container -->

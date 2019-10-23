@@ -1,0 +1,454 @@
+﻿@model CardIssuanceSystem.Core.ViewModel.UpdateRequestVM
+@{
+    ViewBag.Title = "Accounts Screen";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var requestId = ViewBag.RequestId;
+}
+
+<style>
+    #cards {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    #cards thead
+    {
+
+    }
+        #cards td, #cards th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #cards tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #cards tr:hover {
+            background-color: #ddd;
+        }
+
+        #cards th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #ffc423;
+            color: white;
+        }
+</style>
+
+<div class="container">
+    <div class="form-group row">
+        <div class="col-sm-3">
+            <label class="control-label">Account Number</label>
+            <input type="text" class="form-control AccountNo" placeholder="Account No." maxlength="15">
+        </div><!-- End col-sm-3 -->
+
+        <div class="col-sm-3">
+            <label class="control-label">CIF Number</label>
+            <input type="text" class="form-control CIFNo" placeholder="CIF No.">
+        </div><!-- End col-sm-3 -->
+
+        <div class="col-sm-6">
+            <button class="btn btn-cstm btn-search">Search</button>
+        </div><!-- End col-sm-9 -->
+    </div><!-- End row -->
+
+    <div id="ResultForm" style="display:none">
+       
+        <div id="UnEditable">
+            <h4 class="main_hdng">Customer Information</h4>
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Customer ID</label>
+                    <input type="text" class="form-control" placeholder="344565" id="CustomerId">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Customer Name</label>
+                    <input type="text" class="form-control" placeholder="Customer Name" id="CustomerName">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Account Title</label>
+                    <input type="text" class="form-control" placeholder="Account Title" id="AccountTitle">
+                </div><!-- End col-sm-3 -->
+                @*<div class="col-sm-3">
+                    <label class="control-label">Avaliable Balance</label>
+
+                    <input type="text" class="form-control" placeholder="AvailableBalance" id="AvailableBalance">
+                </div>*@<!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Account Status</label>
+
+                    <input type="text" class="form-control" placeholder="AccountStatus" id="AccountStatus">
+                </div><!-- End col-sm-3 -->
+
+            </div><!-- End row -->
+            @*<div class="col-sm-3">
+                <label class="control-label">Account Address</label>
+                <input type="text" class="form-control" placeholder="Account Address" id="AccountAddress">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Customer Address</label>
+                <input type="text" class="form-control" placeholder="CustomerAddress" id="CustomerAddress">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label"> Other Address</label>
+                <input type="text" class="form-control" placeholder="Address" id="Address3">
+            </div><!-- End col-sm-3 -->*@
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Account Address</label>
+                    <input type="text" class="form-control" id="AccountAddress">
+                </div><!-- End col-sm-3 -->
+            </div>
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Customer Address 1</label>
+                    <input type="text" class="form-control" id="CustomerAddress">
+                </div><!-- End col-sm-3 -->
+            </div>
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Customer Address 2</label>
+                    <input type="text" class="form-control" id="Address">
+                </div><!-- End col-sm-3 -->
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No</label>
+                    <input type="text" class="form-control" id="MobileNo">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 1</label>
+                    <input type="text" class="form-control" id="MobileNo1">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 2</label>
+                    <input type="text" class="form-control" id="MobileNo2">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 3</label>
+                    <input type="text" class="form-control" id="MobileNo3">
+                </div><!-- End col-sm-3 -->
+
+            </div>
+
+
+            <div class="row form-group">
+                @*<div class="col-sm-3">
+                    <label class="control-label">Mobile No</label>
+                    <input type="text" class="form-control" placeholder="123456789" id="MobileNo">
+                </div>*@<!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Phone Res</label>
+                    <input type="text" class="form-control" placeholder="Phone Res" id="PhoneRes">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Phone Off</label>
+                    <input type="text" class="form-control" placeholder="Phone Off" id="PhoneOff">
+                </div><!-- End col-sm-3 -->
+
+
+                <div class="col-sm-3">
+                    <label class="control-label">Email</label>
+                    <input type="email" class="form-control" placeholder="#Email" id="Email">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Nationality</label>
+                    <input type="text" class="form-control" placeholder="Nationality" id="Nationality">
+                </div><!-- End col-sm-3 -->
+
+            </div><!-- End row -->
+
+            <div class="row form-group">
+
+                <div class="col-sm-3">
+                    <label class="control-label">Residence</label>
+                    <input type="text" class="form-control" placeholder="Residence" id="Residence">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Father's Name</label>
+                    <input type="text" class="form-control" placeholder="Father Name" id="FatherName">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mother's Maiden Name</label>
+                    <input type="text" class="form-control" placeholder="Mother Name" id="MotherName">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Date of Birth</label>
+                    <div class='input-group date'>
+                        <input type='text' class="form-control" id="DateofBirth" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                </div><!-- End col-sm-3 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Identification</label>
+                    <select class="form-control" id="Identification">
+                        <option>Identification</option>
+                    </select>
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Identification No</label>
+                    <input type="text" class="form-control" placeholder="Identification No" id="CNIC">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Old NIC</label>
+                    <input type="text" class="form-control" placeholder="Old NIC" id="OldCNIC">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                </div><!-- End col-sm-3 -->
+            </div><!-- End row -->
+
+            <h4 class="main_hdng">Account Information</h4>
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Posting Restriction</label>
+                    <input type="text" class="form-control restriction" placeholder="Posting Restriction">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Sector</label>
+                    @*<select class="form-control" id="Sector">
+
+                    </select>*@
+                    <input class="form-control" id="Sector" />
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Account No</label>
+                    <input type="text" class="form-control AccountNo" placeholder="AccountNo">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Account Nature</label>
+                    <input type="text" class="form-control" placeholder="Account Nature" id="AccountNature">
+                </div><!-- End col-sm-3 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Account Title</label>
+                    <input type="text" class="form-control" placeholder="Account Title" id="AccountTitle2">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    @*<label class="control-label">Ready for Authorization</label>
+                    <select class="form-control" id="Authorization">
+                        <option>Yes</option>
+                        <option>No</option>
+                    </select>*@
+                    <label class="control-label">Operating Instruction</label>
+                    <input type="text" class="form-control" placeholder="Operating Instruction" id="OperatingInstruction">
+
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3" style="display:none">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="Waive" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                            Waive Charges
+                        </label>
+                    </div>
+                </div><!-- End col-sm-3 -->
+
+
+            </div><!-- End row -->
+
+            <h4 class="main_hdng">Existing Cards</h4>
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <table id="cards">
+                        <thead>
+                            <tr>
+                                <th>Card Number</th>
+                                <th>Expiry Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="previouscards">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                    
+                </div>
+
+
+                <div class="btns_right" style="display:none;">
+                    <button class="btn btn-cstm" type="submit" id="NewSubmit">Proceed</button>
+                    <button class="btn btn-cstm btn-light" onclick="location.reload();">Cancel</button>
+                </div><!-- End btns_right -->
+
+            </div>
+
+
+        </div><!-- End container -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ResultForm').css("display", "none");
+        $("#UnEditable :input").attr("disabled", true);
+        $("#Waive").attr("disabled", false);
+    });
+
+
+    $('.btn-search').click(function () {
+        //debugger
+
+        var AccountNo = $('.AccountNo').val();
+        var CIFNo = $('.CIFNo').val();
+        if (AccountNo == null || AccountNo.trim() == "" || typeof (AccountNo) == "undefined") {
+            $('.AccountNo').css("border", "red solid 1px");
+            alert("Please Enter Account Number");
+            return false;
+        }
+        if (!NumberValue(AccountNo)) {
+
+            alert("Only Numeric Value is Allowed");
+            return false;
+        }
+
+        if (CIFNo == null || CIFNo.trim() == "" || typeof (CIFNo) == "undefined") {
+            $('.CIFNo').css("border", "red solid 1px");
+            alert("Please Enter CIF Number");
+            return false;
+        }
+        if (!NumberValue(CIFNo)) {
+
+            alert("Only Numeric Value is Allowed");
+            return false;
+        }
+
+
+        var Url = '@Url.Action("SearchAccount22", "Request")';
+        ShowLoader();
+        ajaxCall(Url, { AccountNo: AccountNo, CIF: CIFNo }, function (resp) {
+            debugger
+            HideLoader();
+            if (typeof (resp) === "object" && resp != null && resp.ErrorMessage == '@CardIssuanceSystem.Core.Helpers.CustomMessages.Success' && (resp.Result.ErrorField == "" || resp.Result.ErrorField == null))
+            {
+                $('#CustomerId').val(resp.Result.CustomerID);
+                $('#CustomerName').val(resp.Result.CustomerName);
+                $('#CardTitle').val(resp.Result.CustomerName);
+                debugger
+                $('#AvailableBalance').val(resp.Result.AvailableBalance);
+                if (resp.Result.AccountStatus == '')
+                {
+                    debugger
+                    $('#AccountStatus').val('Active');
+                } else
+                {
+                    
+                    $('#AccountStatus').val('InActive');
+                }
+                
+                $('#AccountAddress').val(resp.Result.AccountAddress);
+                $('#CustomerAddress').val(resp.Result.CustomerAddress1);
+                $('#Address3').val(resp.Result.CustomerAddress2);
+                $('#MobileNo').val(resp.Result.AccountMobile);
+                $('#MobileNo1').val(resp.Result.SMS);
+                $('#MobileNo2').val(resp.Result.SMS2);
+                $('#MobileNo3').val(resp.Result.SMS3);
+                $('#PhoneRes').val(resp.Result.PhoneResidence);
+                $('#PhoneOff').val(resp.Result.OffPhone);
+                $('#FaxNo').val();
+                $('#Email').val(resp.Result.Email);
+                $('#FatherName').val(resp.Result.FathersName);
+                $('#MotherName').val(resp.Result.MothersName);
+                $('#DateofBirth').val(resp.Result.CustomerDOB);
+                $('#Identification option:selected').text(resp.Result.IdentificationType);
+                $('#CNIC').val(resp.Result.IdentificationNo);
+                //$('#OldCNIC').val();
+                $('.restriction').val(resp.Result.PostingRestriction);
+                $('#Sector').val(resp.Result.Sector);
+                $('.AccountNo').val(resp.Result.T24ACNO);
+                $('#AccountNature').val(resp.Result.Product);
+                $('#AccountTitle').val(resp.Result.AccountTitle);
+                $('#AccountTitle2').val(resp.Result.AccountTitle);
+                $('#AvailBalance').val(resp.Result.AvailableBalance);
+                //$('#AccountStatus').val(resp.Result.AccountStatus);
+                $('#BranchCode').val(resp.Result.AccountBranchCode);
+                $('#RequestDate').val('@(Model?.RequestData?.RequestDate)');
+                var respSalutation = '@(Model?.RequestData?.Salutation.Trim())';
+                $('#Salutation').val($('#Salutation option:contains(' + respSalutation + ')').val());
+                $('#CardType').val('@(Model?.RequestData?.CardTypeID)');
+                $('#Nationality').val(resp.Result.Nationality);
+                $('#Residence').val(resp.Result.ResidenceStatus);
+                
+                $('#OperatingInstruction').val(resp.Result.OpInstructions);
+                debugger
+                var html = '';
+                if (resp.CardHistory.length > 0 )
+                {
+                    for (var i = 0; i < resp.CardHistory.length; i++)
+                    {
+                        html = html + '<tr><td>' + resp.CardHistory[i].CardNo + '</td><td>' + resp.CardHistory[i].CardExpiry+ '</td><td>' + resp.CardHistory[i].CardStatusActive + '</td></tr>';
+                    }
+                    $('#previouscards').html(html);
+                }
+                else
+                {
+                    $('#previouscards').html('<tr><td colspan="5" style="text-align:center">No Cards Found</td></tr>');
+                }
+                $('#ResultForm').css("display", "block");
+            }
+            else if (resp.ErrorMessage == '@CardIssuanceSystem.Core.Helpers.CustomMessages.CardAlreadyExists')
+            {
+                alert(resp.ErrorMessage);
+            } else
+            {
+                alert("No Record Found");
+            }
+        }, function (fail)
+        {
+            HideLoader();
+            alert("Failure");
+        }, function (err)
+        {
+            HideLoader();
+            alert("Error");
+        });
+
+    });
+
+    $(window).on('load', function ()
+    {
+        if (parseInt('@requestId') > 0)
+        {
+            $('.AccountNo').val('@(Model?.RequestData?.AccountNo ?? string.Empty)');
+            $('.CIFNo').val('@(Model?.RequestData?.CIFNo ?? string.Empty)');
+            $('.btn-search').trigger('click');
+            $('.btn-search').attr("disabled", true);
+        }
+    });
+</script>

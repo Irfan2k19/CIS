@@ -1,0 +1,40 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.SystemRequestVM>
+@{
+    ViewBag.Title = "UserProfileReview";
+}
+
+<div class="container">
+    <div class="row form-group">
+        <div class="col-md-6">
+            <label class="control-label">Request Type</label>
+            <select class="form-control cmbx-request-type">
+                <option value="">Select Request Type</option>
+                <option value="User_Register">Registration</option>
+                <option value="User">Modification</option>
+                <option value="Profile_User">Permission</option>
+            </select>
+        </div><!-- End col-md-2 -->
+
+        <div class="col-md-6">
+            <button id="btnFilterRequestData" class="btn btn-cstm">Search</button>
+        </div><!-- End col-md-2 -->
+    </div><!-- End row -->
+    <div class="divTableData">
+        @Html.Partial("_partialUserProfileReview", Model)
+    </div>
+</div><!-- End container -->
+
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            $('#btnFilterRequestData').on('click', function (e) {
+                var requestType = $('.cmbx-request-type').val();
+                var FilterRequestDataUrl = (requestType === "User_Register") ? '@Url.Action("FilteredUserProfileAddReview", "SystemReview")' : '@Url.Action("FilteredUserProfileUpdateReview", "SystemReview")';
+                ShowLoader();
+                LoadPartial(".divTableData", FilterRequestDataUrl, { requestType: requestType }, false, null, null, null);
+                HideLoader();
+            });
+        });
+    </script>
+}
+

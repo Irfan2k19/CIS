@@ -1,0 +1,57 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.SystemRequestVM>
+@{
+
+}
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ProfileName</th>
+                <th>Request Date</th>
+                <th>View</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.ProfileName</td>
+                        <td>@item.RequestDate</td>
+                        <td>
+                            @ActionButton(item.RequestType, item.ID)
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr colspan="3">
+                    <td>No Record Found!</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div><!-- End table-responsive -->
+
+
+@helper ActionButton(string requestType, long id)
+{
+switch (requestType)
+{
+    case "Profile_Register":
+            <a href="@Url.Action("Index", "Profile", new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+    case "Profile":
+            <a href="@Url.Action("UpdateProfile", "Profile", new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+    case "Profile_Page":
+            <a href="@Url.Action("ProfilePages", "Profile", new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+            break;
+        default:
+            break;
+    }
+}

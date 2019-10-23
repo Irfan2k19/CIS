@@ -1,0 +1,54 @@
+﻿@model IEnumerable<CardIssuanceSystem.Core.ViewModel.MenuVM>
+@{
+    ViewBag.Title = "GetMenu";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
+}
+
+<head>
+    <link rel="stylesheet" href="~/assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+   
+</head>
+
+<body>
+    <!-- First One -->
+    @foreach (var item in Model.GroupBy(Obj => new { Obj.SectionSequence }).Distinct().ToList())
+    {
+        <ul class="nav navbar-nav">
+            <li class="dropdown mega-dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    @item.FirstOrDefault().Section
+                    <span class="glyphicon glyphicon-chevron-down pull-right"></span>
+                </a>
+
+                <ul class="dropdown-menu mega-dropdown-menu row">
+                    @foreach (var submenu in item)
+            {
+            <li class="col-sm-6">
+                <ul>
+                    <li>
+                       <a href="@(submenu.URL)">@submenu.Page</a>
+                       @*<a href="/CISv2@(submenu.URL)">@submenu.Page</a>*@
+                            </li>
+
+                        </ul>
+                    </li>
+                }
+
+
+                    </ul>
+
+                </li>
+            </ul>
+
+        }
+        <!-- /First One -->
+
+    </body>
+
+
+
+
+
+

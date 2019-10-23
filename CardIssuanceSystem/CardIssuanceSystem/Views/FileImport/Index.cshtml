@@ -1,0 +1,125 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.ImportFileVM>
+@{
+    ViewBag.Title = "File Import";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var requestId = ViewBag.RequestId;
+}
+
+@section CustomJS{
+    <script>
+        $(function () {
+            $('.btn-generate').on('click', function () {
+                var url = '@Url.Action("AddUpdateFileImport","FileImport")';
+                var id = parseInt('@requestId');
+                var code = "0";//$('#txtbranchcode').val();
+                var cardtype = "0";//$('#cmbxcardtype').val();
+                var filePath = $('input[name="optradio"]:checked').val();
+                //if (code === "") {
+                //    alert("Please enter branch code");
+                //    return false;
+                //}
+                //else {
+                ShowLoader();
+                ajaxCall(url, { ID: id, CardTypes: cardtype, BranchCodes: code, filePath: filePath }, function (resp) {
+                    HideLoader();
+                    alert(resp.ErrorMessage);
+                    if (resp.IsSuccess) {
+                        location.reload();
+                    }
+                }, function (fail) {
+                    HideLoader();
+                    if (fail.responseJSON) {
+                        alert("Some Error Occured\nError: " + fail.responseJSON.ErrorMessage);
+                    }
+                    console.log(fail.responseText);
+                    return false;
+                }, function (err) {
+                    HideLoader();
+                    if (err.responseJSON) {
+                        alert("Some Error Occured\nError: " + err.responseJSON.ErrorMessage);
+                    }
+                    console.log(err.responseText);
+                    return false;
+                });
+                //}
+            });
+        });
+    </script>
+}
+
+<div class="container">
+    @*<h4 class="main_hdng">File Import</h4>*@
+    @*<div class="row form-group">
+            <div class="col-sm-6">
+                <label class="control-label">Branch Code</label>
+                <input type="text" class="form-control" id="txtbranchcode" placeholder="344565">
+            </div><!-- End col-sm-6 -->
+
+            <div class="col-sm-6">
+                <label class="control-label">Card Type</label>
+                <select class="form-control" id="cmbxcardtype">
+                    @foreach (var item in (ViewBag.CardTypes))
+                    {
+                        <option value="@item.ID">@item.Title</option>
+                    }
+                </select>
+            </div><!-- End col-sm-6 -->
+        </div>*@<!-- End row -->
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div id="divTable" style="max-height: 300px;overflow-y: scroll;">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>File Name</th>
+                            <th>Directory Name</th>
+                            <th>File Full Name</th>
+                            <th>File Creation Date</th>
+                            <th>File Modified Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Count > 0)
+                        {
+                            foreach (var item in Model)
+                            {
+                            <tr>
+                                <td>
+                                    <div class="radio" style="margin: 0px !important;">
+                                        <label>
+                                            <input type="radio" name="optradio" value="@item.FileFullName" data-attr-filefullname="@item.FileFullName"><span class="checkbox-material"><span class="check"></span></span>
+
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>@item.FileName</td>
+                                <td>@item.DirectoryName</td>
+                                <td>@item.FileFullName</td>
+                                <td>@item.FileCreationTime</td>
+                                <td>@item.FileModifiedTime</td>
+                            </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6">No file exists</td>
+                            </tr>
+                                }
+</tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="">
+                <button class="btn btn-cstm btn-generate">Import</button>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-6 -->
+    </div><!-- End row -->
+</div><!-- End container -->

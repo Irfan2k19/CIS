@@ -1,0 +1,725 @@
+﻿@model CardIssuanceSystem.Core.ViewModel.CardChargesVM
+@{
+    ViewBag.Title = "Card Charges Configuration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var requestId = ViewBag.RequestId;
+    var requestType = ViewBag.RequestType == null ? string.Empty : ViewBag.RequestType;
+}
+@section CustomJS{
+    <script>
+        var regionalData = [];
+        $(function () {
+            @*$(@Html.Raw(Json.Encode(ViewBag.Regions))).each(function (index, val) {
+                var region = {};
+                region.Key = val.ID;
+                region.Val = val.;
+                regionalData.push(region);
+            });*@
+            $('#btnTempSave').on('click', function () {
+                var id = parseInt($('#cmbxRegion').val());
+                var cardChargeId = parseInt($('#cmbxCardCharges').val());
+                if (!isNaN(id) && !isNaN(cardChargeId)) {
+                    if ($('#txtRegionPercent').val() === "") {
+                        alert("Please enter region percentage");
+                        return false;
+                    }
+                    else {
+                        if (regionalData.filter(function (i) { return i.RegionID == id; }).length <= 0) {
+                            var region = {};
+                            region.RegionID = id;
+                            region.PercentageAmount = parseFloat($('#txtRegionPercent').val());
+                            regionalData.push(region);
+                        }
+                        else {
+                            regionalData.filter(function (i) { return i.RegionID == id; })[0].PercentageAmount = parseFloat($('#txtRegionPercent').val());
+                        }
+                    }
+                }
+            });
+
+            $('#btnSave').on('click', function () {
+                var id = parseInt('@requestId');
+                var Url = '@Url.Action("AddUpdateCardCharges", "CardCharges")';
+                var title = $('#txtTitle').val();
+                var accountTypeId = $('#cmbxAccountTypes').val();
+                var cardTypeId = $('#cmbxCardTypes').val();
+                var frequency = $('#cmbxFrequency').val();
+                var amount = $('#txtAmount').val();
+                var status = "P";
+                var isfed = $('input[name="fedCheckbox"]').is(':checked') == true ? "true" : "false";
+                var isreplacement = $('input[name="replacementCheckbox"]').is(':checked') == true ? "true" : "false";
+                if (title === "") {
+                    alert("Please enter title");
+                    return false;
+                }
+                else if (accountTypeId === "") {
+                    alert("Please select account type");
+                    return false;
+                }
+                else if (cardTypeId === "") {
+                    alert("Please select card type");
+                    return false;
+                }
+                else if (frequency === "") {
+                    alert("Please select frequency");
+                    return false;
+                }
+                else if (amount === "") {
+                    alert("Please enter amount");
+                    return false;
+                }
+                else {
+                    ShowLoader();
+                    ajaxCall(Url, { ID: id, Title: title, AccountTypeId: accountTypeId, CardTypeId: cardTypeId, Frequency: frequency, Amount: amount, AuthorizationStatus: status, IsFED: isfed, IsReplacement: isreplacement }, function (resp) {
+                        if (resp.IsSuccess) {
+                            HideLoader();
+                            alert("Success!");
+                            location.reload();
+                        }
+                        else {
+                            HideLoader();
+                            alert("fail!");
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        alert("fail!");
+                    }, function (err) {
+                        HideLoader();
+                        if (err.responseText.indexOf("IsSuccess") >= 0) {
+                            alert(err.responseJSON.ErrorMessage);
+                        }
+                        else {
+                            alert(genericMessage);
+                        }
+                    });
+                }
+            });
+
+            $('#btnUpdate').on('click', function () {
+                var Url = '@Url.Action("AddUpdateCardCharges", "CardCharges")';
+                var id = $('#cmbxCardCharges').val();
+                var title = $('#txtUpdateTitle').val();
+                var accountTypeId = $('#cmbxUpdateAccountType').val();
+                var cardTypeId = $('#cmbxUpdateCardTypes').val();
+                var frequency = $('#cmbxUpdateFrequency').val();
+                var amount = $('#txtUpdateAmount').val();
+                var regionId = 0;//parseInt($('#cmbxRegion').val());
+                var regionPercent = 0;//parseFloat($('#txtRegionPercent').val());
+                var status = $('#AuthorizeStatus').val();
+                var active = $('input[name="activeCheckbox"]').is(':checked') == true ? "true" : "false";
+                var isfed = $('input[name="fedUpdateCheckbox"]').is(':checked') == true ? "true" : "false";
+                var isreplacement = $('input[name="replacementUpdateCheckbox"]').is(':checked') == true ? "true" : "false";
+                var requestId = parseInt('@requestId');
+                if (parseInt('@requestId') > 0 || parseInt(id) > 0) {
+                    status = "P";
+                }
+                if (title === "") {
+                    alert("Please enter title");
+                    return false;
+                }
+                else if (accountTypeId === "") {
+                    alert("Please select account type");
+                    return false;
+                }
+                else if (cardTypeId === "") {
+                    alert("Please select card type");
+                    return false;
+                }
+                else if (frequency === "") {
+                    alert("Please select frequency");
+                    return false;
+                }
+                else if (amount === "") {
+                    alert("Please enter amount");
+                    return false;
+                } else if (id === "")
+                {
+                    alert("Please enter card charges");
+                    return false;
+                }
+                    //else if (regionalData.length <= 0 /*regionId === "" || isNaN(regionId)*/) {
+                    //    alert("Please select region");
+                    //    return false;
+                    //}
+                    //else if (regionPercent === "") {
+                    //    alert("Please enter region percentage");
+                    //    return false;
+                    //}
+                else {
+                    //ajaxCall(Url, { ID: id, Title: title, AccountTypeID: accountTypeId, CardTypeID: cardTypeId, Frequency: frequency, Amount: amount, RegionID: regionId, PercentageAmount: regionPercent, AuthorizationStatus: status }, function (resp) {
+                    ShowLoader();
+                    ajaxCall(Url, { ID: id, Title: title, AccountTypeID: accountTypeId, CardTypeID: cardTypeId, Frequency: frequency, Amount: amount, IsActive: active, regionRequest: regionalData, AuthorizationStatus: status, IsFED: isfed, IsReplacement: isreplacement, RequestId: requestId }, function (resp) {
+                        if (resp.IsSuccess) {
+                            HideLoader();
+                            alert("Success!");
+                            location.reload();
+                        }
+                        else {
+                            HideLoader();
+                            alert("fail!");
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        alert("fail!");
+                    }, function (err) {
+                        HideLoader();
+                        if (err.responseText.indexOf("IsSuccess") >= 0) {
+                            alert(err.responseJSON.ErrorMessage);
+                        }
+                        else {
+                            alert(genericMessage);
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#cmbxCardCharges').on('change', function () {
+            if (parseInt('@requestId') <= 0) {
+                var chargeUrl = '@Url.Action("GetCardChargeDetail","CardCharges")';
+                var id = parseInt($(this).val());
+                if (!isNaN(id)) {
+                    setTimeout(function () {
+                        ShowLoader();
+                        ajaxCall(chargeUrl, { ID: id }, function (resp) {
+                            if (typeof (resp) === 'object') {
+                                if (resp.IsSuccess) {
+                                    $('#txtUpdateTitle').val(resp.Response.Title);
+                                    $('#cmbxUpdateCardTypes').val(resp.Response.CardTypeID);
+                                    $('#cmbxUpdateAccountType').val(resp.Response.AccountTypeID);
+                                    $('#cmbxUpdateFrequency').val(resp.Response.Frequency);
+                                    $('#txtUpdateAmount').val(resp.Response.Amount);
+                                    if (resp.Response.IsActive) {
+                                        $('input[name="activeCheckbox"]').prop('checked', true);
+                                    }
+                                    if (resp.Response.IsFED) {
+                                        $('input[name="fedUpdateCheckbox"]').prop('checked', true);
+                                    }
+                                    if (resp.Response.IsReplacement) {
+                                        $('input[name="replacementUpdateCheckbox"]').prop('checked', true);
+                                    }
+                                    HideLoader();
+                                }
+                                else {
+                                    HideLoader();
+                                    console.log("fail");
+                                    return false;
+                                }
+                            }
+                            else {
+                                HideLoader();
+                                console.log("fail");
+                                return false;
+                            }
+                        }, function (fail) {
+                            HideLoader();
+                            console.log("fail");
+                            return false;
+                        }, function (err) {
+                            HideLoader();
+                            if (err.responseText.indexOf("IsSuccess") >= 0) {
+                                alert(err.responseJSON.ErrorMessage);
+                            }
+                            else {
+                                alert(genericMessage);
+                            }
+                            return false;
+                        });
+                    }, 100);
+                }
+            }
+        });
+        $('#cmbxUpdateCardTypes').on('change', function () {
+            if (parseInt('@requestId') <= 0) {
+                GetChargesData();
+            }
+        });
+        $('#cmbxUpdateAccountType').on('change', function () {
+            if (parseInt('@requestId') <= 0) {
+                GetChargesData();
+            }
+        });
+
+        $('#cmbxRegion').on('change', function () {
+            var regionUrl = '@Url.Action("GetRegionalChargesDetail", "CardCharges")';
+            var id = parseInt($(this).val());
+            var cardChargeId = parseInt($('#cmbxCardCharges').val());
+            if (!isNaN(id) && !isNaN(cardChargeId)) {
+                ShowLoader();
+                ajaxCall(regionUrl, { cardChargeID: cardChargeId, regionID: id }, function (resp) {
+                    if (typeof (resp) === 'object') {
+                        if (resp.IsSuccess) {
+                            //$('#txtRegionPercent').val(resp.Response.PercentageAmount);
+                            if (regionalData.filter(function (i) { return i.RegionID == id; }).length <= 0) {
+                                $('#txtRegionPercent').val(resp.Response.PercentageAmount);
+                                var region = {};
+                                region.RegionID = id;
+                                region.PercentageAmount = parseFloat(resp.Response.PercentageAmount);
+                                regionalData.push(region);
+                            }
+                            else {
+                                $('#txtRegionPercent').val(regionalData.filter(function (i) { return i.RegionID == id; })[0].PercentageAmount);
+                            }
+
+                            HideLoader();
+                        }
+                        else {
+                            var res = regionalData.filter(function (i) { return i.RegionID == id; })[0];
+                            if (res) {
+                                $('#txtRegionPercent').val(res.PercentageAmount);
+                            }
+                            else {
+                                $('#txtRegionPercent').val("");
+                                console.log("fail");
+                            }
+
+                            HideLoader();
+                            return false;
+                        }
+                    }
+                    else {
+                        HideLoader();
+                        console.log("fail");
+                        return false;
+                    }
+                }, function (fail) {
+                    HideLoader();
+                    console.log("fail");
+                    return false;
+                }, function (err) {
+                    HideLoader();
+                    if (err.responseText.indexOf("IsSuccess") >= 0) {
+                        alert(err.responseJSON.ErrorMessage);
+                    }
+                    else {
+                        alert(genericMessage);
+                    }
+                    return false;
+                });
+            }
+        });
+
+        $(window).on('load', function () {
+            if (parseInt('@requestId') > 0) {
+                if ('@requestType' != "") {
+                    if ('@requestType' === "Add") {
+                        $('.li-update-cardcharges').css('display', 'none');
+                        $('.li-new-cardcharges > a').trigger('click');
+                    }
+                    else {
+                        $('.li-new-cardcharges').css('display', 'none');
+                        //$('.li-update').addClass('active');
+                        $('.li-update-cardcharges > a').trigger('click');
+                        @*$('#cmbxUpdateCardTypes').val(parseInt('@(Model?.CardTypeID ?? 0)'));
+                        $('#cmbxUpdateAccountType').val(parseInt('@(Model?.AccountTypeID ?? 0)'));
+                        $('#cmbxUpdateCardTypes').trigger('change');*@
+
+                        var id = '@(Model?.ID ?? 0)';
+                        var title = '@(Model?.Title ?? string.Empty)';
+                        $('#cmbxCardCharges').html('');
+                        $('#cmbxCardCharges').append("<option value=''>Select Card Charges</option>");
+                        $('#cmbxCardCharges').append("<option value='" + id + "'>" + title + "</option>");
+
+                        $('#cmbxCardCharges').val(parseInt('@(Model?.ID ?? 0)'));
+                        $('#cmbxCardCharges').trigger('change');
+                    }
+                }
+            }
+        });
+
+        function GetChargesData() {
+            var chargeUrl = '@Url.Action("GetCardChargeByCardTypeAccount", "CardCharges")';
+            var cardTypeId = parseInt($('#cmbxUpdateCardTypes').val());
+            var accountTypeId = parseInt($('#cmbxUpdateAccountType').val());
+
+            if (isNaN(cardTypeId)) {
+                alert("Required Card Type.");
+            }
+            if (isNaN(accountTypeId)) {
+                alert("Required Account Type.");
+            }
+            if (!isNaN(cardTypeId) && !isNaN(accountTypeId)) {
+                setTimeout(function () {
+                    ShowLoader();
+                    ajaxCall(chargeUrl, { CardTypeID: cardTypeId, AccountTypeID: accountTypeId }, function (resp) {
+                        if (typeof (resp) === 'object') {
+                            if (resp.IsSuccess) {
+                                var data = [];
+                                data.push("<option value=''>Select Card Charges</option>");
+                                $.each(resp.Response, function (index, val) {
+                                    data.push("<option value=" + val.ID + ">" + val.Title + "</option>");
+                                });
+
+                                $('#cmbxCardCharges').html('');
+                                $('#cmbxCardCharges').html(data);
+                                HideLoader();
+                            }
+                            else {
+                                HideLoader();
+                                console.log("fail");
+                                return false;
+                            }
+                        }
+                        else {
+                            HideLoader();
+                            console.log("fail");
+                            return false;
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        console.log("fail");
+                        return false;
+                    }, function (err) {
+                        HideLoader();
+                        if (err.responseText.indexOf("IsSuccess") >= 0) {
+                            alert(err.responseJSON.ErrorMessage);
+                        }
+                        else {
+                            alert(genericMessage);
+                        }
+                        return false;
+                    });
+                }, 100);
+            }
+        }
+    </script>
+}
+<div class="container">
+    @*<h4 class="main_hdng">Card Charges</h4>*@
+
+    <ul class="nav nav-tabs radio">
+        <li class="active li-new-cardcharges">
+            <a data-toggle="tab" href="#newcardcharge">
+                <label>
+                    <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                    New Card Charges
+                </label>
+            </a>
+        </li>
+        <li class="li-update-cardcharges">
+            <a data-toggle="tab" href="#updateexsisting">
+                <label>
+                    <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                    Update Existing
+                </label>
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="newcardcharge" class="tab-pane fade in active">
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <label class="control-label">Charges Description</label>
+                    <input type="text" class="form-control" id="txtTitle" name="Title" placeholder="Title" value="@(Model?.Title??string.Empty)">
+                </div><!-- End col-sm-6 -->
+
+                <div class="col-sm-6">
+                    <label class="control-label">Select Card Type</label>
+                    <select class="form-control" id="cmbxCardTypes" name="CardTypeId">
+                        <option value="">Select Card Type</option>
+                        @foreach (var item in ViewBag.CardTypes)
+                        {
+                            <option value="@item.ID" @((Model?.CardTypeID??0) == item.ID ? "selected" : string.Empty)>@item.Title</option>
+                        }
+
+                    </select>
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <label class="control-label">Select Account Type</label>
+                    <select class="form-control" id="cmbxAccountTypes" name="AccountTypeId">
+                        <option value="">Select Account Type</option>
+                        @foreach (var item in ViewBag.AccountTypes)
+                        {
+                            <option value="@item.ID" @((Model?.AccountTypeID??0) == item.ID ? "selected" : string.Empty)>@item.Name</option>
+                        }
+
+                    </select>
+                </div><!-- End col-sm-6 -->
+
+                <div class="col-sm-6">
+                    <label class="control-label">Select Frequency</label>
+                    <select class="form-control" Id="cmbxFrequency" name="Frequency">
+                        <option value="" @(Model == null ? "selected" : string.Empty)>Select Frequency</option>
+                        <option value="0" @((Model?.Frequency ?? null) == null ? string.Empty : Model.Frequency == "0" ? "selected" : string.Empty)>One Time</option>
+                        <option value="6" @((Model?.Frequency ?? null) == null ? string.Empty : Model.Frequency == "6" ? "selected" : string.Empty)>6 Months</option>
+                        <option value="12" @((Model?.Frequency ?? null) == null ? string.Empty : Model.Frequency == "12" ? "selected" : string.Empty)>12 Months</option>
+                        <option value="24" @((Model?.Frequency ?? null) == null ? string.Empty : Model.Frequency == "24" ? "selected" : string.Empty)>24 Months</option>
+                    </select>
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <label class="control-label">Amount</label>
+                    <input type="text" class="form-control" id="txtAmount" name="Amount" placeholder="23456" value="@(Model?.Amount)">
+                </div><!-- End col-sm-6 -->
+                <div class="col-sm-6">
+                    <label class="control-label">FED & Replacement</label>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            @*<label class="control-label">Is FED</label>*@
+                            <div class="row chk_bxs chkFed">
+                                <div class="col-md-12">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="fedCheckbox" @((Model?.IsFED??false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                            Is FED
+                                        </label>
+                                    </div>
+                                </div><!-- End col-md-3 -->
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            @*<label class="control-label">Is Replacement</label>*@
+                            <div class="row chk_bxs chkReplacement">
+                                <div class="col-md-12">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="replacementCheckbox" @((Model?.IsReplacement??false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                            Is Replacement
+                                        </label>
+                                    </div>
+                                </div><!-- End col-md-3 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <div class="btns_right">
+                        <button class="btn btn-cstm" id="btnSave">Save</button>
+                    </div><!-- End btns_right -->
+                </div><!-- End col-sm-12 -->
+            </div>
+        </div>
+
+        <div id="updateexsisting" class="tab-pane fade">
+            @Html.Hidden("AuthorizeStatus", Model.AuthorizationStatus)
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <label class="control-label">Select Card Type</label>
+                    <select class="form-control" id="cmbxUpdateCardTypes" name="CardTypeId">
+                        <option value="">Select Card Type</option>
+                        @foreach (var item in ViewBag.CardTypes)
+                        {
+                            <option value="@item.ID" @((Model?.CardTypeID??0) == item.ID ? "selected" : string.Empty)>@item.Title</option>
+                        }
+                    </select>
+                </div><!-- End col-sm-6 -->
+
+                <div class="col-sm-6">
+                    <label class="control-label">Select Account Type</label>
+                    <select class="form-control" id="cmbxUpdateAccountType" name="AccountTypeId">
+                        <option value="">Select Account Type</option>
+                        @foreach (var item in ViewBag.AccountTypes)
+                        {
+                            <option value="@item.ID" @((Model?.AccountTypeID??0) == item.ID ? "selected" : string.Empty)>@item.Name</option>
+                        }
+                    </select>
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <label class="control-label">Select Card Charges</label>
+                    <select class="form-control" id="cmbxCardCharges" name="CardCharges">
+                        <option value="">Select Card Charges</option>
+                        @*@foreach (var item in ViewBag.CardCharges)
+                            {
+                                <option value="@item.ID">@item.Title</option>
+                            }*@
+                    </select>
+                </div><!-- End col-sm-6 -->
+
+                <div class="col-sm-6">
+                    <label class="control-label">Charges Description</label>
+                    <input type="text" class="form-control" id="txtUpdateTitle" name="Title" placeholder="Title" value="@(Model?.Title??string.Empty)">
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <label class="control-label">Is Card Charge Active</label>
+                    <div class="row chk_bxs chkUpgradeTypes">
+                        <div class="col-md-3">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="activeCheckbox" @((Model?.IsActive ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                    Active
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label class="control-label">FED & Replacement</label>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            @*<label class="control-label">Is FED</label>*@
+                            <div class="row chk_bxs chkFed">
+                                <div class="col-md-12">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="fedUpdateCheckbox" @((Model?.IsFED ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                            Is FED
+                                        </label>
+                                    </div>
+                                </div><!-- End col-md-3 -->
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            @*<label class="control-label">Is Replacement</label>*@
+                            <div class="row chk_bxs chkReplacement">
+                                <div class="col-md-12">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="replacementUpdateCheckbox" @((Model?.IsReplacement ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                            Is Replacement
+                                        </label>
+                                    </div>
+                                </div><!-- End col-md-3 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <label class="control-label">Frequency</label>
+                    <select class="form-control" id="cmbxUpdateFrequency" name="Frequency">
+                        <option value="" @(Model == null ? "selected" : string.Empty)>Select Frequency</option>
+                        <option value="0" @((Model?.Frequency ?? null) == null ? string.Empty : Model.Frequency == "0" ? "selected" : string.Empty)>One Time</option>
+                        <option value="6" @((Model?.Frequency ?? null) == null ? string.Empty : Model.Frequency == "6" ? "selected" : string.Empty)>6 Months</option>
+                        <option value="12" @((Model?.Frequency ?? null) == null ? string.Empty : Model.Frequency == "12" ? "selected" : string.Empty)>12 Months</option>
+                        <option value="24" @((Model?.Frequency ?? null) == null ? string.Empty : Model.Frequency == "24" ? "selected" : string.Empty)>24 Months</option>
+                    </select>
+                </div><!-- End col-sm-6 -->
+
+                <div class="col-sm-6">
+                    <label class="control-label">Amount</label>
+                    <input type="text" class="form-control" id="txtUpdateAmount" name="Amount" placeholder="23456" value="@(Model?.Amount)">
+                </div><!-- End col-sm-6 -->
+            </div><!-- End row -->
+            @*<div class="row form-group">
+                    <div class="col-sm-6">
+                        <label class="control-label">Select Region</label>
+                        <select class="form-control" id="cmbxRegion" name="RegionId">
+                            <option value="">Select Region</option>
+                            @foreach (var item in ViewBag.Regions)
+                            {
+                                <option value="@item.ID">@item.Title</option>
+                            }
+                        </select>
+                    </div><!-- End col-sm-6 -->
+
+                    <div class="col-sm-6">
+                        <label class="control-label">Set Regional %</label>
+                        <input type="text" class="form-control" placeholder="%" id="txtRegionPercent" name="RegionPercent">
+                    </div><!-- End col-sm-6 -->
+                </div>*@<!-- End row -->
+
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <div class="btns_right">
+                        @*<button class="btn btn-cstm" id="btnTempSave">Save</button>*@
+                        <button class="btn btn-cstm" id="btnUpdate">Proceed</button>
+                    </div><!-- End btns_right -->
+                </div><!-- End col-sm-12 -->
+            </div>
+        </div>
+    </div>
+</div><!-- End container -->
+@*<div class="container">
+        <h4 class="main_hdng">Card Changes</h4>
+
+        <div class="row form-group">
+            <div class="col-sm-6">
+                <label class="control-label">Select Card Type</label>
+                <select class="form-control">
+                    <option>Card Type</option>
+                </select>
+            </div><!-- End col-sm-6 -->
+
+            <div class="col-sm-6">
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="cardtype"><span class="checkbox-material"><span class="check"></span></span>
+                        New Card Type
+                    </label>
+
+                    <label>
+                        <input type="radio" name="cardtype"><span class="checkbox-material"><span class="check"></span></span>
+                        Update Exsisting
+                    </label>
+                </div>
+            </div><!-- End col-sm-6 -->
+
+
+        </div><!-- End row -->
+
+        <div class="row form-group">
+            <div class="col-sm-6">
+                <label class="control-label">Title</label>
+                <input type="text" class="form-control" placeholder="Title">
+            </div><!-- End col-sm-6 -->
+
+            <div class="col-sm-6">
+                <label class="control-label">Amount</label>
+                <input type="text" class="form-control" placeholder="23456">
+            </div><!-- End col-sm-6 -->
+
+        </div><!-- End row -->
+
+        <div class="row form-group">
+            <div class="col-sm-6">
+                <label class="control-label">Select Card Charges</label>
+                <select class="form-control">
+                    <option>Card Changes</option>
+                </select>
+            </div><!-- End col-sm-6 -->
+
+            <div class="col-sm-6">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                        Regional Charges
+                    </label>
+
+                    <label>
+                        <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                        Annual Charges
+                    </label>
+                </div>
+            </div><!-- End col-sm-6 -->
+        </div><!-- End row -->
+
+
+        <div class="row form-group">
+            <div class="col-sm-6">
+                <label class="control-label">Region</label>
+                <select class="form-control">
+                    <option>Region</option>
+                </select>
+            </div><!-- End col-sm-6 -->
+
+            <div class="col-sm-6">
+                <label class="control-label">Set %</label>
+                <input type="text" class="form-control" placeholder="%">
+            </div><!-- End col-sm-6 -->
+        </div><!-- End row -->
+
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <div class="btns_right">
+                    <button class="btn btn-cstm">Save</button>
+                </div><!-- End btns_right -->
+            </div><!-- End col-sm-12 -->
+        </div><!-- End row -->
+    </div><!-- End container -->*@
+

@@ -1,0 +1,315 @@
+﻿@using CardIssuanceSystem.Core.Helpers
+@{
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CIS-Soneri Bank | @ViewBag.Title</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/assets/css/bootstrap.css" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/assets/css/font-awesome.min.css" />
+
+    <!-- animate  -->
+    <link href="~/assets/css/animate.css" rel="stylesheet">
+
+    <!-- open sans -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+    <!-- datepicker css -->
+    <link rel="stylesheet" href="~/assets/css/bootstrap-datetimepicker.css" />
+
+
+    <!--datatable css -->
+    <link href="~/assets/css/datatables.min.css" rel="stylesheet" />
+
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+    <link href="~/assets/css/new-changes.css" rel="stylesheet" />
+    <style type="text/css">
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #ffc423;
+            width: 80px;
+            height: 80px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+            margin: 0px auto;
+            position: absolute;
+            top: 40%;
+            left: 45%;
+            /*display:none;*/
+        }
+
+        #overlay {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            background: #000;
+            opacity: 0.8;
+            filter: alpha(opacity=80);
+            display: none;
+            z-index: 100000000000;
+        }
+
+        @@-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        *:fullscreen *:-ms-fullscreen,
+        *:-webkit-full-screen,
+        *:-moz-full-screen {
+            overflow: auto !important;
+        }
+        /* webkit requires explicit width, height = 100% of sceeen */
+/* webkit also takes margin into account in full screen also - so margin should be removed (otherwise black areas will be seen) */
+#elems:-webkit-full-screen {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+    overflow:auto !important;
+}
+
+#elems:-moz-full-screen {
+	margin: 0;
+    overflow:auto !important;
+}
+
+#elems:-ms-fullscreen {
+	margin: 0;
+    overflow:auto !important;
+}
+
+/* W3C proposal that will eventually come in all browsers */
+#elems:fullscreen { 
+	margin: 0;
+    overflow:auto !important;
+}
+
+/*#btnFullScreen{
+    visibility:hidden;
+}*/
+        .datetimeDisplayer {line-height: 68px;color: #5f5f5f;font-weight: 600;position: absolute;right: 15px;}
+        .pos-rel {position: relative;}
+    </style>
+    @RenderSection("CustomCSS", false)
+</head>
+
+<body>
+    <div class="text-center">
+        <div class="pos-rel">
+            <img src="~/assets/images/logo.png" alt="" class="top_Logo">
+            <a href="javascript:void(0)" class="datetimeDisplayer">
+                <i class="fa fa-clock-o"></i> @(DateTime.Now.ToShortDateString()) <span class="timer">@(DateTime.Now.ToString("hh:mm:ss tt"))</span>
+            </a>
+        </div>
+    </div>
+    <div id="elems">
+        <div id="overlay">
+            <div class="loader"></div>
+        </div>
+        @*<input type="submit" id="btnFullScreen" />*@
+        <nav class="navbar navbar-default inr-pgs-nav">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+               <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                            aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="@Url.Action("DashboardView", "Base")">Card Issuance System</a>
+
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                    @*@Navigation(StateHelper.RoleId)*@
+                    @Html.Action("GetMenu", "MainMenu")
+
+                    <!-- End Fourth One -->
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="glyphicon glyphicon-user"></i> @(StateHelper.Username)
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="@Url.Action("ChangePassword", "Login")">
+                                        <i class="fa fa-key"></i> Change Password
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Logout", "Login")">
+                                        <i class="fa fa-sign-out"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!-- End navbar-right -->
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- End container -->
+        </nav>
+        <!-- End navbar-default -->
+        <!-- jquery-3.2.1 -->
+        <script src="~/assets/js/jquery-2.1.1.min.js"></script>
+
+        <!-- Bootstrap 3.3.7 -->
+        <script src="~/assets/js/bootstrap.min.js"></script>
+
+        <!-- moment js -->
+        <script src="~/assets/js/moment-with-locales.js"></script>
+
+        <!-- datepicker js -->
+        <script src="~/assets/js/bootstrap-datetimepicker.js"></script>
+
+
+        <!-- datatabler js -->
+        
+        <script src="~/assets/js/datatables.min.js"></script>
+
+        <script type="text/javascript">
+            var FilterRequestDataUrl = '@Url.Action("FilterAuthorizeScreen", "Request")';
+            var FilterReviewDataUrl = '@Url.Action("FilterAuthorizeScreen", "Review")';
+            var jsTime;
+
+            if (!inIframe()) {
+                location.href = '@Url.Action("MainIndex","Login")';
+            }
+
+            $(function () {
+                $('.datetimepicker1').datetimepicker({ ignoreReadonly: true, format: 'MM/DD/YYYY' });
+                jsTime = new Date('@DateTime.Now');
+                getDate();
+                setInterval(getDate, 1000);
+            });
+
+            function getDate() {
+                jsTime.setTime(jsTime.getTime() + (1000));
+                var currentHours = jsTime.getHours();
+                var currentMinutes = jsTime.getMinutes();
+                var currentSeconds = jsTime.getSeconds();
+                currentMinutes = (currentMinutes < 10 ? "0" : "") + currentMinutes;
+                currentSeconds = (currentSeconds < 10 ? "0" : "") + currentSeconds;
+                var timeOfDay = (currentHours < 12) ? "AM" : "PM";
+                currentHours = (currentHours > 12) ? currentHours - 12 : currentHours;
+                currentHours = (currentHours == 0) ? 12 : currentHours;
+                var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+
+                $(".timer").text(currentTimeString);
+            }
+
+            /* Get into full screen */
+            function GoInFullscreen(element) {
+                if (element.requestFullscreen)
+                    element.requestFullscreen();
+                else if (element.mozRequestFullScreen)
+                    element.mozRequestFullScreen();
+                else if (element.webkitRequestFullscreen)
+                    element.webkitRequestFullscreen();
+                else if (element.msRequestFullscreen)
+                    element.msRequestFullscreen();
+            }
+
+            /* Get out of full screen */
+            function GoOutFullscreen() {
+                if (document.exitFullscreen)
+                    document.exitFullscreen();
+                else if (document.mozCancelFullScreen)
+                    document.mozCancelFullScreen();
+                else if (document.webkitExitFullscreen)
+                    document.webkitExitFullscreen();
+                else if (document.msExitFullscreen)
+                    document.msExitFullscreen();
+            }
+
+            /* Is currently in full screen or not */
+            function IsFullScreenCurrently() {
+                var full_screen_element = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || null;
+
+                // If no element is in full-screen
+                if (full_screen_element === null)
+                    return false;
+                else
+                    return true;
+            }
+
+            function inIframe() {
+                try {
+                    return window.self !== window.top;
+                } catch (e) {
+                    return true;
+                }
+            }
+
+            window.onload = function () {
+                //$('#btnFullScreen').trigger('click');
+            }
+
+            $(document).on('click', '#btnFullScreen', function () {
+                GoInFullscreen($("#elems").get(0));
+            });
+        </script>
+        <div>
+            @{
+                var path = Request.Url.AbsolutePath;
+                var title = StateHelper.Pages.FirstOrDefault(e => e.URL.ToLower().Contains(path.ToLower()))?.Title ?? ViewContext.RouteData.Values["action"].ToString();
+            }
+            <div class="container">
+                <h4 class="main_hdng">@title</h4>
+            </div>
+            @RenderBody()
+        </div>
+
+        <script src="~/Content/Scripts.js"></script>
+        <script type="text/javascript">
+            //$(document).ready(function () {
+            //    $(document).on("keydown", function (ev) {
+            //        debugger
+            //        console.log(ev.keyCode);
+            //        if (ev.keyCode === 27 || ev.keyCode === 122 || ev.keyCode === 123)
+            //        {
+            //            ev.preventDefault();
+            //            return false;
+            //        }
+                       
+            //    })
+            //});
+            var genericMessage = '@CustomMessages.GenericErrorMessage';
+            var siteUrl = '@Constants.AppSettings.SiteUrl';
+        </script>
+        @RenderSection("CustomJS", false)
+    </div>
+</body>
+</html>

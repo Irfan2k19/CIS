@@ -1,0 +1,216 @@
+﻿@model List<CardIssuanceSystem.DAL.tbl_IncomeAccounts>
+@{
+    ViewBag.Title = "Income Account Configuration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="form-group row">
+        <div class="col-sm-12">
+            <label class="control-label">Account Types</label>
+            <select class="form-control" id="cmbxAccountType" name="AccountType">
+                <option value="">Select Account Type</option>
+                @foreach (var item in Model)
+                {
+                    <option value="@item.ID">@item.AccountType</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <label class="control-label">Code GL</label>
+            <input id="txtCodeGL" name="CodeGL" type="text" class="form-control" />
+        </div><!-- End col-sm-3 -->
+
+        <div class="col-sm-6">
+            <label class="control-label">Account Mapping</label>
+            <input id="txtAccountMapping" name="AccountMapping" type="text" class="form-control" />
+        </div><!-- End col-sm-3 -->
+    </div>
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <label class="control-label">Classification</label>
+            <input id="txtClassification" name="Classification" type="text" class="form-control" />
+        </div><!-- End col-sm-3 -->
+
+        <div class="col-sm-6">
+            <label class="control-label">Take On</label>
+            <input id="txtTakeOn" name="TakeOn" type="text" class="form-control" />
+        </div><!-- End col-sm-3 -->
+    </div>
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <label class="control-label">Category</label>
+            <input id="txtCategory" name="Category" type="text" class="form-control" />
+        </div><!-- End col-sm-3 -->
+
+        <div class="col-sm-6">
+            <label class="control-label">Internal Account</label>
+            <input id="txtInternalAccount" name="InternalAccount" type="text" class="form-control" />
+        </div><!-- End col-sm-3 -->
+    </div>
+
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <label class="control-label">Description GL</label>
+            <input id="txtDescriptionGL" name="DescriptionGL" type="text" class="form-control" />
+        </div><!-- End col-sm-3 -->
+        <div class="col-sm-6">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="chkIsActive" name="IsActive" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                    Is Active
+                </label>
+            </div>
+        </div><!-- End col-sm-3 -->
+    </div>
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="btns_right">
+                <button id="btnSave" class="btn btn-cstm">Save</button>
+                <button id="btnCancel" class="btn btn-cstm btn-light" onclick="location.reload();">Cancel</button>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-3 -->
+    </div>
+</div>
+
+@section CustomCSS{
+    <style type="text/css">
+        .ierror {
+            border: 1px solid #F00;
+        }
+    </style>
+    }
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            $('.form-control').on('keyup', function () {
+                if ($(this).hasClass('ierror')) {
+                    $(this).removeClass('ierror');
+                }
+            });
+            $('#cmbxAccountType').on('change', function () {
+                if ($(this).val() !== "" && $(this).hasClass('ierror')) {
+                    $(this).removeClass('ierror');
+                }
+
+                if ($(this).val() === "") {
+                    return false;
+                }
+                else {
+                    var id = parseInt($(this).val());
+                    var url = '@Url.Action("GetIncomeAccount", "Configuration")';
+                    ShowLoader();
+                    ajaxCall(url, { requestId: id }, function (resp) {
+                        HideLoader();
+                        if (typeof (resp) === 'object'){
+                            if (resp.IsSuccess) {
+                                if (resp.Response !== null) {
+                                    $('#txtCodeGL').val(resp.Response.CodeGL);
+                                    $('#txtAccountMapping').val(resp.Response.AccountMapping);
+                                    $('#txtClassification').val(resp.Response.Classification);
+                                    $('#txtTakeOn').val(resp.Response.TakeOn);
+                                    $('#txtCategory').val(resp.Response.Category);
+                                    $('#txtInternalAccount').val(resp.Response.InternalAccount);
+                                    $('#txtDescriptionGL').val(resp.Response.DescriptionGL);
+                                    if (resp.Response.IsActive) {
+                                        $('#chkIsActive').prop('checked', true);
+                                    }
+                                }
+                            }
+                            else {
+                                alert(resp.ErrorMessage);
+                            }
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        alert("Error Occured");
+                    }, function (err) {
+                        HideLoader();
+                        alert("Error Occured");
+                    });
+                }
+
+            });
+
+            $('#btnSave').on('click', function () {
+                if (Validate())
+                {
+                    var id = $('#cmbxAccountType').val();
+                    var accounttype = $('#cmbxAccountType :selected').text();
+                    var codegl = $('#txtCodeGL').val();
+                    var accountmapping = $('#txtAccountMapping').val();
+                    var classification = $('#txtClassification').val();
+                    var takeon = $('#txtTakeOn').val();
+                    var category = $('#txtCategory').val();
+                    var internalaccount = $('#txtInternalAccount').val();
+                    var descriptiongl = $('#txtDescriptionGL').val();
+                    var isactive = $('#chkIsActive').is(':checked');
+                    var url = '@Url.Action("UpdateIncomeAccount", "Configuration")';
+                    ShowLoader();
+                    ajaxCall(url, { ID: id, AccountType: accounttype, CodeGL: codegl, AccountMapping: accountmapping, Classification: classification, TakeOn: takeon, Category: category, InternalAccount: internalaccount, DescriptionGL: descriptiongl, IsActive: isactive }, function (resp) {
+                        HideLoader();
+                        if (typeof (resp) === 'object') {
+                            alert(resp.ErrorMessage);
+                        }
+                    }, function (fail) {
+                        alert("Error Occured");
+                        HideLoader();
+                    }, function (err) {
+                        alert("Error Occured");
+                        HideLoader();
+                    });
+                }
+            });
+        });
+
+        function Validate() {
+            if ($('#cmbxAccountType').val() === "") {
+                alert("Please select account type");
+                $('#cmbxAccountType').addClass('ierror');
+                return false;
+            }
+            else if ($('#txtCodeGL').val() === "") {
+                alert("Please enter code gl");
+                $('#txtCodeGL').addClass('ierror');
+                return false;
+            }
+            else if ($('#txtAccountMapping').val() === "") {
+                alert("Please enter account mapping");
+                $('#txtAccountMapping').addClass('ierror');
+                return false;
+            }
+            else if ($('#txtClassification').val() === "") {
+                alert("Please enter classification");
+                $('#txtClassification').addClass('ierror');
+                return false;
+            }
+            else if ($('#txtTakeOn').val() === "") {
+                alert("Please enter takeon");
+                $('#txtTakeOn').addClass('ierror');
+                return false;
+            }
+            else if ($('#txtCategory').val() === "") {
+                alert("Please enter category");
+                $('#txtCategory').addClass('ierror');
+                return false;
+            }
+            else if ($('#txtInternalAccount').val() === "") {
+                alert("Please enter internal account");
+                $('#txtInternalAccount').addClass('ierror');
+                return false;
+            }
+            else if ($('#txtDescriptionGL').val() === "") {
+                alert("Please enter description gl");
+                $('#txtDescriptionGL').addClass('ierror');
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+    </script>
+} 

@@ -1,0 +1,19 @@
+﻿@model CardIssuanceSystem.Core.ViewModel.MessageVM
+@{
+    ViewBag.Title = "Message";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    $(function () {
+        $('.maiDiv .divThree').css('display', 'none');
+    });
+</script>
+
+<div class="container">
+    <div class="form-group row">
+        <div class="homepage-headline">
+            <h1>@Model.Title</h1>
+            <h2>@Html.Raw(Model.Paragraph)</h2>
+        </div>
+    </div>
+</div>

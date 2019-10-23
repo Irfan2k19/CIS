@@ -1,0 +1,167 @@
+﻿@model CardIssuanceSystem.Core.ViewModel.UserVM
+@{
+    ViewBag.Title = "Register";
+    //Layout = "~/Views/Shared/_LoginLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section CustomCSS{
+    <link rel="stylesheet" href="~/assets/css/custom.css" />
+    <style type="text/css">
+        .btn-login:hover {
+            color: #000 !important;
+        }
+    </style>
+}
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            if (parseInt('@Model.ID') <= 0)
+            {
+                ClearFields();
+            }
+            $('#btn-register').on('click', function (e) {
+                debugger
+                var id = parseInt('@(Model?.ID ?? 0)');
+                var name = $('#txtName').val();
+                var username = $('#txtUserName').val();
+                var password = "";
+                var role = 'c';
+                var EmpCode = $('#txtEmpCode').val();
+                var ExpiryDate = $('#txtexpirydate').val();
+                if (ExpiryDate!=null || ExpiryDate !='' || typeof(ExpiryDate)!=undefined)
+                {
+                    ExpiryDate = ExpiryDate + ' 23:59:58.998';
+                }
+                
+                var url = '@Url.Action("Register","Login")';
+
+                if (name == null || name == "" || typeof (name) == undefined || name == "undefined" || name == '') {
+                    //alert("Please Enter UserName");
+                    $('#txtName').parent().siblings('.lblerror').text("Please enter name");
+                    return false;
+                }
+
+                if (username == null || username == "" || typeof (username) == undefined || username == "undefined" || username == '') {
+                    //alert("Please Enter UserName");
+                    $('#txtUserName').parent().siblings('.lblerror').text("Please enter username");
+                    return false;
+                }
+
+                //if (password == null || password == "" || typeof (password) == undefined || password == "undefined" || password == '') {
+                //    //alert("Please Enter Password");
+                //    $('#txtPassword').siblings('.lblerror').text("Please enter password");
+                //    return false;
+                //}
+
+                //if (role == null || role == "" || typeof (role) == undefined || role == "undefined" || role == '') {
+                //    //alert("Please Enter Password");
+                //    $('#cmbxRole').parent().siblings('.lblerror').text("Please select role");
+                //    return false;
+                //}
+
+                ShowLoader();
+                ajaxCall(url, { ID: id, UserName: name, UserLogin: username, UserPassword: password, RoleTitle: role, ExpiryDate: ExpiryDate, EmpCode: EmpCode }, function (resp) {
+                    if (typeof (resp) === "object" && resp.IsSuccess) {
+                        HideLoader();
+                        alert(resp.ErrorMessage);
+                        window.location.reload();
+                    }
+                    else {
+                        HideLoader();
+                        alert(resp.ErrorMessage);
+                    }
+                }, function (fail) {
+                    HideLoader();
+                    alert(genericMessage);
+                    console.log(fail.responseText);
+                }, function (err) {
+                    HideLoader();
+                    if (err.responseText.indexOf("IsSuccess") >= 0) {
+                        alert(err.responseJSON.ErrorMessage);
+                    }
+                    else {
+                        alert(genericMessage);
+                    }
+                    console.log(err.responseText);
+                });
+            });
+
+            $('.formfields').on('focus', function () {
+                $(this).parent().siblings('.lblerror').text('');
+            });
+
+        });
+
+        function ClearFields() {
+            $('#txtName').val('');
+            $('#txtUserName').val('');
+            $('#txtEmpCode').val('');
+            $('#cmbxRole').val('');
+            $('#txtexpirydate').val('');
+
+        }
+    </script>
+
+}
+
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <h2>User Registration</h2>
+        <hr />
+        <form>
+            <div class="form-group">
+                <label for="txtName">User Name</label>
+                <div class="input-group">
+                    <input type="text" id="txtName" class="form-control formfields" placeholder="User Name" value="@(Model != null ? Model.UserName : string.Empty)" aria-describedby="basic-addon1" required>
+                    <span class="input-group-addon" id="basic-addon1">i.e: John Doe</span>
+                </div>
+                <label class="lblerror" style="color:red;"></label>
+            </div>
+            <div class="form-group">
+                <label for="txtUserName">User Email</label>
+                <input type="text" id="txtUserName" class="form-control formfields" placeholder="User Email" value="@(Model != null ? Model.UserLogin : string.Empty)" required>
+                <label class="lblerror" style="color:red;"></label>
+            </div>
+
+            <div class="form-group">
+                <label for="txtEmpCode">Employee Code </label>
+                <input type="text" id="txtEmpCode" class="form-control formfields" placeholder="Employee Code" value="@(Model != null ? Model.EmpCode : string.Empty)" required>
+                <label class="lblerror" style="color:red;"></label>
+            </div>
+
+
+            <div class="form-group">
+                <label for="txtexpirydate">Expiry Date </label>
+                <div class='input-group date datetimepicker1'>
+                    <input type='text' class="form-control from_date"  id="txtexpirydate" value="@(Model != null ? Model.ExpiryDate : null)" readonly />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group" style="display:none;">
+                <label for="txtUserName">Role</label>
+                <select class="form-control formfields" id="cmbxRole" placeholder="Role Title" required>
+                    
+                    @*<option value="" @(Model == null ? "selected" : string.Empty)>Please select role</option>*@
+                    @*<option value="c" @(Model != null ? Model.RoleTitle == "c" ? "selected" : string.Empty : string.Empty)>Creator</option>*@
+                    @*<option value="u" @(Model != null ? Model.RoleTitle == "u" ? "selected" : string.Empty : string.Empty)>Authenticator</option>*@
+                </select>
+                <label class="lblerror" style="color:red;"></label>
+            </div>
+
+            <div class="form-group">
+                <button id="btn-register" class="btn btn-cstm btn-login">Register</button>
+            </div><!-- End form-group -->
+
+            <div class="form-group">
+                <button id="btn-register" class="btn btn-cstm btn-login" onclick="ClearFields()" style="background-color:lightgray">Cancel</button>
+            </div>
+
+
+            @*<button type="submit" class="btn btn-default">Submit</button>*@
+        </form>
+    </div>
+
+</div>

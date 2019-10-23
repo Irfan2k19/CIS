@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewBag.Title = "SetTimeoutScreen";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container">
+    <div class="form-group row">
+        <div class="col-sm-3">
+            <label class="control-label">Session Timeout(mins)</label>
+            <input id="sessiontime" type="text" class="form-control" placeholder="Session Timeout(mins)" value="@ViewBag.Timeout">
+        </div>
+
+        <div class="col-sm-9">
+            <button class="btn btn-cstm btnUpdate">Update</button>
+        </div>
+    </div>
+
+    
+
+
+
+</div>
+<script type="text/javascript">
+    
+    $('.btnUpdate').click(function () {
+        var sessiontime = $('#sessiontime').val();
+        
+
+        
+        var Url = '@Url.Action("AddTimeout", "Configuration")';
+        if (sessiontime === '' || sessiontime === null || typeof (sessiontime) === 'undefined') {
+            $('#sessiontime').css("border", "red solid 1px");
+            alert("Please Enter Timeout Value");
+            return false;
+        }
+        if (!NumberValue(sessiontime))
+        {
+
+            alert("Only Numeric Value is Allowed");
+            return false;
+        }
+        
+        if (sessiontime <= 0) {
+
+            alert("Value should be greater than zero");
+            return false;
+        }
+        ShowLoader();
+        ajaxCall(Url, { sessiontime: sessiontime}, function (resp) {
+            //debugger
+            HideLoader();
+            if (resp.result ==true) {
+                alert("Sucessfully Changed");
+                location.reload();
+            } else {
+                alert("Please try again");
+
+            }
+
+        }, function (fail) {
+            HideLoader();
+            //debugger
+            alert(fail.responseText);
+            return false;
+        }, function (err) {
+            //debugger
+            HideLoader();
+            alert(err.responseText);
+            return false;
+        });
+
+    });
+
+
+
+
+    
+</script>
+

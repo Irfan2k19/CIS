@@ -1,0 +1,47 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.CardChargesVM>
+@{ }
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                @*<th>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                            </label>
+                        </div>
+                    </th>*@
+
+                <th>Account Type Name</th>
+                <th>Card Type Name</th>
+                <th>Amount</th>
+                <th>Actions</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @*<td>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                                </label>
+                            </div>
+                        </td>*@
+
+                    <td>@item.AccountTypeName</td>
+                    <td>@item.CardTypeName</td>
+                    <td>@item.Amount</td>
+                    <td>
+                        <a class="btn btn-cstm btn-edit" href="@(Url.Action("AuthorizeCardChargesScreen", "Authorization", new { Id = item.ID }))"><i class="fa fa-eye"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div><!-- End table-responsive -->
+

@@ -1,0 +1,119 @@
+﻿@using CardIssuanceSystem.Core.Helpers
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>CIS-Soneri Bank | @ViewBag.Title</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/assets/css/bootstrap.css" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/assets/css/font-awesome.min.css" />
+
+    <!-- animate  -->
+    <link href="~/assets/css/animate.css" rel="stylesheet">
+
+    <!-- open sans -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+    <!-- datepicker css -->
+    <link rel="stylesheet" href="~/assets/css/bootstrap-datetimepicker.css" />
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+
+    <!-- dashborad login -->
+    <link rel="stylesheet" href="~/assets/css/custom.css" />
+
+
+
+    <style type="text/css">
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #ffc423;
+            width: 80px;
+            height: 80px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+            margin: 0px auto;
+            position: absolute;
+            top: 40%;
+            left: 45%;
+            /*display:none;*/
+        }
+
+        #overlay {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            background: #000;
+            opacity: 0.8;
+            filter: alpha(opacity=80);
+            display: none;
+            z-index: 1;
+        }
+
+        @@-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="overlay">
+        <div class="loader"></div>
+    </div>
+
+    @RenderBody()
+    <!-- jquery-3.2.1 -->
+    <script src="~/assets/js/jquery-2.1.1.min.js"></script>
+
+    <!-- Bootstrap 3.3.7 -->
+    <script src="~/assets/js/bootstrap.min.js"></script>
+
+    <!-- moment js -->
+    <script src="~/assets/js/moment-with-locales.js"></script>
+
+    <!-- datepicker js -->
+    <script src="~/assets/js/bootstrap-datetimepicker.js"></script>
+
+    <script src="~/Content/Scripts.js"></script>
+    <script type="text/javascript">
+        var genericMessage = '@CustomMessages.GenericErrorMessage';
+        $(function () {
+            $('.datetimepicker1').datetimepicker();
+        });
+
+        window.onload = function () {
+            //var win = window.open("", "full", "dependent=yes, fullscreen=yes, scrollbars=yes");
+            //win.location = window.location.href;
+            //window.opener = null;
+        }
+    </script>
+
+    @RenderSection("CustomJS",false)
+</body>
+</html>
+

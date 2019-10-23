@@ -1,0 +1,254 @@
+/* login */
+
+.login-bg
+{
+	background-image: url(../images/img-bg.jpg);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	height: 100%;
+}
+
+
+.sidebar-login 
+{
+	background-color: #00000066;
+	margin-top: 26%;
+	color:  #fff;
+	padding: 15px 25px;
+}
+
+.sidebar-login .logo-row
+{
+	margin-right: -25px;
+	margin-left:  -25px;
+}
+
+.sidebar-login .img-logo
+{
+    background-color: #fff;
+    width: 100%;
+    text-align: center;
+    padding: 20px 250px;
+    position: relative;
+    bottom: 14px;
+}
+
+.login-form 
+{
+    padding: 15px;
+	position: relative;
+}
+
+.login-form:after 
+{
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 70%;
+    background-color: #ffc42333;
+    right: -5px;
+    top: 15%;
+}
+
+.login-hdng 
+{
+    font-family: 'Open Sans', sans-serif;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+
+
+.login-form .form-group
+{
+	position: relative;
+	/* margin-bottom: 30px; */
+}
+
+.login-form .form-group .glyphicon
+{
+    position: absolute;
+    top: 18px;
+    left: 8px;
+    color: #ffc42369;
+}
+	
+.login-form .form-control
+{
+	background-color: #1212108a;
+	border:  0;
+	border-bottom: 1px solid #ffc42369;
+	color: #fff;
+	padding-left: 30px;
+	height:  50px;
+	font-size: 15px;
+}
+
+.login-form .form-control::-webkit-input-placeholder  /* Chrome/Opera/Safari */
+{
+	color: #fff;
+}
+
+.login-form .form-control::-moz-placeholder /* Firefox 19+ */
+{ 
+	color: #fff;
+}
+
+.login-form .form-control:-ms-input-placeholder /* IE 10+ */
+{ 
+	color: #fff;
+}
+
+.login-form .form-control:-moz-placeholder /* Firefox 18- */
+{ 
+	color: #fff;
+}
+
+.btn-login 
+{
+    background-color: #ffc423;
+    border-radius: 0;
+    color: #333;
+    width: 100%;
+    font-weight:  bold;
+    text-transform:  uppercase;
+    padding:  12px 12px;
+}
+
+.btn-login:hover
+{
+	color: #fff;
+}
+
+.sidebar-login .cntnt_hdng
+{
+	margin-top: 36px;
+}
+
+.cntnt 
+{
+    font-size: 20px;
+    margin-top: 30px;
+}
+
+
+/* End login */
+
+
+/* kpis */
+.kpis 
+{
+    background-color: transparent;
+    color: #5f5f5f;
+    border: 1px solid #ffc423;
+    padding: 15px;
+    margin-bottom: 30px;
+    position:  relative;
+}
+
+.kpis .fa 
+{
+    display: block;
+    font-size: 50px;
+    margin-bottom: 40px;
+    color:  #b5b7b9;
+    margin-left: 5px;
+}
+
+.kpis .txt 
+{
+    font-size: 18px;
+    position: relative;
+    text-transform:  uppercase;
+    font-weight:  bold;
+    bottom: 10px;
+}
+
+.kpis .no 
+{
+	float: right;
+    font-size: 36px;
+    position: absolute;
+    font-weight: bold;
+    top: 16px;
+    right: 20px;
+
+}
+
+.kpis .txt:after
+{
+    content: '';
+    position: absolute;
+    border: 1px solid #ffc423;
+    bottom: -6px;
+    left: 0;
+    width: 50%;
+}
+
+/* end kpis */
+
+/* modal */
+
+.modal-content
+{
+	border-radius: 0;
+}
+
+.modal-header 
+{
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    background-color: #5f5f5f;
+    color: #fff;
+}
+
+.modal-header .close
+{
+	color: #fff;
+}
+
+.modal-footer
+{
+	border-top: 0;
+}
+
+.modal-footer .btn-cstm
+{
+	margin: 0;
+}
+
+
+/* end modal */
+
+@media (max-height: 768px)
+{
+	.sidebar-login
+	{
+		margin-top: 20px;
+	}
+}
+
+@media (max-width: 768px)
+{
+	
+}
+
+@media (max-width: 767px)
+{
+	.sidebar-login .img-logo
+	{
+		padding: 20px 100px;
+	}
+	
+	.sidebar-login .cntnt_hdng 
+	{
+		margin-top: 0;
+		font-size: 24px;
+	}
+	
+	.cntnt 
+	{
+		font-size: 18px;
+		margin-top: 10px;
+	}
+}

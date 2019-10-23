@@ -1,0 +1,61 @@
+﻿@model CardIssuanceSystem.DAL.tbl_Profile
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container">
+    <div class="form-group row">
+        <div class="col-md-6">
+            <label class="control-label">Title</label>
+            <input type="text" class="form-control" id="txtTitle" value="@(Model == null ? string.Empty : Model.Title)" maxlength="100"/>
+        </div>
+        <div class="col-md-6">
+            <label class="control-label">Is Profile Active</label>
+            <div class="row chk_bxs">
+                <div class="col-md-12">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="optionsCheckbox" @(Model == null ? string.Empty : Model.IsActive == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                            Is Active
+                        </label>
+                    </div>
+                </div>
+            </div>
+                </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-12">
+            <input type="submit" class="btn pull-right btn-cstm" id="btnSubmit" />
+        </div>
+    </div>
+</div>
+
+@section CustomJS
+{
+    <script type="text/javascript">
+        $(function () {
+            $('#btnSubmit').on('click', function (e) {
+                var id = parseInt('@(Model?.ID ?? 0)');
+                var title = $('#txtTitle').val();
+                var isActive = $('input[name="optionsCheckbox"]').is(':checked') == true ? "true" : "false";
+                var url = '@Url.Action("AddUpdateProfile","Profile")';
+                if (!title) {
+                    alert('Please provide title');
+                }
+                else {
+                    ajaxCall(url, { ID: id, Title: title, IsActive: isActive }, function (resp) {
+                        if (typeof (resp) === "object" && resp != null) {
+                            alert("Success!");
+                            location.reload();
+                        }
+                    }, function (fail) {
+                        alert("Failure");
+                    }, function (err) {
+                        alert("Error");
+                    });
+                }
+            });
+        });
+    </script>
+    }
+

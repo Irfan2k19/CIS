@@ -1,0 +1,74 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.RequestForExportVM>
+@{
+    ViewBag.Title = "DemoReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            $('#btnSubmit').click(function () {
+                Filter();
+            });
+        });
+
+        function Filter() {
+            var brCode = $('#txtBranchCode').val();
+            var reqType = $('#cmbxRequestType').val();
+            var cardType = $('#cmbxCardType').val();
+            var url = '@Url.Action("PartialDemoReport", "Report")';
+
+            LoadPartial('.table-responsive', url, { branchCode: brCode, requestType: reqType, cardType: cardType }, false, null, null, null, function () {
+
+            });
+            //ajaxCall(url, { branchCode: brCode, requestType: reqType, cardType: cardType },);
+        }
+    </script>
+    }
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            @*<h4 class="main_hdng">REPORT FILTER</h4>*@
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <label class="control-label">BRANCH </label>
+                    <select class="form-control" id="txtBranchCode">
+                        <option value="0001">0001</option>
+                        <option value="0002">0002</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Request Type</label>
+                    <select class="form-control" id="cmbxRequestType">
+                        <option value="N">New Card Request</option>
+                        <option value="U">Card Upgade Request</option>
+                        <option value="A">Card Ammendment Request</option>
+                        <option value="R">Card Replacement Request</option>
+                        <option value="L">Card Linking Request</option>
+                        <option value="D">Card DeLinking Request</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Card Type</label>
+                    <select class="form-control" id="cmbxCardType">
+                        <option value="1">Gold</option>
+                        <option value="2">Silver</option>
+                        <option value="3">Diamond</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label"></label>
+                    <input type="submit" class="form-control btn btn-default" id="btnSubmit"/>
+                </div>
+
+                </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="table-responsive">
+             @Html.Partial("_partialDemoReport" , Model)
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- End container -->

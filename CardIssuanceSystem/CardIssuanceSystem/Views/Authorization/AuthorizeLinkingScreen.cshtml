@@ -1,0 +1,349 @@
+﻿@using CardIssuanceSystem.DAL
+@model CardIssuanceSystem.DAL.tbl_Requests
+@{
+    ViewBag.Title = "Account Linking Authorization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var existingCard = ViewBag.ExistingCardNumber as tbl_Customer_Cards;
+}
+@section CustomJS{
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#UnEditable :input").attr("disabled", true);
+
+            $('#btnproceed').click(function () {
+                //debugger
+                ShowLoader();
+                var RequestId = '@Model.ID';
+                var RequestType = '@Model.RequestType';
+                var AuthorizationStatus = $('input[name=correct-ans]:checked').val();
+                var AuthorizeComments = $('#AuthorizeComments').val();
+                var CIF = '@ViewBag.AccountInfo.CIF';
+                var LinkRequest = '@Model.LinkingDelinkingAccount';//'@ViewBag.AccountstoLink';
+                var CardNo = '@Model.CardNo';
+                var Url = '@Url.Action("AuthorizeLinkingRequest", "Authorization")';
+
+
+                var DrCustomerAccountNumber = '@Model.AccountNo';
+                var CardTypeId = '@Model.CardTypeID';
+
+                if ($('input[name=correct-ans]:checked').val() === undefined || $('input[name=correct-ans]:checked').val() === "") {
+                    HideLoader();
+                    alert("Action required!");
+                    return false;
+                }
+
+               
+                if (AuthorizationStatus === "R" && AuthorizeComments === "") {
+                    HideLoader();
+                    alert("Comment required!");
+                    return false;
+                }
+                else {
+                    ajaxCall(Url, { RequestId: RequestId,RequestType:RequestType, AuthorizationStatus: AuthorizationStatus, AuthorizeComments: AuthorizeComments, DrCustomerAccountNumber: DrCustomerAccountNumber, CardTypeId: CardTypeId, LinkRequest: LinkRequest, CardNo: CardNo, CIF:CIF}, function (resp) {
+                        debugger
+                        HideLoader();
+                        //alert(resp.LinkedSuccessfully.length + "Accounts Successfully Linked     " + resp.LinkedFailed.length + "  Accounts Linking Failed");
+                        
+                        if (resp.IsSuccess)
+                        {
+                        alert(resp.LinkedSuccessfully + " Accounts Successfully Linked     " + resp.LinkedFailed + "  Accounts Linking Failed  ");
+                         location.reload();
+                     } else
+                     {
+                            alert(resp.LinkedSuccessfully + " Accounts Successfully Linked     " + resp.LinkedFailed + "  Accounts Linking Failed     " + JSON.stringify(resp.ErrorMessage));
+                            location.reload();
+                     }
+                      
+                    }, function (fail) {
+                        HideLoader();
+                        alert("Failure");
+                    }, function (err) {
+                        HideLoader();
+                        alert("Error");
+                    });
+                }
+            });
+        });
+
+
+    </script>
+}
+
+<style>
+    .del-account{
+    position: absolute;
+    z-index: 9;
+    top: 0;
+    line-height: normal;
+    font-size: 16px;
+    background: #b5b7b9;
+    right: 16px;
+    padding: 5px 8px 6px;
+    cursor: pointer;
+}
+.section-filter .filter-option{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+</style>
+<div class="container">
+    <div id="UnEditable">
+
+        <div class="row form-group">
+            <!-- <div class="col-sm-3">
+                <label class="control-label">Request No</label>
+                <input type="text" class="form-control">
+            </div> -->
+            <!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Salutation</label>
+                <select class="form-control">
+                    <option>@Model.Salutation</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Card Title</label>
+                <input type="text" class="form-control" value="@Model.CardTitle" disabled>
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Existing Card No</label>
+                <input type="text" class="form-control" value="@(existingCard?.CardNo ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Default Account #</label>
+                <input type="text" class="form-control" value="@Model.AccountNo">
+            </div><!-- End col-sm-3 -->
+        </div><!-- End row -->
+
+        <div class="row form-group">
+
+
+            <div class="col-sm-3">
+                <label class="control-label">Default Account Title</label>
+                <input type="text" class="form-control" value="@Model.CardTitle">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Request Date</label>
+                <div class='input-group date datetimepicker1'>
+                    <input type='text' class="form-control" id="RequestDate" readonly value="@Model.RequestDate"/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3" style="display:none">
+                <label class="control-label">Account To Be Linked</label>
+                <select class="form-control">
+                    <option>@Model.LinkingDelinkingAccount</option>
+                </select>
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+            </div><!-- End col-sm-3 -->
+        </div><!-- End row -->
+
+        <h4 class="main_hdng">Account to be Linked</h4>
+
+        <div class="row form-group">
+            <div class="q_1">
+            @foreach (var item in (ViewBag.AccountstoLink))
+            {
+                <div class="col-sm-3">
+
+                    <input type="text" class="form-control" style='margin-bottom: 15px' value="@item">
+                    <div class="del-account" style="display:none"><span>x</span></div>
+                </div>
+            }
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-12" style="display:none">
+                <button class="btn btn-cstm btn-add-ans1" style="margin-top: 5px">Add Account</button>
+                <button class="btn btn-cstm" style="margin-top: 5px">Submit</button>
+            </div>
+        </div>
+
+        <h4 class="main_hdng">Customer Information</h4>
+
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Customer ID</label>
+                <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.CIF?? 0)">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Customer Name</label>
+                <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.CustomerName ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Account Title</label>
+                <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.AccountTitle ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+        </div><!-- End row -->
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <label class="control-label">Account Address</label>
+                <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.Address ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <label class="control-label">Customer Address 1</label>
+                <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.Address2 ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <label class="control-label">Customer Address 2</label>
+                <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.Address3 ?? string.Empty)">
+            </div><!-- End col-sm-3 -->
+        </div>
+            <div class="row form-group">
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No</label>
+                    <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.Mobile ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 1</label>
+                    <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.Mobile2 ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 2</label>
+                    <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.Mobile3 ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 3</label>
+                    <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.Mobile4 ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+
+            </div><!-- End row -->
+
+            <div class="row form-group">
+
+                <div class="col-sm-3">
+                    <label class="control-label">Phone Res</label>
+                    <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.LandlineNo ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Phone Off</label>
+                    <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.PhoneOffice ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Fax No</label>
+                    <input type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Email</label>
+                    <input type="email" class="form-control" value="@(ViewBag.AccountInfo?.Email ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Date of Birth</label>
+                    <div class='input-group date'>
+                        <input type='text' class="form-control" value="@(ViewBag.AccountInfo?.DateofBirth == null ? string.Empty : ViewBag.AccountInfo?.DateofBirth.ToString("dd/MM/yyyy"))" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Father's Name</label>
+                    <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.FatherName ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Mother's Maiden Name</label>
+                    <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.MotherMaidenName ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Identification</label>
+                    <select class="form-control">
+                        <option>@(ViewBag.AccountInfo?.IdentificationType ?? string.Empty)</option>
+                    </select>
+                </div><!-- End col-sm-3 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Identification No</label>
+                    <input type="text" class="form-control" value="@(ViewBag.AccountInfo?.Identification ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Old NIC</label>
+                    <input type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Product</label>
+                    <input id="Product" type="text" class="form-control" value="@(ViewBag.T24AccountInfo?.Product ?? string.Empty)" />
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Operating Instruction</label>
+                    <input id="OperatingInst" type="text" class="form-control" value="@(ViewBag.T24AccountInfo?.OpInstructions ?? string.Empty)" />
+                </div><!-- End col-sm-3 -->
+
+            </div>
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Sector</label>
+                    <input id="Sector" type="text" class="form-control" value="@(ViewBag.T24AccountInfo?.Sector ?? string.Empty)" />
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Nationality</label>
+                    <input id="Nationality" type="text" class="form-control" value="@(string.Empty)">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Residence</label>
+                    <input id="Residence" type="text" class="form-control" value="@(ViewBag.AccountInfo?.ResidenceStatus ?? string.Empty)">
+                </div><!-- End col-sm-3 -->
+            </div>
+        </div>
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="correct-ans" value="A"><span class="checkbox-material"><span class="check"></span></span>
+                    Approved
+                </label>
+
+                <label>
+                    <input type="radio" name="correct-ans" value="C"><span class="checkbox-material"><span class="check"></span></span>
+                    Reject
+                </label>
+
+                <label>
+                    <input type="radio" name="correct-ans" value="R"><span class="checkbox-material"><span class="check"></span></span>
+                    To be corrected
+                </label>
+            </div>
+        </div><!-- End col-sm-12 -->
+    </div><!-- End row -->
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <textarea class="form-control" rows="5" id="AuthorizeComments" maxlength="50"></textarea>
+        </div><!-- End col-sm-12 -->
+    </div><!-- End row -->
+
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="btns_right">
+                <button class="btn btn-cstm" id="btnproceed">Proceed</button>
+                <a class="btn btn-cstm btn-light" id="btncancel" href="@Url.Action("AuthorizeLinkingScreen", "Request")">Cancel</a>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-3 -->
+    </div><!-- End row -->
+</div><!-- End container -->

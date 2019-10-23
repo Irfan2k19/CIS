@@ -1,0 +1,1867 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SoneriCISModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tbl_Account_Types">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="Code" Type="varchar" MaxLength="100" />
+          <Property Name="Description" Type="varchar" MaxLength="1000" />
+          <Property Name="AuthorizationStatus" Type="char" MaxLength="1" />
+          <Property Name="AuthorizationComments" Type="varchar" MaxLength="500" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_Card_Charges">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="100" />
+          <Property Name="AccountTypeID" Type="int" />
+          <Property Name="CardTypeID" Type="int" />
+          <Property Name="Frequency" Type="varchar" MaxLength="50" />
+          <Property Name="Amount" Type="float" />
+          <Property Name="AuthorizationStatus" Type="char" MaxLength="1" />
+          <Property Name="AuthorizationComments" Type="varchar" MaxLength="500" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsFED" Type="bit" />
+          <Property Name="IsReplacement" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_Card_Charges_Recovery">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CardID" Type="bigint" />
+          <Property Name="ApplicableDate" Type="datetime" />
+          <Property Name="CardChargesID" Type="int" />
+          <Property Name="ApplicableAmount" Type="float" />
+          <Property Name="DeducatedAmount" Type="float" />
+          <Property Name="LastDeducationDate" Type="datetime" />
+          <Property Name="CardNo" Type="varchar" MaxLength="30" />
+          <Property Name="Regional_Charges_ID" Type="int" />
+          <Property Name="AccountNo" Type="varchar" MaxLength="30" />
+          <Property Name="AccountCode" Type="varchar" MaxLength="30" />
+          <Property Name="IsValid" Type="bit" />
+          <Property Name="ChargesDescription" Type="varchar" MaxLength="100" />
+          <Property Name="CIF" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="tbl_Card_Types">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="100" />
+          <Property Name="Description" Type="varchar" MaxLength="500" />
+          <Property Name="AuthorizationStatus" Type="char" MaxLength="1" />
+          <Property Name="AuthorizationComments" Type="varchar" MaxLength="500" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CardCode" Type="varchar" MaxLength="10" />
+          <Property Name="IsIssuance" Type="bit" />
+          <Property Name="IsReplacement" Type="bit" />
+          <Property Name="IsUpgrade" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_Card_Upgrade_Types">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ParentCardType" Type="int" />
+          <Property Name="ChildCardType" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_Currency">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ShortName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Customer_Accounts">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AccountNo" Type="varchar" MaxLength="30" />
+          <Property Name="CIF" Type="varchar" MaxLength="30" />
+          <Property Name="CardNo" Type="varchar" MaxLength="30" />
+          <Property Name="AccountStatusActive" Type="bit" />
+          <Property Name="Salutation" Type="char" MaxLength="10" />
+          <Property Name="AccountTitle" Type="varchar" MaxLength="50" />
+          <Property Name="Address" Type="varchar" MaxLength="500" />
+          <Property Name="Mobile" Type="varchar" MaxLength="50" />
+          <Property Name="DateofBirth" Type="datetime" />
+          <Property Name="MotherMaidenName" Type="varchar" MaxLength="50" />
+          <Property Name="Identification" Type="varchar" MaxLength="50" />
+          <Property Name="CNIC" Type="varchar" MaxLength="50" />
+          <Property Name="AddressType" Type="varchar" MaxLength="100" />
+          <Property Name="AccountTypeID" Type="int" />
+          <Property Name="WaiveCharges" Type="bit" />
+          <Property Name="PassportNo" Type="varchar" MaxLength="30" />
+          <Property Name="LandlineNo" Type="varchar" MaxLength="50" />
+          <Property Name="Email" Type="varchar" MaxLength="100" />
+          <Property Name="Nationality" Type="varchar" MaxLength="40" />
+          <Property Name="AccountCategoryCode" Type="varchar" MaxLength="20" />
+          <Property Name="PhoneOffice" Type="varchar" MaxLength="50" />
+          <Property Name="Company" Type="varchar" MaxLength="200" />
+          <Property Name="IdentificationType" Type="varchar" MaxLength="100" />
+          <Property Name="Mobile2" Type="varchar" MaxLength="50" />
+          <Property Name="Address2" Type="varchar" MaxLength="500" />
+          <Property Name="Address3" Type="varchar" MaxLength="500" />
+          <Property Name="MainMobile" Type="varchar" MaxLength="50" />
+          <Property Name="MainLandline" Type="varchar" MaxLength="100" />
+          <Property Name="MainAddress" Type="varchar" MaxLength="500" />
+          <Property Name="CustomerName" Type="varchar" MaxLength="500" />
+          <Property Name="FatherName" Type="varchar" MaxLength="500" />
+          <Property Name="ResidenceStatus" Type="varchar" MaxLength="50" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="50" />
+          <Property Name="Mobile3" Type="varchar" MaxLength="100" />
+          <Property Name="Mobile4" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="tbl_Customer_Cards">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CardNo" Type="varchar" MaxLength="30" />
+          <Property Name="CardStatusActive" Type="bit" />
+          <Property Name="CardTypeID" Type="int" />
+          <Property Name="AccountNo" Type="varchar" MaxLength="30" />
+          <Property Name="WaiveCharges" Type="bit" />
+          <Property Name="Salutation" Type="char" MaxLength="10" />
+          <Property Name="CardTitle" Type="varchar" MaxLength="30" />
+          <Property Name="CardExpiry" Type="datetime" />
+          <Property Name="CardIssuance" Type="datetime" />
+          <Property Name="CIF" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="tbl_File_Exports">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CardTypes" Type="varchar" MaxLength="500" />
+          <Property Name="BranchCodes" Type="varchar" MaxLength="500" />
+          <Property Name="RequestTypes" Type="varchar" MaxLength="500" />
+          <Property Name="RecordCount" Type="bigint" />
+        </EntityType>
+        <EntityType Name="tbl_File_Imports">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CardTypes" Type="varchar" MaxLength="500" />
+          <Property Name="BranchCodes" Type="varchar" MaxLength="500" />
+          <Property Name="RecordCount" Type="bigint" />
+        </EntityType>
+        <EntityType Name="tbl_File_Paths">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PathType" Type="char" MaxLength="1" />
+          <Property Name="Path" Type="varchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="tbl_IncomeAccounts">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AccountType" Type="varchar" MaxLength="50" />
+          <Property Name="CodeGL" Type="varchar" MaxLength="30" />
+          <Property Name="AccountMapping" Type="varchar" MaxLength="100" />
+          <Property Name="Classification" Type="varchar" MaxLength="10" />
+          <Property Name="TakeOn" Type="varchar" MaxLength="20" />
+          <Property Name="Category" Type="varchar" MaxLength="20" />
+          <Property Name="InternalAccount" Type="varchar" MaxLength="20" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="DescriptionGL" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="tbl_OperatingInstructions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="50" />
+          <Property Name="Description" Type="varchar" MaxLength="500" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_Page">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="100" />
+          <Property Name="SectionID" Type="int" />
+          <Property Name="URL" Type="varchar" MaxLength="50" />
+          <Property Name="SequenceNo" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_Posting_Restrictions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="50" />
+          <Property Name="Description" Type="varchar" MaxLength="500" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_Profile">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="100" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="AuthorizationStatus" Type="char" MaxLength="1" />
+          <Property Name="AuthorizationComments" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="tbl_Profile_Page">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PageID" Type="int" />
+          <Property Name="ProfileID" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_Region">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="50" />
+          <Property Name="Description" Type="varchar" MaxLength="500" />
+          <Property Name="FED" Type="varchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_Regional_Charges">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RegionID" Type="int" />
+          <Property Name="CardChargeID" Type="int" />
+          <Property Name="Description" Type="varchar" MaxLength="500" />
+          <Property Name="PercentageAmount" Type="float" />
+          <Property Name="TotalAmount" Type="float" />
+        </EntityType>
+        <EntityType Name="tbl_Request_Customer_Accounts">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RequestID" Type="bigint" />
+          <Property Name="AccountNo" Type="varchar" MaxLength="30" />
+          <Property Name="CIF" Type="varchar" MaxLength="30" />
+          <Property Name="CardNo" Type="varchar" MaxLength="30" />
+          <Property Name="AccountStatusActive" Type="bit" />
+          <Property Name="Salutation" Type="char" MaxLength="10" />
+          <Property Name="AccountTitle" Type="varchar" MaxLength="50" />
+          <Property Name="Address" Type="varchar" MaxLength="500" />
+          <Property Name="Mobile" Type="varchar" MaxLength="50" />
+          <Property Name="DateofBirth" Type="datetime" />
+          <Property Name="MotherMaidenName" Type="varchar" MaxLength="50" />
+          <Property Name="Identification" Type="varchar" MaxLength="50" />
+          <Property Name="CNIC" Type="varchar" MaxLength="50" />
+          <Property Name="AddressType" Type="varchar" MaxLength="100" />
+          <Property Name="AccountTypeID" Type="int" />
+          <Property Name="WaiveCharges" Type="bit" />
+          <Property Name="PassportNo" Type="varchar" MaxLength="30" />
+          <Property Name="LandlineNo" Type="varchar" MaxLength="50" />
+          <Property Name="Email" Type="varchar" MaxLength="100" />
+          <Property Name="Nationality" Type="varchar" MaxLength="40" />
+          <Property Name="AccountCategoryCode" Type="varchar" MaxLength="20" />
+          <Property Name="PhoneOffice" Type="varchar" MaxLength="50" />
+          <Property Name="Company" Type="varchar" MaxLength="200" />
+          <Property Name="IdentificationType" Type="varchar" MaxLength="100" />
+          <Property Name="Mobile2" Type="varchar" MaxLength="50" />
+          <Property Name="Address2" Type="varchar" MaxLength="500" />
+          <Property Name="Address3" Type="varchar" MaxLength="500" />
+          <Property Name="MainMobile" Type="varchar" MaxLength="50" />
+          <Property Name="MainLandline" Type="varchar" MaxLength="100" />
+          <Property Name="MainAddress" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="tbl_Requests">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RequestType" Type="char" MaxLength="1" />
+          <Property Name="AccountNo" Type="varchar" MaxLength="30" />
+          <Property Name="CIFNo" Type="varchar" MaxLength="30" />
+          <Property Name="CardNo" Type="varchar" MaxLength="30" />
+          <Property Name="WaiveCharges" Type="bit" />
+          <Property Name="StatusEligibility" Type="bit" />
+          <Property Name="FinancialEligibility" Type="bit" />
+          <Property Name="AuthorizationComments" Type="varchar" MaxLength="500" />
+          <Property Name="AuthorizationStatus" Type="char" MaxLength="1" />
+          <Property Name="RequestDate" Type="datetime" />
+          <Property Name="CardTitle" Type="varchar" MaxLength="50" />
+          <Property Name="CardTypeID" Type="int" />
+          <Property Name="Salutation" Type="char" MaxLength="10" />
+          <Property Name="LinkingDelinkingAccount" Type="nvarchar" MaxLength="100" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsExported" Type="bit" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="AuthorizerID" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_Section">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="100" />
+          <Property Name="SequenceNo" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_Sector">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="50" />
+          <Property Name="Description" Type="varchar" MaxLength="500" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_Session_Timeout">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="LastUpdatedOn" Type="datetime" />
+          <Property Name="TimeOutInMinutes" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_System_Requests">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="AuthorizerID" Type="int" />
+          <Property Name="AuthorizationStatus" Type="char" MaxLength="1" />
+          <Property Name="AuthorizationComments" Type="varchar" MaxLength="1000" />
+          <Property Name="RequestType" Type="varchar" MaxLength="50" />
+          <Property Name="ExistingData" Type="varchar(max)" />
+          <Property Name="UpdatedData" Type="varchar(max)" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_transactions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Narration" Type="varchar" MaxLength="500" />
+          <Property Name="Amount" Type="float" />
+          <Property Name="DebitAccountNo" Type="varchar" MaxLength="50" />
+          <Property Name="CreditAccountNo" Type="varchar" MaxLength="50" />
+          <Property Name="RequestType" Type="char" MaxLength="2" />
+          <Property Name="STAN" Type="varchar" MaxLength="12" />
+          <Property Name="ResponseCode" Type="varchar" MaxLength="10" />
+          <Property Name="ResponseCodeDescription" Type="varchar" MaxLength="1000" />
+          <Property Name="BranchCode" Type="varchar" MaxLength="10" />
+          <Property Name="TransactionDateTime" Type="datetime" />
+          <Property Name="TransactionIdNo" Type="varchar" MaxLength="20" />
+          <Property Name="TransactionRefNo" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="tbl_User_Log">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventName" Type="char" MaxLength="1" />
+          <Property Name="EntityName" Type="varchar" MaxLength="100" />
+          <Property Name="EntityID" Type="bigint" />
+          <Property Name="ActionTimestamp" Type="datetime" />
+          <Property Name="ActionUserStamp" Type="int" />
+          <Property Name="Descp" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="tbl_User_Profile">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="ProfileID" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_Users">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="100" />
+          <Property Name="UserLogin" Type="varchar" MaxLength="50" />
+          <Property Name="UserPassword" Type="nvarchar" MaxLength="255" />
+          <Property Name="RoleTitle" Type="varchar" MaxLength="10" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="AuthorizationStatus" Type="char" MaxLength="1" />
+          <Property Name="AuthorizationComments" Type="varchar" MaxLength="500" />
+          <Property Name="ExpiryDate" Type="datetime" />
+          <Property Name="EmpCode" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_tbl_Card_Charges_tbl_Account_Types">
+          <End Role="tbl_Account_Types" Type="Self.tbl_Account_Types" Multiplicity="0..1" />
+          <End Role="tbl_Card_Charges" Type="Self.tbl_Card_Charges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account_Types">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Card_Charges">
+              <PropertyRef Name="AccountTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Card_Charges_tbl_Card_Types">
+          <End Role="tbl_Card_Types" Type="Self.tbl_Card_Types" Multiplicity="0..1" />
+          <End Role="tbl_Card_Charges" Type="Self.tbl_Card_Charges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Card_Types">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Card_Charges">
+              <PropertyRef Name="CardTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Card_Upgrade_Types_tbl_Card_Types">
+          <End Role="tbl_Card_Types" Type="Self.tbl_Card_Types" Multiplicity="0..1" />
+          <End Role="tbl_Card_Upgrade_Types" Type="Self.tbl_Card_Upgrade_Types" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Card_Types">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Card_Upgrade_Types">
+              <PropertyRef Name="ChildCardType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Card_Upgrade_Types_tbl_Card_Types1">
+          <End Role="tbl_Card_Types" Type="Self.tbl_Card_Types" Multiplicity="0..1" />
+          <End Role="tbl_Card_Upgrade_Types" Type="Self.tbl_Card_Upgrade_Types" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Card_Types">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Card_Upgrade_Types">
+              <PropertyRef Name="ParentCardType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Customer_Accounts_tbl_Account_Types">
+          <End Role="tbl_Account_Types" Type="Self.tbl_Account_Types" Multiplicity="0..1" />
+          <End Role="tbl_Customer_Accounts" Type="Self.tbl_Customer_Accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account_Types">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Customer_Accounts">
+              <PropertyRef Name="AccountTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Regional_Charges_tbl_Card_Charges">
+          <End Role="tbl_Card_Charges" Type="Self.tbl_Card_Charges" Multiplicity="0..1" />
+          <End Role="tbl_Regional_Charges" Type="Self.tbl_Regional_Charges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Card_Charges">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Regional_Charges">
+              <PropertyRef Name="CardChargeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Regional_Charges_tbl_Region">
+          <End Role="tbl_Region" Type="Self.tbl_Region" Multiplicity="0..1" />
+          <End Role="tbl_Regional_Charges" Type="Self.tbl_Regional_Charges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Region">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Regional_Charges">
+              <PropertyRef Name="RegionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Request_Customer_Accounts_tbl_Requests">
+          <End Role="tbl_Requests" Type="Self.tbl_Requests" Multiplicity="0..1" />
+          <End Role="tbl_Request_Customer_Accounts" Type="Self.tbl_Request_Customer_Accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Requests">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Request_Customer_Accounts">
+              <PropertyRef Name="RequestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_User_Log_tbl_Users">
+          <End Role="tbl_Users" Type="Self.tbl_Users" Multiplicity="0..1" />
+          <End Role="tbl_User_Log" Type="Self.tbl_User_Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_User_Log">
+              <PropertyRef Name="ActionUserStamp" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="sp_ExportData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RequestType" Type="char" Mode="In" />
+          <Parameter Name="CardTypeId" Type="int" Mode="In" />
+          <Parameter Name="BranchCode" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="sp_GetCardCharges" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="AccountCode" Type="varchar" Mode="In" />
+          <Parameter Name="CardTypeID" Type="int" Mode="In" />
+          <Parameter Name="RegionCode" Type="varchar" Mode="In" />
+          <Parameter Name="Frequency" Type="varchar" Mode="In" />
+          <Parameter Name="IsReplacement" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="sp_GetCardChargesRegion" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="AccountCode" Type="varchar" Mode="In" />
+          <Parameter Name="CardTypeID" Type="int" Mode="In" />
+          <Parameter Name="RegionCode" Type="varchar" Mode="In" />
+          <Parameter Name="Frequency" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="SoneriCISModelStoreContainer">
+          <EntitySet Name="tbl_Account_Types" EntityType="Self.tbl_Account_Types" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Card_Charges" EntityType="Self.tbl_Card_Charges" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Card_Charges_Recovery" EntityType="Self.tbl_Card_Charges_Recovery" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Card_Types" EntityType="Self.tbl_Card_Types" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Card_Upgrade_Types" EntityType="Self.tbl_Card_Upgrade_Types" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Currency" EntityType="Self.tbl_Currency" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Customer_Accounts" EntityType="Self.tbl_Customer_Accounts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Customer_Cards" EntityType="Self.tbl_Customer_Cards" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_File_Exports" EntityType="Self.tbl_File_Exports" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_File_Imports" EntityType="Self.tbl_File_Imports" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_File_Paths" EntityType="Self.tbl_File_Paths" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_IncomeAccounts" EntityType="Self.tbl_IncomeAccounts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_OperatingInstructions" EntityType="Self.tbl_OperatingInstructions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Page" EntityType="Self.tbl_Page" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Posting_Restrictions" EntityType="Self.tbl_Posting_Restrictions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Profile" EntityType="Self.tbl_Profile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Profile_Page" EntityType="Self.tbl_Profile_Page" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Region" EntityType="Self.tbl_Region" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Regional_Charges" EntityType="Self.tbl_Regional_Charges" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Request_Customer_Accounts" EntityType="Self.tbl_Request_Customer_Accounts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Requests" EntityType="Self.tbl_Requests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Section" EntityType="Self.tbl_Section" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Sector" EntityType="Self.tbl_Sector" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Session_Timeout" EntityType="Self.tbl_Session_Timeout" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_System_Requests" EntityType="Self.tbl_System_Requests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_transactions" EntityType="Self.tbl_transactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_User_Log" EntityType="Self.tbl_User_Log" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_User_Profile" EntityType="Self.tbl_User_Profile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Users" EntityType="Self.tbl_Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_tbl_Card_Charges_tbl_Account_Types" Association="Self.FK_tbl_Card_Charges_tbl_Account_Types">
+            <End Role="tbl_Account_Types" EntitySet="tbl_Account_Types" />
+            <End Role="tbl_Card_Charges" EntitySet="tbl_Card_Charges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Card_Charges_tbl_Card_Types" Association="Self.FK_tbl_Card_Charges_tbl_Card_Types">
+            <End Role="tbl_Card_Types" EntitySet="tbl_Card_Types" />
+            <End Role="tbl_Card_Charges" EntitySet="tbl_Card_Charges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Card_Upgrade_Types_tbl_Card_Types" Association="Self.FK_tbl_Card_Upgrade_Types_tbl_Card_Types">
+            <End Role="tbl_Card_Types" EntitySet="tbl_Card_Types" />
+            <End Role="tbl_Card_Upgrade_Types" EntitySet="tbl_Card_Upgrade_Types" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Card_Upgrade_Types_tbl_Card_Types1" Association="Self.FK_tbl_Card_Upgrade_Types_tbl_Card_Types1">
+            <End Role="tbl_Card_Types" EntitySet="tbl_Card_Types" />
+            <End Role="tbl_Card_Upgrade_Types" EntitySet="tbl_Card_Upgrade_Types" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Customer_Accounts_tbl_Account_Types" Association="Self.FK_tbl_Customer_Accounts_tbl_Account_Types">
+            <End Role="tbl_Account_Types" EntitySet="tbl_Account_Types" />
+            <End Role="tbl_Customer_Accounts" EntitySet="tbl_Customer_Accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Regional_Charges_tbl_Card_Charges" Association="Self.FK_tbl_Regional_Charges_tbl_Card_Charges">
+            <End Role="tbl_Card_Charges" EntitySet="tbl_Card_Charges" />
+            <End Role="tbl_Regional_Charges" EntitySet="tbl_Regional_Charges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Regional_Charges_tbl_Region" Association="Self.FK_tbl_Regional_Charges_tbl_Region">
+            <End Role="tbl_Region" EntitySet="tbl_Region" />
+            <End Role="tbl_Regional_Charges" EntitySet="tbl_Regional_Charges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Request_Customer_Accounts_tbl_Requests" Association="Self.FK_tbl_Request_Customer_Accounts_tbl_Requests">
+            <End Role="tbl_Requests" EntitySet="tbl_Requests" />
+            <End Role="tbl_Request_Customer_Accounts" EntitySet="tbl_Request_Customer_Accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_User_Log_tbl_Users" Association="Self.FK_tbl_User_Log_tbl_Users">
+            <End Role="tbl_Users" EntitySet="tbl_Users" />
+            <End Role="tbl_User_Log" EntitySet="tbl_User_Log" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SoneriCISModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="SoneriCISEntities" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(SoneriCISModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(SoneriCISModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+          <FunctionImport Name="sp_GetCardCharges" ReturnType="Collection(SoneriCISModel.sp_GetCardCharges_Result)">
+            <Parameter Name="AccountCode" Mode="In" Type="String" />
+            <Parameter Name="CardTypeID" Mode="In" Type="Int32" />
+            <Parameter Name="RegionCode" Mode="In" Type="String" />
+            <Parameter Name="Frequency" Mode="In" Type="String" />
+            <Parameter Name="IsReplacement" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="sp_ExportData" ReturnType="Collection(SoneriCISModel.sp_ExportData_Result)">
+            <Parameter Name="RequestType" Mode="In" Type="String" />
+            <Parameter Name="CardTypeId" Mode="In" Type="Int32" />
+            <Parameter Name="BranchCode" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_GetCardChargesRegion" ReturnType="Collection(SoneriCISModel.sp_GetCardChargesRegion_Result)">
+            <Parameter Name="AccountCode" Mode="In" Type="String" />
+            <Parameter Name="CardTypeID" Mode="In" Type="Int32" />
+            <Parameter Name="RegionCode" Mode="In" Type="String" />
+            <Parameter Name="Frequency" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_GetCardChargesRegion1" ReturnType="Collection(SoneriCISModel.sp_GetCardChargesRegion1_Result)">
+            <Parameter Name="AccountCode" Mode="In" Type="String" />
+            <Parameter Name="CardTypeID" Mode="In" Type="Int32" />
+            <Parameter Name="RegionCode" Mode="In" Type="String" />
+            <Parameter Name="Frequency" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="tbl_Account_Types" EntityType="SoneriCISModel.tbl_Account_Types" />
+          <EntitySet Name="tbl_Card_Charges" EntityType="SoneriCISModel.tbl_Card_Charges" />
+          <EntitySet Name="tbl_Card_Charges_Recovery" EntityType="SoneriCISModel.tbl_Card_Charges_Recovery" />
+          <EntitySet Name="tbl_Card_Types" EntityType="SoneriCISModel.tbl_Card_Types" />
+          <EntitySet Name="tbl_Card_Upgrade_Types" EntityType="SoneriCISModel.tbl_Card_Upgrade_Types" />
+          <EntitySet Name="tbl_Currency" EntityType="SoneriCISModel.tbl_Currency" />
+          <EntitySet Name="tbl_Customer_Accounts" EntityType="SoneriCISModel.tbl_Customer_Accounts" />
+          <EntitySet Name="tbl_Customer_Cards" EntityType="SoneriCISModel.tbl_Customer_Cards" />
+          <EntitySet Name="tbl_File_Exports" EntityType="SoneriCISModel.tbl_File_Exports" />
+          <EntitySet Name="tbl_File_Imports" EntityType="SoneriCISModel.tbl_File_Imports" />
+          <EntitySet Name="tbl_File_Paths" EntityType="SoneriCISModel.tbl_File_Paths" />
+          <EntitySet Name="tbl_IncomeAccounts" EntityType="SoneriCISModel.tbl_IncomeAccounts" />
+          <EntitySet Name="tbl_OperatingInstructions" EntityType="SoneriCISModel.tbl_OperatingInstructions" />
+          <EntitySet Name="tbl_Posting_Restrictions" EntityType="SoneriCISModel.tbl_Posting_Restrictions" />
+          <EntitySet Name="tbl_Region" EntityType="SoneriCISModel.tbl_Region" />
+          <EntitySet Name="tbl_Regional_Charges" EntityType="SoneriCISModel.tbl_Regional_Charges" />
+          <EntitySet Name="tbl_Request_Customer_Accounts" EntityType="SoneriCISModel.tbl_Request_Customer_Accounts" />
+          <EntitySet Name="tbl_Requests" EntityType="SoneriCISModel.tbl_Requests" />
+          <EntitySet Name="tbl_Sector" EntityType="SoneriCISModel.tbl_Sector" />
+          <EntitySet Name="tbl_transactions" EntityType="SoneriCISModel.tbl_transactions" />
+          <EntitySet Name="tbl_User_Log" EntityType="SoneriCISModel.tbl_User_Log" />
+          <EntitySet Name="tbl_Users" EntityType="SoneriCISModel.tbl_Users" />
+          <AssociationSet Name="FK_tbl_Card_Charges_tbl_Account_Types" Association="SoneriCISModel.FK_tbl_Card_Charges_tbl_Account_Types">
+            <End Role="tbl_Account_Types" EntitySet="tbl_Account_Types" />
+            <End Role="tbl_Card_Charges" EntitySet="tbl_Card_Charges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Customer_Accounts_tbl_Account_Types" Association="SoneriCISModel.FK_tbl_Customer_Accounts_tbl_Account_Types">
+            <End Role="tbl_Account_Types" EntitySet="tbl_Account_Types" />
+            <End Role="tbl_Customer_Accounts" EntitySet="tbl_Customer_Accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Card_Charges_tbl_Card_Types" Association="SoneriCISModel.FK_tbl_Card_Charges_tbl_Card_Types">
+            <End Role="tbl_Card_Types" EntitySet="tbl_Card_Types" />
+            <End Role="tbl_Card_Charges" EntitySet="tbl_Card_Charges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Regional_Charges_tbl_Card_Charges" Association="SoneriCISModel.FK_tbl_Regional_Charges_tbl_Card_Charges">
+            <End Role="tbl_Card_Charges" EntitySet="tbl_Card_Charges" />
+            <End Role="tbl_Regional_Charges" EntitySet="tbl_Regional_Charges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Card_Charges_Recovery_tbl_Customer_Cards" Association="SoneriCISModel.FK_tbl_Card_Charges_Recovery_tbl_Customer_Cards">
+            <End Role="tbl_Customer_Cards" EntitySet="tbl_Customer_Cards" />
+            <End Role="tbl_Card_Charges_Recovery" EntitySet="tbl_Card_Charges_Recovery" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Card_Upgrade_Types_tbl_Card_Types" Association="SoneriCISModel.FK_tbl_Card_Upgrade_Types_tbl_Card_Types">
+            <End Role="tbl_Card_Types" EntitySet="tbl_Card_Types" />
+            <End Role="tbl_Card_Upgrade_Types" EntitySet="tbl_Card_Upgrade_Types" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Card_Upgrade_Types_tbl_Card_Types1" Association="SoneriCISModel.FK_tbl_Card_Upgrade_Types_tbl_Card_Types1">
+            <End Role="tbl_Card_Types" EntitySet="tbl_Card_Types" />
+            <End Role="tbl_Card_Upgrade_Types" EntitySet="tbl_Card_Upgrade_Types" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Regional_Charges_tbl_Region" Association="SoneriCISModel.FK_tbl_Regional_Charges_tbl_Region">
+            <End Role="tbl_Region" EntitySet="tbl_Region" />
+            <End Role="tbl_Regional_Charges" EntitySet="tbl_Regional_Charges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Request_Customer_Accounts_tbl_Requests" Association="SoneriCISModel.FK_tbl_Request_Customer_Accounts_tbl_Requests">
+            <End Role="tbl_Requests" EntitySet="tbl_Requests" />
+            <End Role="tbl_Request_Customer_Accounts" EntitySet="tbl_Request_Customer_Accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_User_Log_tbl_Users" Association="SoneriCISModel.FK_tbl_User_Log_tbl_Users">
+            <End Role="tbl_Users" EntitySet="tbl_Users" />
+            <End Role="tbl_User_Log" EntitySet="tbl_User_Log" />
+          </AssociationSet>
+          <EntitySet Name="tbl_Page" EntityType="SoneriCISModel.tbl_Page" />
+          <EntitySet Name="tbl_Profile" EntityType="SoneriCISModel.tbl_Profile" />
+          <EntitySet Name="tbl_Profile_Page" EntityType="SoneriCISModel.tbl_Profile_Page" />
+          <EntitySet Name="tbl_Section" EntityType="SoneriCISModel.tbl_Section" />
+          <EntitySet Name="tbl_System_Requests" EntityType="SoneriCISModel.tbl_System_Requests" />
+          <EntitySet Name="tbl_User_Profile" EntityType="SoneriCISModel.tbl_User_Profile" />
+          <EntitySet Name="tbl_Session_Timeout" EntityType="SoneriCISModel.tbl_Session_Timeout" />
+          </EntityContainer>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="sp_GetCardCharges_Result">
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="500" />
+          <Property Type="Double" Name="Amount" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_ExportData_Result">
+          <Property Type="DateTime" Name="DateOfIssue" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="DateOfExpiry" Nullable="true" Precision="23" />
+          <Property Type="String" Name="AccountNo" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="NameOnCard" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="MainAddress" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="MainLandline" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Mobile" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="AssociatedAddress" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="NameOfCustomer" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="DateOfBirth" Nullable="true" Precision="23" />
+          <Property Type="String" Name="MotherMaidenName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ResidentialPhoneNumber" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="MaxRetriesForPIN1" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="RetriesForPIN1" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="StatusForPIN1" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="MaxRetriesForPIN2" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="RetriesForPIN2" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="StatusForPIN2" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="MaxRetriesForPIN3" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="RetriesForPIN3" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="StatusForPIN3" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="PIN4IB" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="MaxRetriesForPIN4" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="RetriesForPIN4" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="StatusForPIN4" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="CompanyName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="Address" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="Mobile2" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="OfficeAddress1" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="OfficeAddress2" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="MobileNumber" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="CustomerNumber" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="NIC" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="BillingAddress" Nullable="true" MaxLength="500" />
+          <Property Type="DateTime" Name="MemberSince" Nullable="true" Precision="23" />
+          <Property Type="String" Name="CustomerOf" Nullable="false" MaxLength="40" />
+          <Property Type="String" Name="Nationality" Nullable="true" MaxLength="40" />
+          <Property Type="String" Name="PhoneOff" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Email" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Passport" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="BillingAddressFlag" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="AccountStatus" Nullable="false" MaxLength="2" />
+          <Property Type="String" Name="Salutation" Nullable="true" MaxLength="10" />
+          <Property Type="Int64" Name="ID" Nullable="false" />
+          <Property Type="String" Name="DefaultAccount" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="Pan" Nullable="true" MaxLength="10" />
+        </ComplexType>
+        <ComplexType Name="sp_GetCardChargesRegion_Result">
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="500" />
+          <Property Type="Double" Name="Amount" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_GetCardChargesRegion1_Result">
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="500" />
+          <Property Type="Double" Name="Amount" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="tbl_Account_Types">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Code" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="AuthorizationStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="AuthorizationComments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="tbl_Card_Charges" Relationship="SoneriCISModel.FK_tbl_Card_Charges_tbl_Account_Types" FromRole="tbl_Account_Types" ToRole="tbl_Card_Charges" />
+          <NavigationProperty Name="tbl_Customer_Accounts" Relationship="SoneriCISModel.FK_tbl_Customer_Accounts_tbl_Account_Types" FromRole="tbl_Account_Types" ToRole="tbl_Customer_Accounts" />
+        </EntityType>
+        <EntityType Name="tbl_Card_Charges">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AccountTypeID" Type="Int32" />
+          <Property Name="CardTypeID" Type="Int32" />
+          <Property Name="Frequency" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Amount" Type="Double" />
+          <Property Name="AuthorizationStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="AuthorizationComments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsFED" Type="Boolean" />
+          <Property Name="IsReplacement" Type="Boolean" />
+          <NavigationProperty Name="tbl_Account_Types" Relationship="SoneriCISModel.FK_tbl_Card_Charges_tbl_Account_Types" FromRole="tbl_Card_Charges" ToRole="tbl_Account_Types" />
+          <NavigationProperty Name="tbl_Card_Types" Relationship="SoneriCISModel.FK_tbl_Card_Charges_tbl_Card_Types" FromRole="tbl_Card_Charges" ToRole="tbl_Card_Types" />
+          <NavigationProperty Name="tbl_Regional_Charges" Relationship="SoneriCISModel.FK_tbl_Regional_Charges_tbl_Card_Charges" FromRole="tbl_Card_Charges" ToRole="tbl_Regional_Charges" />
+        </EntityType>
+        <EntityType Name="tbl_Card_Charges_Recovery">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CardID" Type="Int64" />
+          <Property Name="ApplicableDate" Type="DateTime" Precision="3" />
+          <Property Name="CardChargesID" Type="Int32" />
+          <Property Name="ApplicableAmount" Type="Double" />
+          <Property Name="DeducatedAmount" Type="Double" />
+          <Property Name="LastDeducationDate" Type="DateTime" Precision="3" />
+          <Property Name="CardNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Regional_Charges_ID" Type="Int32" />
+          <Property Name="AccountNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="AccountCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="IsValid" Type="Boolean" />
+          <Property Name="ChargesDescription" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CIF" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_Customer_Cards" Relationship="SoneriCISModel.FK_tbl_Card_Charges_Recovery_tbl_Customer_Cards" FromRole="tbl_Card_Charges_Recovery" ToRole="tbl_Customer_Cards" />
+        </EntityType>
+        <EntityType Name="tbl_Card_Types">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="AuthorizationStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="AuthorizationComments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CardCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="IsIssuance" Type="Boolean" />
+          <Property Name="IsReplacement" Type="Boolean" />
+          <Property Name="IsUpgrade" Type="Boolean" />
+          <NavigationProperty Name="tbl_Card_Charges" Relationship="SoneriCISModel.FK_tbl_Card_Charges_tbl_Card_Types" FromRole="tbl_Card_Types" ToRole="tbl_Card_Charges" />
+          <NavigationProperty Name="tbl_Card_Upgrade_Types" Relationship="SoneriCISModel.FK_tbl_Card_Upgrade_Types_tbl_Card_Types" FromRole="tbl_Card_Types" ToRole="tbl_Card_Upgrade_Types" />
+          <NavigationProperty Name="tbl_Card_Upgrade_Types1" Relationship="SoneriCISModel.FK_tbl_Card_Upgrade_Types_tbl_Card_Types1" FromRole="tbl_Card_Types" ToRole="tbl_Card_Upgrade_Types" />
+        </EntityType>
+        <EntityType Name="tbl_Card_Upgrade_Types">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ParentCardType" Type="Int32" />
+          <Property Name="ChildCardType" Type="Int32" />
+          <NavigationProperty Name="tbl_Card_Types" Relationship="SoneriCISModel.FK_tbl_Card_Upgrade_Types_tbl_Card_Types" FromRole="tbl_Card_Upgrade_Types" ToRole="tbl_Card_Types" />
+          <NavigationProperty Name="tbl_Card_Types1" Relationship="SoneriCISModel.FK_tbl_Card_Upgrade_Types_tbl_Card_Types1" FromRole="tbl_Card_Upgrade_Types" ToRole="tbl_Card_Types" />
+        </EntityType>
+        <EntityType Name="tbl_Currency">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShortName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tbl_Customer_Accounts">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AccountNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CIF" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CardNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="AccountStatusActive" Type="Boolean" />
+          <Property Name="Salutation" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="AccountTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DateofBirth" Type="DateTime" Precision="3" />
+          <Property Name="MotherMaidenName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Identification" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CNIC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AddressType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AccountTypeID" Type="Int32" />
+          <Property Name="WaiveCharges" Type="Boolean" />
+          <Property Name="PassportNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="LandlineNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Nationality" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="AccountCategoryCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneOffice" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Company" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="IdentificationType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Address2" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Address3" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="MainMobile" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MainLandline" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MainAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="FatherName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ResidenceStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Currency" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Mobile3" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile4" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_Account_Types" Relationship="SoneriCISModel.FK_tbl_Customer_Accounts_tbl_Account_Types" FromRole="tbl_Customer_Accounts" ToRole="tbl_Account_Types" />
+        </EntityType>
+        <EntityType Name="tbl_Customer_Cards">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CardNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CardStatusActive" Type="Boolean" />
+          <Property Name="CardTypeID" Type="Int32" />
+          <Property Name="AccountNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="WaiveCharges" Type="Boolean" />
+          <Property Name="Salutation" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="CardTitle" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CardExpiry" Type="DateTime" Precision="3" />
+          <Property Name="CardIssuance" Type="DateTime" Precision="3" />
+          <Property Name="CIF" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_Card_Charges_Recovery" Relationship="SoneriCISModel.FK_tbl_Card_Charges_Recovery_tbl_Customer_Cards" FromRole="tbl_Customer_Cards" ToRole="tbl_Card_Charges_Recovery" />
+        </EntityType>
+        <EntityType Name="tbl_File_Exports">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CardTypes" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="BranchCodes" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="RequestTypes" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="RecordCount" Type="Int64" />
+        </EntityType>
+        <EntityType Name="tbl_File_Imports">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CardTypes" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="BranchCodes" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="RecordCount" Type="Int64" />
+        </EntityType>
+        <EntityType Name="tbl_File_Paths">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PathType" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Path" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tbl_IncomeAccounts">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AccountType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CodeGL" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="AccountMapping" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Classification" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TakeOn" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Category" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="InternalAccount" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="DescriptionGL" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tbl_OperatingInstructions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="tbl_Posting_Restrictions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="tbl_Region">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="FED" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="tbl_Regional_Charges" Relationship="SoneriCISModel.FK_tbl_Regional_Charges_tbl_Region" FromRole="tbl_Region" ToRole="tbl_Regional_Charges" />
+        </EntityType>
+        <EntityType Name="tbl_Regional_Charges">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RegionID" Type="Int32" />
+          <Property Name="CardChargeID" Type="Int32" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="PercentageAmount" Type="Double" />
+          <Property Name="TotalAmount" Type="Double" />
+          <NavigationProperty Name="tbl_Card_Charges" Relationship="SoneriCISModel.FK_tbl_Regional_Charges_tbl_Card_Charges" FromRole="tbl_Regional_Charges" ToRole="tbl_Card_Charges" />
+          <NavigationProperty Name="tbl_Region" Relationship="SoneriCISModel.FK_tbl_Regional_Charges_tbl_Region" FromRole="tbl_Regional_Charges" ToRole="tbl_Region" />
+        </EntityType>
+        <EntityType Name="tbl_Request_Customer_Accounts">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RequestID" Type="Int64" />
+          <Property Name="AccountNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CIF" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CardNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="AccountStatusActive" Type="Boolean" />
+          <Property Name="Salutation" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="AccountTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DateofBirth" Type="DateTime" Precision="3" />
+          <Property Name="MotherMaidenName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Identification" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CNIC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AddressType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AccountTypeID" Type="Int32" />
+          <Property Name="WaiveCharges" Type="Boolean" />
+          <Property Name="PassportNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="LandlineNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Nationality" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="AccountCategoryCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneOffice" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Company" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="IdentificationType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Address2" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Address3" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="MainMobile" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MainLandline" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MainAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_Requests" Relationship="SoneriCISModel.FK_tbl_Request_Customer_Accounts_tbl_Requests" FromRole="tbl_Request_Customer_Accounts" ToRole="tbl_Requests" />
+        </EntityType>
+        <EntityType Name="tbl_Requests">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RequestType" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="AccountNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CIFNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CardNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="WaiveCharges" Type="Boolean" />
+          <Property Name="StatusEligibility" Type="Boolean" />
+          <Property Name="FinancialEligibility" Type="Boolean" />
+          <Property Name="AuthorizationComments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="AuthorizationStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="RequestDate" Type="DateTime" Precision="3" />
+          <Property Name="CardTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CardTypeID" Type="Int32" />
+          <Property Name="Salutation" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="LinkingDelinkingAccount" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsExported" Type="Boolean" />
+          <NavigationProperty Name="tbl_Request_Customer_Accounts" Relationship="SoneriCISModel.FK_tbl_Request_Customer_Accounts_tbl_Requests" FromRole="tbl_Requests" ToRole="tbl_Request_Customer_Accounts" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="AuthorizerID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="tbl_Sector">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="tbl_transactions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Narration" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Amount" Type="Double" />
+          <Property Name="DebitAccountNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreditAccountNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RequestType" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="STAN" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="ResponseCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ResponseCodeDescription" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="BranchCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TransactionDateTime" Type="DateTime" Precision="3" />
+          <Property Name="TransactionIdNo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="TransactionRefNo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tbl_User_Log">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EventName" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="EntityName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EntityID" Type="Int64" />
+          <Property Name="ActionTimestamp" Type="DateTime" Precision="3" />
+          <Property Name="ActionUserStamp" Type="Int32" />
+          <Property Name="Descp" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_Users" Relationship="SoneriCISModel.FK_tbl_User_Log_tbl_Users" FromRole="tbl_User_Log" ToRole="tbl_Users" />
+        </EntityType>
+        <EntityType Name="tbl_Users">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UserLogin" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UserPassword" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RoleTitle" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="tbl_User_Log" Relationship="SoneriCISModel.FK_tbl_User_Log_tbl_Users" FromRole="tbl_Users" ToRole="tbl_User_Log" />
+          <Property Name="AuthorizationStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="AuthorizationComments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="3" />
+          <Property Name="EmpCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_tbl_Card_Charges_tbl_Account_Types">
+          <End Type="SoneriCISModel.tbl_Account_Types" Role="tbl_Account_Types" Multiplicity="0..1" />
+          <End Type="SoneriCISModel.tbl_Card_Charges" Role="tbl_Card_Charges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account_Types">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Card_Charges">
+              <PropertyRef Name="AccountTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Customer_Accounts_tbl_Account_Types">
+          <End Type="SoneriCISModel.tbl_Account_Types" Role="tbl_Account_Types" Multiplicity="0..1" />
+          <End Type="SoneriCISModel.tbl_Customer_Accounts" Role="tbl_Customer_Accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account_Types">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Customer_Accounts">
+              <PropertyRef Name="AccountTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Card_Charges_tbl_Card_Types">
+          <End Type="SoneriCISModel.tbl_Card_Types" Role="tbl_Card_Types" Multiplicity="0..1" />
+          <End Type="SoneriCISModel.tbl_Card_Charges" Role="tbl_Card_Charges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Card_Types">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Card_Charges">
+              <PropertyRef Name="CardTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Regional_Charges_tbl_Card_Charges">
+          <End Type="SoneriCISModel.tbl_Card_Charges" Role="tbl_Card_Charges" Multiplicity="0..1" />
+          <End Type="SoneriCISModel.tbl_Regional_Charges" Role="tbl_Regional_Charges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Card_Charges">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Regional_Charges">
+              <PropertyRef Name="CardChargeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Card_Charges_Recovery_tbl_Customer_Cards">
+          <End Type="SoneriCISModel.tbl_Customer_Cards" Role="tbl_Customer_Cards" Multiplicity="0..1" />
+          <End Type="SoneriCISModel.tbl_Card_Charges_Recovery" Role="tbl_Card_Charges_Recovery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Customer_Cards">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Card_Charges_Recovery">
+              <PropertyRef Name="CardID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Card_Upgrade_Types_tbl_Card_Types">
+          <End Type="SoneriCISModel.tbl_Card_Types" Role="tbl_Card_Types" Multiplicity="0..1" />
+          <End Type="SoneriCISModel.tbl_Card_Upgrade_Types" Role="tbl_Card_Upgrade_Types" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Card_Types">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Card_Upgrade_Types">
+              <PropertyRef Name="ChildCardType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Card_Upgrade_Types_tbl_Card_Types1">
+          <End Type="SoneriCISModel.tbl_Card_Types" Role="tbl_Card_Types" Multiplicity="0..1" />
+          <End Type="SoneriCISModel.tbl_Card_Upgrade_Types" Role="tbl_Card_Upgrade_Types" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Card_Types">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Card_Upgrade_Types">
+              <PropertyRef Name="ParentCardType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Regional_Charges_tbl_Region">
+          <End Type="SoneriCISModel.tbl_Region" Role="tbl_Region" Multiplicity="0..1" />
+          <End Type="SoneriCISModel.tbl_Regional_Charges" Role="tbl_Regional_Charges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Region">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Regional_Charges">
+              <PropertyRef Name="RegionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Request_Customer_Accounts_tbl_Requests">
+          <End Type="SoneriCISModel.tbl_Requests" Role="tbl_Requests" Multiplicity="0..1" />
+          <End Type="SoneriCISModel.tbl_Request_Customer_Accounts" Role="tbl_Request_Customer_Accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Requests">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Request_Customer_Accounts">
+              <PropertyRef Name="RequestID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_User_Log_tbl_Users">
+          <End Type="SoneriCISModel.tbl_Users" Role="tbl_Users" Multiplicity="0..1" />
+          <End Type="SoneriCISModel.tbl_User_Log" Role="tbl_User_Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_User_Log">
+              <PropertyRef Name="ActionUserStamp" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tbl_Page">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SectionID" Type="Int32" />
+          <Property Name="URL" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SequenceNo" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="tbl_Profile">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="AuthorizationStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="AuthorizationComments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tbl_Profile_Page">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PageID" Type="Int32" />
+          <Property Name="ProfileID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="tbl_Section">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SequenceNo" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="tbl_System_Requests">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="AuthorizerID" Type="Int32" />
+          <Property Name="AuthorizationStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="AuthorizationComments" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="RequestType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ExistingData" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedData" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="tbl_User_Profile">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="ProfileID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="tbl_Session_Timeout">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="LastUpdatedOn" Type="DateTime" Precision="3" />
+          <Property Name="TimeOutInMinutes" Type="Int32" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SoneriCISModelStoreContainer" CdmEntityContainer="SoneriCISEntities">
+          <FunctionImportMapping FunctionImportName="sp_GetCardCharges" FunctionName="SoneriCISModel.Store.sp_GetCardCharges">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SoneriCISModel.sp_GetCardCharges_Result">
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_ExportData" FunctionName="SoneriCISModel.Store.sp_ExportData">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SoneriCISModel.sp_ExportData_Result">
+                <ScalarProperty Name="DateOfIssue" ColumnName="DateOfIssue" />
+                <ScalarProperty Name="DateOfExpiry" ColumnName="DateOfExpiry" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="NameOnCard" ColumnName="NameOnCard" />
+                <ScalarProperty Name="MainAddress" ColumnName="MainAddress" />
+                <ScalarProperty Name="MainLandline" ColumnName="MainLandline" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="AssociatedAddress" ColumnName="AssociatedAddress" />
+                <ScalarProperty Name="NameOfCustomer" ColumnName="NameOfCustomer" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="MotherMaidenName" ColumnName="MotherMaidenName" />
+                <ScalarProperty Name="ResidentialPhoneNumber" ColumnName="ResidentialPhoneNumber" />
+                <ScalarProperty Name="MaxRetriesForPIN1" ColumnName="MaxRetriesForPIN1" />
+                <ScalarProperty Name="RetriesForPIN1" ColumnName="RetriesForPIN1" />
+                <ScalarProperty Name="StatusForPIN1" ColumnName="StatusForPIN1" />
+                <ScalarProperty Name="MaxRetriesForPIN2" ColumnName="MaxRetriesForPIN2" />
+                <ScalarProperty Name="RetriesForPIN2" ColumnName="RetriesForPIN2" />
+                <ScalarProperty Name="StatusForPIN2" ColumnName="StatusForPIN2" />
+                <ScalarProperty Name="MaxRetriesForPIN3" ColumnName="MaxRetriesForPIN3" />
+                <ScalarProperty Name="RetriesForPIN3" ColumnName="RetriesForPIN3" />
+                <ScalarProperty Name="StatusForPIN3" ColumnName="StatusForPIN3" />
+                <ScalarProperty Name="PIN4IB" ColumnName="PIN4IB" />
+                <ScalarProperty Name="MaxRetriesForPIN4" ColumnName="MaxRetriesForPIN4" />
+                <ScalarProperty Name="RetriesForPIN4" ColumnName="RetriesForPIN4" />
+                <ScalarProperty Name="StatusForPIN4" ColumnName="StatusForPIN4" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Mobile2" ColumnName="Mobile2" />
+                <ScalarProperty Name="OfficeAddress1" ColumnName="OfficeAddress1" />
+                <ScalarProperty Name="OfficeAddress2" ColumnName="OfficeAddress2" />
+                <ScalarProperty Name="MobileNumber" ColumnName="MobileNumber" />
+                <ScalarProperty Name="CustomerNumber" ColumnName="CustomerNumber" />
+                <ScalarProperty Name="NIC" ColumnName="NIC" />
+                <ScalarProperty Name="BillingAddress" ColumnName="BillingAddress" />
+                <ScalarProperty Name="MemberSince" ColumnName="MemberSince" />
+                <ScalarProperty Name="CustomerOf" ColumnName="CustomerOf" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="PhoneOff" ColumnName="PhoneOff" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Passport" ColumnName="Passport" />
+                <ScalarProperty Name="BillingAddressFlag" ColumnName="BillingAddressFlag" />
+                <ScalarProperty Name="AccountStatus" ColumnName="AccountStatus" />
+                <ScalarProperty Name="Salutation" ColumnName="Salutation" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="DefaultAccount" ColumnName="DefaultAccount" />
+                <ScalarProperty Name="Pan" ColumnName="Pan" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_GetCardChargesRegion1" FunctionName="SoneriCISModel.Store.sp_GetCardChargesRegion">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SoneriCISModel.sp_GetCardChargesRegion1_Result">
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="tbl_Account_Types">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Account_Types">
+              <MappingFragment StoreEntitySet="tbl_Account_Types">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="AuthorizationComments" ColumnName="AuthorizationComments" />
+                <ScalarProperty Name="AuthorizationStatus" ColumnName="AuthorizationStatus" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Card_Charges">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Card_Charges">
+              <MappingFragment StoreEntitySet="tbl_Card_Charges">
+                <ScalarProperty Name="IsReplacement" ColumnName="IsReplacement" />
+                <ScalarProperty Name="IsFED" ColumnName="IsFED" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="AuthorizationComments" ColumnName="AuthorizationComments" />
+                <ScalarProperty Name="AuthorizationStatus" ColumnName="AuthorizationStatus" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
+                <ScalarProperty Name="CardTypeID" ColumnName="CardTypeID" />
+                <ScalarProperty Name="AccountTypeID" ColumnName="AccountTypeID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Card_Charges_Recovery">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Card_Charges_Recovery">
+              <MappingFragment StoreEntitySet="tbl_Card_Charges_Recovery">
+                <ScalarProperty Name="CIF" ColumnName="CIF" />
+                <ScalarProperty Name="ChargesDescription" ColumnName="ChargesDescription" />
+                <ScalarProperty Name="IsValid" ColumnName="IsValid" />
+                <ScalarProperty Name="AccountCode" ColumnName="AccountCode" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="Regional_Charges_ID" ColumnName="Regional_Charges_ID" />
+                <ScalarProperty Name="CardNo" ColumnName="CardNo" />
+                <ScalarProperty Name="LastDeducationDate" ColumnName="LastDeducationDate" />
+                <ScalarProperty Name="DeducatedAmount" ColumnName="DeducatedAmount" />
+                <ScalarProperty Name="ApplicableAmount" ColumnName="ApplicableAmount" />
+                <ScalarProperty Name="CardChargesID" ColumnName="CardChargesID" />
+                <ScalarProperty Name="ApplicableDate" ColumnName="ApplicableDate" />
+                <ScalarProperty Name="CardID" ColumnName="CardID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Card_Types">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Card_Types">
+              <MappingFragment StoreEntitySet="tbl_Card_Types">
+                <ScalarProperty Name="IsUpgrade" ColumnName="IsUpgrade" />
+                <ScalarProperty Name="IsReplacement" ColumnName="IsReplacement" />
+                <ScalarProperty Name="IsIssuance" ColumnName="IsIssuance" />
+                <ScalarProperty Name="CardCode" ColumnName="CardCode" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="AuthorizationComments" ColumnName="AuthorizationComments" />
+                <ScalarProperty Name="AuthorizationStatus" ColumnName="AuthorizationStatus" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Card_Upgrade_Types">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Card_Upgrade_Types">
+              <MappingFragment StoreEntitySet="tbl_Card_Upgrade_Types">
+                <ScalarProperty Name="ChildCardType" ColumnName="ChildCardType" />
+                <ScalarProperty Name="ParentCardType" ColumnName="ParentCardType" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Currency">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Currency">
+              <MappingFragment StoreEntitySet="tbl_Currency">
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ShortName" ColumnName="ShortName" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Customer_Accounts">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Customer_Accounts">
+              <MappingFragment StoreEntitySet="tbl_Customer_Accounts">
+                <ScalarProperty Name="Mobile4" ColumnName="Mobile4" />
+                <ScalarProperty Name="Mobile3" ColumnName="Mobile3" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="ResidenceStatus" ColumnName="ResidenceStatus" />
+                <ScalarProperty Name="FatherName" ColumnName="FatherName" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="MainAddress" ColumnName="MainAddress" />
+                <ScalarProperty Name="MainLandline" ColumnName="MainLandline" />
+                <ScalarProperty Name="MainMobile" ColumnName="MainMobile" />
+                <ScalarProperty Name="Address3" ColumnName="Address3" />
+                <ScalarProperty Name="Address2" ColumnName="Address2" />
+                <ScalarProperty Name="Mobile2" ColumnName="Mobile2" />
+                <ScalarProperty Name="IdentificationType" ColumnName="IdentificationType" />
+                <ScalarProperty Name="Company" ColumnName="Company" />
+                <ScalarProperty Name="PhoneOffice" ColumnName="PhoneOffice" />
+                <ScalarProperty Name="AccountCategoryCode" ColumnName="AccountCategoryCode" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LandlineNo" ColumnName="LandlineNo" />
+                <ScalarProperty Name="PassportNo" ColumnName="PassportNo" />
+                <ScalarProperty Name="WaiveCharges" ColumnName="WaiveCharges" />
+                <ScalarProperty Name="AccountTypeID" ColumnName="AccountTypeID" />
+                <ScalarProperty Name="AddressType" ColumnName="AddressType" />
+                <ScalarProperty Name="CNIC" ColumnName="CNIC" />
+                <ScalarProperty Name="Identification" ColumnName="Identification" />
+                <ScalarProperty Name="MotherMaidenName" ColumnName="MotherMaidenName" />
+                <ScalarProperty Name="DateofBirth" ColumnName="DateofBirth" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="AccountTitle" ColumnName="AccountTitle" />
+                <ScalarProperty Name="Salutation" ColumnName="Salutation" />
+                <ScalarProperty Name="AccountStatusActive" ColumnName="AccountStatusActive" />
+                <ScalarProperty Name="CardNo" ColumnName="CardNo" />
+                <ScalarProperty Name="CIF" ColumnName="CIF" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Customer_Cards">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Customer_Cards">
+              <MappingFragment StoreEntitySet="tbl_Customer_Cards">
+                <ScalarProperty Name="CIF" ColumnName="CIF" />
+                <ScalarProperty Name="CardIssuance" ColumnName="CardIssuance" />
+                <ScalarProperty Name="CardExpiry" ColumnName="CardExpiry" />
+                <ScalarProperty Name="CardTitle" ColumnName="CardTitle" />
+                <ScalarProperty Name="Salutation" ColumnName="Salutation" />
+                <ScalarProperty Name="WaiveCharges" ColumnName="WaiveCharges" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="CardTypeID" ColumnName="CardTypeID" />
+                <ScalarProperty Name="CardStatusActive" ColumnName="CardStatusActive" />
+                <ScalarProperty Name="CardNo" ColumnName="CardNo" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_File_Exports">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_File_Exports">
+              <MappingFragment StoreEntitySet="tbl_File_Exports">
+                <ScalarProperty Name="RecordCount" ColumnName="RecordCount" />
+                <ScalarProperty Name="RequestTypes" ColumnName="RequestTypes" />
+                <ScalarProperty Name="BranchCodes" ColumnName="BranchCodes" />
+                <ScalarProperty Name="CardTypes" ColumnName="CardTypes" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_File_Imports">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_File_Imports">
+              <MappingFragment StoreEntitySet="tbl_File_Imports">
+                <ScalarProperty Name="RecordCount" ColumnName="RecordCount" />
+                <ScalarProperty Name="BranchCodes" ColumnName="BranchCodes" />
+                <ScalarProperty Name="CardTypes" ColumnName="CardTypes" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_File_Paths">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_File_Paths">
+              <MappingFragment StoreEntitySet="tbl_File_Paths">
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="PathType" ColumnName="PathType" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_IncomeAccounts">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_IncomeAccounts">
+              <MappingFragment StoreEntitySet="tbl_IncomeAccounts">
+                <ScalarProperty Name="DescriptionGL" ColumnName="DescriptionGL" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="InternalAccount" ColumnName="InternalAccount" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="TakeOn" ColumnName="TakeOn" />
+                <ScalarProperty Name="Classification" ColumnName="Classification" />
+                <ScalarProperty Name="AccountMapping" ColumnName="AccountMapping" />
+                <ScalarProperty Name="CodeGL" ColumnName="CodeGL" />
+                <ScalarProperty Name="AccountType" ColumnName="AccountType" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_OperatingInstructions">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_OperatingInstructions">
+              <MappingFragment StoreEntitySet="tbl_OperatingInstructions">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Posting_Restrictions">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Posting_Restrictions">
+              <MappingFragment StoreEntitySet="tbl_Posting_Restrictions">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Region">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Region">
+              <MappingFragment StoreEntitySet="tbl_Region">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="FED" ColumnName="FED" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Regional_Charges">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Regional_Charges">
+              <MappingFragment StoreEntitySet="tbl_Regional_Charges">
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="PercentageAmount" ColumnName="PercentageAmount" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CardChargeID" ColumnName="CardChargeID" />
+                <ScalarProperty Name="RegionID" ColumnName="RegionID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Request_Customer_Accounts">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Request_Customer_Accounts">
+              <MappingFragment StoreEntitySet="tbl_Request_Customer_Accounts">
+                <ScalarProperty Name="MainAddress" ColumnName="MainAddress" />
+                <ScalarProperty Name="MainLandline" ColumnName="MainLandline" />
+                <ScalarProperty Name="MainMobile" ColumnName="MainMobile" />
+                <ScalarProperty Name="Address3" ColumnName="Address3" />
+                <ScalarProperty Name="Address2" ColumnName="Address2" />
+                <ScalarProperty Name="Mobile2" ColumnName="Mobile2" />
+                <ScalarProperty Name="IdentificationType" ColumnName="IdentificationType" />
+                <ScalarProperty Name="Company" ColumnName="Company" />
+                <ScalarProperty Name="PhoneOffice" ColumnName="PhoneOffice" />
+                <ScalarProperty Name="AccountCategoryCode" ColumnName="AccountCategoryCode" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LandlineNo" ColumnName="LandlineNo" />
+                <ScalarProperty Name="PassportNo" ColumnName="PassportNo" />
+                <ScalarProperty Name="WaiveCharges" ColumnName="WaiveCharges" />
+                <ScalarProperty Name="AccountTypeID" ColumnName="AccountTypeID" />
+                <ScalarProperty Name="AddressType" ColumnName="AddressType" />
+                <ScalarProperty Name="CNIC" ColumnName="CNIC" />
+                <ScalarProperty Name="Identification" ColumnName="Identification" />
+                <ScalarProperty Name="MotherMaidenName" ColumnName="MotherMaidenName" />
+                <ScalarProperty Name="DateofBirth" ColumnName="DateofBirth" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="AccountTitle" ColumnName="AccountTitle" />
+                <ScalarProperty Name="Salutation" ColumnName="Salutation" />
+                <ScalarProperty Name="AccountStatusActive" ColumnName="AccountStatusActive" />
+                <ScalarProperty Name="CardNo" ColumnName="CardNo" />
+                <ScalarProperty Name="CIF" ColumnName="CIF" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="RequestID" ColumnName="RequestID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Requests">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Requests">
+              <MappingFragment StoreEntitySet="tbl_Requests">
+                <ScalarProperty Name="AuthorizerID" ColumnName="AuthorizerID" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="IsExported" ColumnName="IsExported" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="LinkingDelinkingAccount" ColumnName="LinkingDelinkingAccount" />
+                <ScalarProperty Name="Salutation" ColumnName="Salutation" />
+                <ScalarProperty Name="CardTypeID" ColumnName="CardTypeID" />
+                <ScalarProperty Name="CardTitle" ColumnName="CardTitle" />
+                <ScalarProperty Name="RequestDate" ColumnName="RequestDate" />
+                <ScalarProperty Name="AuthorizationStatus" ColumnName="AuthorizationStatus" />
+                <ScalarProperty Name="AuthorizationComments" ColumnName="AuthorizationComments" />
+                <ScalarProperty Name="FinancialEligibility" ColumnName="FinancialEligibility" />
+                <ScalarProperty Name="StatusEligibility" ColumnName="StatusEligibility" />
+                <ScalarProperty Name="WaiveCharges" ColumnName="WaiveCharges" />
+                <ScalarProperty Name="CardNo" ColumnName="CardNo" />
+                <ScalarProperty Name="CIFNo" ColumnName="CIFNo" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="RequestType" ColumnName="RequestType" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Sector">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Sector">
+              <MappingFragment StoreEntitySet="tbl_Sector">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_transactions">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_transactions">
+              <MappingFragment StoreEntitySet="tbl_transactions">
+                <ScalarProperty Name="TransactionRefNo" ColumnName="TransactionRefNo" />
+                <ScalarProperty Name="TransactionIdNo" ColumnName="TransactionIdNo" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+                <ScalarProperty Name="BranchCode" ColumnName="BranchCode" />
+                <ScalarProperty Name="ResponseCodeDescription" ColumnName="ResponseCodeDescription" />
+                <ScalarProperty Name="ResponseCode" ColumnName="ResponseCode" />
+                <ScalarProperty Name="STAN" ColumnName="STAN" />
+                <ScalarProperty Name="RequestType" ColumnName="RequestType" />
+                <ScalarProperty Name="CreditAccountNo" ColumnName="CreditAccountNo" />
+                <ScalarProperty Name="DebitAccountNo" ColumnName="DebitAccountNo" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Narration" ColumnName="Narration" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_User_Log">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_User_Log">
+              <MappingFragment StoreEntitySet="tbl_User_Log">
+                <ScalarProperty Name="Descp" ColumnName="Descp" />
+                <ScalarProperty Name="ActionUserStamp" ColumnName="ActionUserStamp" />
+                <ScalarProperty Name="ActionTimestamp" ColumnName="ActionTimestamp" />
+                <ScalarProperty Name="EntityID" ColumnName="EntityID" />
+                <ScalarProperty Name="EntityName" ColumnName="EntityName" />
+                <ScalarProperty Name="EventName" ColumnName="EventName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Users">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Users">
+              <MappingFragment StoreEntitySet="tbl_Users">
+                <ScalarProperty Name="EmpCode" ColumnName="EmpCode" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="AuthorizationComments" ColumnName="AuthorizationComments" />
+                <ScalarProperty Name="AuthorizationStatus" ColumnName="AuthorizationStatus" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="RoleTitle" ColumnName="RoleTitle" />
+                <ScalarProperty Name="UserPassword" ColumnName="UserPassword" />
+                <ScalarProperty Name="UserLogin" ColumnName="UserLogin" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Page">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Page">
+              <MappingFragment StoreEntitySet="tbl_Page">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="SequenceNo" ColumnName="SequenceNo" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="SectionID" ColumnName="SectionID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Profile">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Profile">
+              <MappingFragment StoreEntitySet="tbl_Profile">
+                <ScalarProperty Name="AuthorizationComments" ColumnName="AuthorizationComments" />
+                <ScalarProperty Name="AuthorizationStatus" ColumnName="AuthorizationStatus" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Profile_Page">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Profile_Page">
+              <MappingFragment StoreEntitySet="tbl_Profile_Page">
+                <ScalarProperty Name="ProfileID" ColumnName="ProfileID" />
+                <ScalarProperty Name="PageID" ColumnName="PageID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Section">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Section">
+              <MappingFragment StoreEntitySet="tbl_Section">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="SequenceNo" ColumnName="SequenceNo" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_System_Requests">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_System_Requests">
+              <MappingFragment StoreEntitySet="tbl_System_Requests">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="UpdatedData" ColumnName="UpdatedData" />
+                <ScalarProperty Name="ExistingData" ColumnName="ExistingData" />
+                <ScalarProperty Name="RequestType" ColumnName="RequestType" />
+                <ScalarProperty Name="AuthorizationComments" ColumnName="AuthorizationComments" />
+                <ScalarProperty Name="AuthorizationStatus" ColumnName="AuthorizationStatus" />
+                <ScalarProperty Name="AuthorizerID" ColumnName="AuthorizerID" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_User_Profile">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_User_Profile">
+              <MappingFragment StoreEntitySet="tbl_User_Profile">
+                <ScalarProperty Name="ProfileID" ColumnName="ProfileID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Session_Timeout">
+            <EntityTypeMapping TypeName="SoneriCISModel.tbl_Session_Timeout">
+              <MappingFragment StoreEntitySet="tbl_Session_Timeout">
+                <ScalarProperty Name="TimeOutInMinutes" ColumnName="TimeOutInMinutes" />
+                <ScalarProperty Name="LastUpdatedOn" ColumnName="LastUpdatedOn" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

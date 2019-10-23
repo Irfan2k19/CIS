@@ -1,0 +1,151 @@
+﻿@model IEnumerable<CardIssuanceSystem.DAL.tbl_Region>
+@{
+    ViewBag.Title = "Recovery";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section CustomJS{
+    <script>
+        $(function () {
+            $('.datetimepicker2').datetimepicker({ ignoreReadonly: true, format: 'MM/DD/YYYY', minDate: '@ViewBag.LastDate' });
+        });
+
+
+        $(function () {
+            $('.btn-insert').on('click', function () {
+                debugger;
+                var url = '@Url.Action("InsertNewRecovery", "Recovery")';
+                var StartDate = $('#txtStartDate').val();
+                var EndDate = $('#txtEndDate').val();
+                
+                var result = confirm("Are you sure you want to Insert recovery records?");
+                if (result)
+                {
+                    ShowLoader();
+                    ajaxCall(url, { StartDate: StartDate, EndDate: EndDate }, function (resp) {
+                        debugger
+                        if (resp.result) {
+                            HideLoader();
+
+                            alert("Records Added Successfully");
+                            location.reload();
+                        } else {
+                            alert("Please Try Again");
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        console.log(fail.responseText);
+                        return false;
+                    }, function (err) {
+                        HideLoader();
+                        console.log(fail.responseText);
+                        return false;
+                    });
+
+                }
+
+            });
+        });
+
+
+
+        ///recoveryCount
+
+        $('.btn-result').on('click', function () {
+            debugger;
+            var url = '@Url.Action("GetNewRecoveryCount", "Recovery")';
+            var StartDate = $('#txtStartDate').val();
+            var EndDate = $('#txtEndDate').val();
+            //if (EndDate <= StartDate)
+            //{
+            //    alert("End Date should be greater than Start Date");
+            //    return false;
+            //}
+            ShowLoader();
+            ajaxCall(url, { StartDate: StartDate, EndDate: EndDate}, function (resp) {
+                debugger
+
+                    HideLoader();
+
+                    alert("Recovery Count:  " +resp.result);
+
+            }, function (fail) {
+                HideLoader();
+                console.log(fail.responseText);
+                return false;
+            }, function (err) {
+                HideLoader();
+                console.log(fail.responseText);
+                return false;
+            });
+
+        });
+
+
+
+        function GetCount(StartDate, EndDate)
+        {
+            debugger
+            var url = '@Url.Action("GetNewRecoveryCount", "Recovery")';
+            ajaxCall(url, { StartDate: StartDate, EndDate: EndDate }, function (resp) {
+                debugger
+
+
+                return resp.result;
+
+            }, function (fail) {
+                HideLoader();
+                console.log(fail.responseText);
+                return false;
+            }, function (err) {
+                HideLoader();
+                console.log(fail.responseText);
+                return false;
+            });
+        }
+    </script>
+}
+
+<div class="container">
+    <h4 class="main_hdng">Insert Recovery</h4>
+
+    <div class="row form-group">
+        <div class="col-sm-3">
+            <label class="control-label">Start Date</label>
+            <div class='input-group date
+                         datetimepicker2'>
+                <input type="text" id="txtStartDate" class="form-control" disabled  value="@ViewBag.LastDate"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div><!-- End datepicker -->
+        </div>
+        <div class="col-sm-3">
+            <label class="control-label">End Date</label>
+            <div class='input-group date
+                         datetimepicker2'>
+                <input type="text" id="txtEndDate" class="form-control" readonly />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div><!-- End datepicker -->
+        </div>
+        
+        <div class="col-sm-2">
+            <div class="btns_right">
+                <button class="btn btn-cstm btn-result">Check Recovery</button>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-6 -->
+
+        <div class="col-sm-2">
+            <div class="btns_right">
+                <button class="btn btn-cstm btn-insert">Insert Recovery</button>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-6 -->
+
+       
+
+    </div><!-- End row -->
+
+    
+
+</div><!-- End container -->

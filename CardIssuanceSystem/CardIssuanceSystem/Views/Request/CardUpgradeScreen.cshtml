@@ -1,0 +1,645 @@
+﻿@model CardIssuanceSystem.Core.ViewModel.UpdateRequestVM
+@{
+    ViewBag.Title = "Card Upgrade Request";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var requestId = ViewBag.RequestId;
+}
+
+@section CustomJS{
+
+    <script src="~/Content/Scripts.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#UnEditable :input").attr("disabled", true);
+            $('#ResultForm').css("display", "none");
+            $('#Waive').attr("disabled", false);
+        });
+
+        $('.btn-search').click(function () {
+            var Url = '@Url.Action("SearchAccountByCardNo", "Request")';
+            var CardNumber = $('#CardNumber').val();
+            if (CardNumber === '' || CardNumber === null || typeof (CardNumber) === 'undefined') {
+                $('#CardNumber').css("border", "red solid 1px");
+                alert("Please Enter Card Number");
+                return false;
+            }
+
+            if (!NumberValue(CardNumber)) {
+
+                alert("Only Numeric Value is Allowed");
+                return false;
+            }
+
+            if (!CheckLength(CardNumber, 16)) {
+                $('#CardNumber').css("border", "red solid 1px");
+                alert("Card number length should be equal to 16");
+                return false;
+            }
+
+            var Url_GetCard = '@Url.Action("SearchAccountByCardNo", "Request")';
+            ShowLoader();
+            ajaxCall(Url_GetCard, { CardNo: CardNumber }, function (resp) {
+                //debugger
+                HideLoader();
+                if (resp.Message == '@CardIssuanceSystem.Core.Helpers.CustomMessages.Success') {
+                    //debugger
+                    // $('#Salutation option:selected').text(resp.Salutation);
+                    $('#CardTitle').val(resp.CardInfo[0].CardTitle);
+
+                    $('#ExistingCardType').val(resp.CardInfo[0].CardTypeID);
+                    $('#hfAccountNumber').val(resp.CardInfo[0].AccountNo);
+                    $('.AccountNo').val(resp.CardInfo[0].AccountNo);
+                    $('#DefaultAccountTitle').val(resp.AccountInfo.AccountTitle);
+                    $('#AccountTitle').val(resp.AccountInfo.AccountTitle);
+                    $('#CustomerId').val(resp.AccountInfo.CustomerID);
+                    $('#CustomerName').val(resp.AccountInfo.CustomerName);
+                    // $('#AddressType option:selected').text(resp[0].AddressType);
+                    //$('#Correspondence').val(resp[0].Correspondence);
+                    $('#AccountAddress').val(resp.AccountInfo.AccountAddress);
+                    $('#CustomerAddress').val(resp.AccountInfo.CustomerAddress1);
+                    $('#Address').val(resp.AccountInfo.CustomerAddress2);
+
+                    $('#MobileNo').val(resp.AccountInfo.AccountMobile);
+                    $('#MobileNo1').val(resp.AccountInfo.SMS);
+                    $('#MobileNo2').val(resp.AccountInfo.SMS2);
+                    $('#MobileNo3').val(resp.AccountInfo.SMS3);
+                    $('#PhoneRes').val(resp.AccountInfo.PhoneResidence);
+                    $('#PhoneOff').val(resp.AccountInfo.OffPhone);
+                    $('#FaxNo').val();
+                    $('#Email').val(resp.AccountInfo.Email);
+                    $('#FatherName').val(resp.AccountInfo.FathersName);
+                    $('#MotherName').val(resp.AccountInfo.MothersName);
+                    $('#DateofBirth').val(resp.AccountInfo.CustomerDOB);
+                    $('#Identification option:selected').text(resp.AccountInfo.IdentificationType);
+                    $('#CNIC').val(resp.AccountInfo.IdentificationNo);
+                    $('#RequestDate').val('@(Model?.RequestData?.RequestDate ?? DateTime.Now)');
+
+                    $('#Sector').val(resp.AccountInfo.Sector);
+                    $('#Product').val(resp.AccountInfo.Product);
+                    $('#OperatingInst').val(resp.AccountInfo.OpInstructions);
+                    $('#Nationality').val(resp.AccountInfo.Nationality);
+                    $('#Residence').val(resp.AccountInfo.ResidenceStatus);
+                    debugger
+                    @*$('#UpgradationType option').not('#UpgradationType option[value=""]').css('display', 'none');
+
+                    //$('#UpgradationType option:not("")').css('display', 'none');
+                    resp.CardInfo[0].ParentIds.forEach(function (i, v)
+                    {
+                        if ($('#UpgradationType').find('option[value=' + resp.CardInfo[0].ParentIds[v] + ']').length > 0)
+                        {
+                            debugger
+                            if (resp.CardInfo[0].ParentIds[v] === parseInt('@(Model?.RequestData?.CardTypeID ?? 0)'))
+                            {
+                                $('#UpgradationType').find('option[value=' + resp.CardInfo[0].ParentIds[v] + ']').attr('selected', true).css('display', 'block');
+                            }
+                            $('#UpgradationType').find('option[value=' + resp.CardInfo[0].ParentIds[v] + ']').css('display', 'block');
+                        }
+                    });
+
+                    if ($('#UpgradationType').find('option').filter(function () { return $(this).css("display") == "none" }).length === $('#UpgradationType').find('option').length) {
+                        $('#UpgradationType').val("");
+                    }*@
+
+                    if ('@(Model?.RequestData?.WaiveCharges ?? false)' === 'True') {
+                        $('#Waive').attr('checked', 'checked');
+                    }
+
+                    //$('#OldNIC').val();
+                    $('#ResultForm').css("display", "block");
+                }
+
+                else {
+                    alert(resp.Message);
+                    $('#ResultForm').css("display", "none");
+                    return false;
+                }
+            }, function (fail) {
+                HideLoader();
+                //debugger
+                alert(fail.responseText);
+                return false;
+            }, function (err) {
+                //debugger
+                HideLoader();
+                alert(err.responseText);
+                return false;
+            });
+
+        });
+
+        $('#btnProceed').click(function () {
+            if (CheckCardEligibility() /*&& CheckAccountTypeEligibility()*/) {
+                var Url = '@Url.Action("SubmitNewRequest", "Request")';
+                if (parseInt('@requestId') > 0) {
+                    Url = '@Url.Action("UpdateReviewRequest", "Request")';
+                }
+                var ID = parseInt('@requestId');
+                var RequestType = "U";
+                var CardNumber = $('#CardNumber').val();
+                var RequestDate = $('#RequestDate').val();
+                var UpgradationType = $('#UpgradationType option:selected').val();
+                var CardTypeId = $('#UpgradationType option:selected').val();
+                var CardTitle = $('#CardTitle').val();
+                var ExistingCardType = $('#ExistingCardType').val();
+                var CustomerId = $('#CustomerId').val();
+                var CustomerName = $('#CustomerName').val();
+                var AddressType = $('#AddressType').val();
+                var Correspondence = $('#Correspondence').val();
+                var AccountAddress = $('#AccountAddress').val();
+                var CustomerAddress = $('#CustomerAddress').val();
+                var Address = $('#Address').val();
+                var MobileNo = $('#MobileNo').val();
+                var MobileNo1 = $('#MobileNo1').val();
+                var MobileNo2 = $('#MobileNo2').val();
+                var MobileNo3 = $('#MobileNo3').val();
+                var PhoneRes = $('#PhoneRes').val();
+                var PhoneOff = $('#PhoneOff').val();
+                var FaxNo = $('#FaxNo').val();
+                var Email = $('#Email').val();
+                var FatherName = $('#FatherName').val();
+                var MotherName = $('#MotherName').val();
+                var DateofBirth = $('#DateofBirth').val();
+                var Identification = $('#Identification').val();
+                var CNIC = $('#CNIC').val();
+                var OldCNIC = $('#OldCNIC').val();
+                var Waive = $('#Waive').is(':checked') ? "true" : "false";
+                var AccountNo = $('.AccountNo').val();
+                //var Salutation = '@(Model?.RequestData?.Salutation ?? string.Empty)';
+                var Salutation = $('#Salutation option:selected').text();
+
+                var CIFNo = CustomerId;
+                //};
+
+                if (CardNumber === "") {
+                    $('#CardNumber').css("border", "red solid 1px");
+                    alert("Please Enter Card Number");
+                    return false;
+                }
+                if (RequestDate === "") {
+                    $('#RequestDate').css("border", "red solid 1px");
+                    alert("Please Request Date");
+                    return false;
+                }
+                if (CardTitle === "") {
+                    $('#CardTitle').css("border", "red solid 1px");
+                    alert("Please Enter Card Title");
+                    return false;
+                }
+                if (!CheckCharacterLengthForTitle(CardTitle)) {
+                    $('#CardTitle').css("border", "red solid 1px");
+                    alert("Invalid Card Title");
+                    return false;
+                }
+                if (!ExistingCardType || ExistingCardType === "") {
+                    $('#ExistingCardType').css("border", "red solid 1px");
+                    alert("Please Select Existing Card Type");
+                    return false;
+                }
+                if (!UpgradationType || UpgradationType === "") {
+                    $('#UpgradationType').css("border", "red solid 1px");
+                    alert("Please Select Upgrade Type");
+                    return false;
+                }
+                if (CardTitleValue(CardTitle) == false) {
+                    alert("Please Enter Valid Card Title");
+                    return false;
+                }
+                if (!CheckLength(CardNumber, 16)) {
+                    $('#CardNumber').css("border", "red solid 1px");
+                    alert("Card number length should be equal to 16");
+                    return false;
+                }
+
+                if (UpgradationType == ExistingCardType)
+                {
+                    $('#UpgradationType').css("border", "red solid 1px");
+                    alert("Upgradation Type and Existing Type Cannot be Same!");
+                    return false;
+                }
+
+                ShowLoader();
+                ajaxCall(Url, {
+                    ID: ID,
+                    RequestDate: RequestDate,
+                    ExistingCardType: ExistingCardType,
+                    CardType: UpgradationType,
+                    CardTypeId: CardTypeId,
+                    CardTitle: CardTitle,
+                    CustomerId: CustomerId,
+                    CustomerName: CustomerName,
+                    AddressType: AddressType,
+                    Correspondence: Correspondence,
+                    AccountAddress: AccountAddress,
+                    CustomerAddress: CustomerAddress,
+                    Address: Address,
+                    MobileNo: MobileNo,
+                    MobileNo1: MobileNo1,
+                    MobileNo2: MobileNo2,
+                    MobileNo3: MobileNo3,
+                    PhoneRes: PhoneRes,
+                    PhoneOff: PhoneOff,
+                    FaxNo: FaxNo,
+                    Email: Email,
+                    FatherName: FatherName,
+                    MotherName: MotherName,
+                    DateofBirth: DateofBirth,
+                    Identification: Identification,
+                    CNIC: CNIC,
+                    OldCNIC: OldCNIC,
+                    Waive: Waive,
+                    CardNumber: CardNumber,
+                    RequestType: RequestType,
+                    AccountNo: AccountNo,
+                    CardNo: CardNumber,
+                    Salutation: Salutation,
+                    CustomerRequestId: 0,
+                    CIFNo: CIFNo
+                }, function (resp) {
+                    //debugger;
+                    HideLoader();
+                    if (typeof (resp.ErrorMessage) !== "undefined" && (resp.ErrorMessage !== null || resp.ErrorMessage !== "")) {
+                        //alert(resp.ErrorMessage);
+                        alert(resp.ErrorMessage + " !" + " Request Id: " + resp.IsSuccess);
+                        location.reload();
+                    }
+                    else if (typeof (resp) === "boolean") {
+                        alert(resp);
+                        if (resp === true) {
+                            location.reload();
+                        }
+                    }
+                    else if (typeof (resp) === "object") {
+                        if (typeof (resp.IsSuccess) === "boolean") {
+                            alert(resp.ErrorMessage);
+                            location.reload();
+                        }
+                        else {
+                            alert(resp.ErrorMessage + " !" + " Request Id: " + resp.IsSuccess);
+                            location.reload();
+                        }
+                    }
+                    else {
+                        alert(resp.ErrorMessage);
+                        location.reload();
+                    }
+
+                }, function (fail) {
+                    HideLoader();
+                    alert("Failure");
+                }, function (err) {
+                    HideLoader();
+                    alert("Error");
+                });
+            }
+            else {
+                alert("In Eligible To Upgrade");
+                return false;
+            }
+        });
+
+        function CheckCardEligibility() {
+            //debugger
+            var isSuccess;
+            var Url_CardEligibility = '@Url.Action("CheckCardUpgradeEligibility", "Request")';
+            var Parent = $('#UpgradationType').val();
+            var Child = $('#ExistingCardType').val();
+            if (Parent === "" && Child === "") { isSuccess = false; }
+            else {
+                ShowLoader();
+                ajaxCallSynchronous(Url_CardEligibility, { ParentCardType: Parent, ChildCardType: Child },
+                    function (resp) {
+                        HideLoader();
+                        if (resp.IsSuccess) {
+                            isSuccess = resp.Response;
+                        } else {
+                            isSuccess = false;
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        isSuccess = false;
+                    }, function (err) {
+                        HideLoader();
+                        isSuccess = false;
+                    });
+            }
+            if (typeof (isSuccess) !== "undefined") {
+                return isSuccess;
+            }
+        }
+
+        function CheckAccountTypeEligibility() {
+            var isSuccess;
+            var Url_AccountTypeEligibility = '@Url.Action("CheckAccountTypeEligibility", "Request")';
+            var AccountCode = "AC-00002235";//$('#').val();
+            var CardType = $('#UpgradationType').val();
+            if (AccountCode === "" && CardType === "") { isSuccess = false; }
+            else {
+                ShowLoader();
+                ajaxCallSynchronous(Url_AccountTypeEligibility, { AccountCode: AccountCode, CardTypeID: CardType },
+                    function (resp) {
+                        HideLoader();
+                        if (resp.IsSuccess) {
+                            isSuccess = resp.Response;
+                        } else {
+                            isSuccess = false;
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        isSuccess = false;
+                    }, function (err) {
+                        HideLoader();
+                        isSuccess = false;
+                    });
+            }
+            if (typeof (isSuccess) !== "undefined") {
+                return isSuccess;
+            }
+        }
+
+        function CheckCharacterLength(val) {
+            return /^([a-zA-Z ]){1,19}$/.test(val);
+        }
+
+        function CheckCharacterLengthForTitle(val) {
+            return /^([a-zA-Z ]){1,30}$/.test(val);
+        }
+
+        function GetCustomerDetail(Url, CardNo) {
+            ShowLoader();
+            ajaxCall(Url, { CardNo: CardNo }, function (resp) {
+                HideLoader();
+                if (typeof (resp) === "object" && resp.length > 0) {
+                    //debugger;
+                    $('#CardNumber').val($('#CardNumber').val());
+                    $('#RequestDate').val('@(Model?.RequestData?.RequestDate)');
+                    $('#UpgradationType').val('@(Model?.RequestData?.CardTypeID)');
+                    $('#CustomerId').val(resp[0].CIF);
+                    $('#CustomerName').val(resp[0].AccountTitle);
+                    $('#AddressType').val(resp[0].AddressType);
+                    $('#Correspondence').val(resp[0].Correspondence);
+                    $('#AccountAddress').val(resp[0].Address);
+                    $('#CustomerAddress').val(resp[0].Address);
+                    $('#Address').val(resp[0].Address);
+                    $('#MobileNo').val(resp[0].Mobile);
+                    $('#PhoneRes').val();
+                    $('#PhoneOff').val();
+                    $('#FaxNo').val();
+                    $('#Email').val();
+                    $('#FatherName').val();
+                    $('#MotherName').val(resp[0].MotherMaidenName);
+                    $('#DateofBirth').val(resp[0].DateofBirth);
+                    $('#Identification').val();
+                    $('#CNIC').val(resp[0].CNIC);
+                    $('#OldCNIC').val();
+                }
+                else {
+                    console.log("Record Not Exist");
+                }
+            }, function (fail) {
+                HideLoader();
+                alert("Failure");
+            }, function (err) {
+                HideLoader();
+                alert("Error");
+            });
+        }
+
+        $(window).on('load', function () {
+            if (parseInt('@requestId') > 0) {
+                $('#CardNumber').val('@(Model?.RequestData?.CardNo ?? string.Empty)');
+                $('.btn-search').trigger('click');
+                $('.btn-search').attr("disabled", true);
+                $('#CardNumber').attr("disabled", true);
+            }
+        });
+    </script>
+}
+<div class="container">
+    <div class="form-group row">
+        <div class="col-sm-3">
+            <label class="control-label">Card Number</label>
+            <input id="CardNumber" type="text" class="form-control">
+        </div><!-- End col-sm-3 -->
+
+        <div class="col-sm-9">
+            <button class="btn btn-cstm btn-search">Search</button>
+        </div><!-- End col-sm-9 -->
+    </div><!-- End row -->
+    <div id="ResultForm" style="display:none">
+        <div class="row form-group">
+            <div class="col-sm-3" style="display:none;">
+                <label class="control-label">Request No</label>
+                <input id="RequestNumber" type="text" class="form-control">
+                @Html.Hidden("hfAccountNumber", Model?.RequestData?.AccountNo)
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Card Title</label>
+                <input id="CardTitle" type="text" class="form-control" maxlength="30" disabled>
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Existing Card Type</label>
+                @*<input type="text" id="ExistingCardType" class="form-control" value="">*@
+                <select class="form-control" id="ExistingCardType" disabled>
+                    @foreach (var item in (ViewBag.CardTypes))
+                    {
+                        <option value="@item.ID">@item.Title</option>
+                    }
+                </select>
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                @Html.Hidden("hfCustomerCardId")
+                <label class="control-label">Upgradation Type</label>
+                <select class="form-control" id="UpgradationType">
+                    <option value="">Select Upgradation Card Types</option>
+                    @foreach (var item in (ViewBag.CardTypes))
+                    {
+                        <option value="@item.ID">@item.Title</option>
+                    }
+                </select>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3" style="display:@(requestId == 0 ? "none" : "block")">
+                <label class="control-label">Request Date</label>
+                <div class='input-group date datetimepicker1'>
+                    <input type='text' id="RequestDate" class="form-control" readonly @(requestId == null ? "" : "disabled") />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div><!-- End datepicker -->
+                <!-- End col-sm-3 -->
+            </div>
+        </div>
+
+        <h4 class="main_hdng">Customer Information</h4>
+        <div id="UnEditable">
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Customer ID</label>
+                    <input id="CustomerId" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Customer Name</label>
+                    <input id="CustomerName" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Account No</label>
+                    <input type="text" class="form-control AccountNo">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Account Title</label>
+                    <input type="text" class="form-control" id="AccountTitle">
+                </div><!-- End col-sm-3 -->
+
+                
+   
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Account Address</label>
+                    <input id="AccountAddress" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+            </div>
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Customer Address 1</label>
+                    <input id="CustomerAddress" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Customer Address 2</label>
+                    <input id="Address" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+            </div>
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No</label>
+                    <input type="text" class="form-control" id="MobileNo">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 1</label>
+                    <input type="text" class="form-control" id="MobileNo1">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 2</label>
+                    <input type="text" class="form-control" id="MobileNo2">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 3</label>
+                    <input type="text" class="form-control" id="MobileNo3">
+                </div><!-- End col-sm-3 -->
+
+            </div>
+
+            <div class="row form-group">
+               
+                <div class="col-sm-3">
+                    <label class="control-label">Phone Res</label>
+                    <input id="PhoneRes" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Phone Off</label>
+                    <input id="PhoneOff" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Fax No</label>
+                    <input id="FaxNo" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Email</label>
+                    <input id="Email" type="email" class="form-control">
+                </div><!-- End col-sm-3 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Date of Birth</label>
+                    <div class='input-group date'>
+                        <input id="DateofBirth" type='text' class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Father's Name</label>
+                    <input id="FatherName" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mother's Maiden Name</label>
+                    <input id="MotherName" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Identification</label>
+                    <select id="Identification" class="form-control">
+                        <option>Identification</option>
+                    </select>
+                </div><!-- End col-sm-3 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Identification No</label>
+                    <input id="CNIC" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Old NIC</label>
+                    <input id="OldCNIC" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Product</label>
+                    <input id="Product" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Operating Instruction</label>
+                    <input id="OperatingInst" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+            </div><!-- End row -->
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Sector</label>
+                    <input id="Sector" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Nationality</label>
+                    <input id="Nationality" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Residence</label>
+                    <input id="Residence" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="Waive" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                            Waive Charges
+                        </label>
+                    </div>
+                </div><!-- End col-sm-3 -->
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <div class="btns_right">
+                    <button id="btnProceed" class="btn btn-cstm">Proceed</button>
+                    <button id="btnCancel" class="btn btn-cstm btn-light" onclick="location.reload();">Cancel</button>
+                </div><!-- End btns_right -->
+            </div><!-- End col-sm-3 -->
+        </div><!-- End row -->
+    </div>
+</div><!-- End container -->

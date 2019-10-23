@@ -1,0 +1,59 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.RequestForExportVM>
+    @{ }
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="optionsCheckboxes" unchecked="">
+                        <span class="checkbox-material">
+                            <span class="check"></span>
+                        </span>
+                    </label>
+                </div>
+            </th>
+            <th>Date Of Issuance</th>
+            <th>Date Of Expiry</th>
+            <th>Branch Code</th>
+            <th>Account No</th>
+            <th>Name On Card</th>
+            <th>Main Address</th>
+            <th>Main Landline</th>
+            <th>Associated Address</th>
+            <th>Name Of Customer</th>
+            <th>Date Of Birth</th>
+            <th>Mother's Maiden Name</th>
+            <th>Res Phone Number</th>
+            <th>NIC</th>
+            <th>Member Since</th>
+            <th>Nationality</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td></td>
+                <td>@item.DateOfIssue</td>
+                <td>@item.DateOfExpiry</td>
+                <td>@item.BranchCode</td>
+                <td>@item.AccountNo</td>
+                <td>@item.NameOnCard</td>
+                <td>@item.MainAddress</td>
+                <td>@item.MainLandline</td>
+                <td>@item.AssociatedAddress</td>
+                <td>@item.NameOfCustomer</td>
+                <td>@item.DateOfBirth</td>
+                <td>@item.MotherMaidenName</td>
+                <td>@item.ResidentialPhoneNumber</td>
+                <td>@item.NIC</td>
+                <td>@item.MemberSince</td>
+                <td>@item.Nationality</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

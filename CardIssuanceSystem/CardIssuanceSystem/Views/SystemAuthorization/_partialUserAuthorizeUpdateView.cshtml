@@ -1,0 +1,54 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.SystemRequestVM>
+@{
+
+}
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>UserName</th>
+                <th>Request Date</th>
+                <th>View</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.UserName</td>
+                        <td>@item.RequestDate</td>
+                        <td>
+                            @ActionButton(item.RequestType, item.ID)
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr colspan="3">
+                    <td>No Record Found!</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div><!-- End table-responsive -->
+
+
+@helper ActionButton(string requestType, long id)
+{
+switch (requestType)
+{
+    case "User":
+            <a href="@Url.Action("AuthorizeExistingUser", "SystemAuthorization", new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+        break;
+    case "Profile_User":
+            <a href="@Url.Action("AuthorizeUserProfile", "SystemAuthorization", new { Id = id })"><button class='btn btn-cstm'><i class='fa fa-eye'></i></button></a>;
+            break;
+        default:
+            break;
+    }
+}

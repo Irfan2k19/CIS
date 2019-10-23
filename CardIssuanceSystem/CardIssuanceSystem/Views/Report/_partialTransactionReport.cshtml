@@ -1,0 +1,92 @@
+﻿@model List<CardIssuanceSystem.DAL.tbl_transactions>
+@{ }
+
+@using (Html.BeginForm("Export", "Report", FormMethod.Post, new { }))
+{
+    <input type="hidden" name="GridHtml" />
+    <input type="hidden" name="GridCss" />
+    <input type="submit" id="btnExport" class="btn btn-default" value="Export to pdf" style="margin: 0px 0px 2px 21px;"  />
+}
+
+<div id="GridHtml">
+    <table class="table" id="tblTrans">
+        <thead>
+            <tr>
+                <th>Transaction Id No</th>
+                <th>Transaction Datetime</th>
+                <th>Amount</th>
+                <th>Debit Account No</th>
+                <th>Credit Account No</th>
+                <th>Narration</th>
+                <th>Request Type</th>
+                <th>STAN</th>
+                <th>Response Code</th>
+                <th>Request Desc</th>
+                <th>Branch Code</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.TransactionIdNo</td>
+                        <td>@item.TransactionDateTime</td>
+                        <td>@item.Amount</td>
+                        <td>@item.DebitAccountNo</td>
+                        <td>@item.CreditAccountNo</td>
+                        <td>@item.Narration</td>
+                        <td>@(item.RequestType.Trim() != "N" ? item.RequestType.Trim() != "A" ? item.RequestType.Trim() != "U" ? item.RequestType.Trim() != "L" ? item.RequestType.Trim() != "D" ? item.RequestType.Trim() != "H" ? item.RequestType.Trim() != "R" ? string.Empty : "Card Replacement Request" : "Card Hotmark Request" : "Card Delinking Request" : "Card Linking Request" : "Card Upgrade Request" : "Card Ammendment Request" : "New Card Request")</td>
+                        <td>@item.STAN</td>
+                        <td>@item.ResponseCode</td>
+                        <td>@item.ResponseCodeDescription</td>
+                        <td>@item.BranchCode</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6">No Record Found</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    var currentDate = new Date();
+    var filename = "Transaction Report " + currentDate.getFullYear() + (currentDate.getMonth() + 1) + currentDate.getDate() + "_" + currentDate.getTime();
+    $(function () {
+        /* Excel Open XML spreadsheet (.xlsx) */
+        TableExport.prototype.xlsx = {
+            defaultClass: "xlsx",
+            buttonContent: "Export to xlsx",
+            mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            fileExtension: ".xlsx"
+        };
+
+        /* Comma Separated Values (.csv) */
+        TableExport.prototype.csv = {
+            defaultClass: "csv",
+            buttonContent: "Export to csv",
+            separator: ",",
+            mimeType: "application/csv",
+            fileExtension: ".csv"
+        };
+
+        ExportTable("#table-responsive table", filename);
+
+        //$('#btnExport').click(function (e) {
+        //    exportPDF("table-responsive", filename);
+        //});
+    });
+
+    $("#btnExport").click(function () {
+        //debugger
+        $("input[name='GridHtml']").val($("#GridHtml").html());
+        $("input[name='GridCss']").val('#tblTrans{border-collapse: collapse;width: 100%;}#tblTrans td, #tblTrans th {border: 1px solid #ddd;padding: 8px;}#tblTrans tr:nth-child(even){background-color: #f2f2f2;}#tblTrans tr:hover {background-color: #ddd;}#tblTrans th {padding-top: 12px;padding-bottom: 12px;text-align: left;background-color: #ffc423;color: white;}');
+
+    });
+</script>

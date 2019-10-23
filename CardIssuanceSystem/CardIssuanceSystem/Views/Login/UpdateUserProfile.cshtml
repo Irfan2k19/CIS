@@ -1,0 +1,241 @@
+﻿@model CardIssuanceSystem.DAL.tbl_System_Requests
+@{
+    ViewBag.Title = "Update User Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userDetails = ViewBag.UserDetails as CardIssuanceSystem.DAL.tbl_Users;
+}
+
+@section CustomCSS{
+    <link rel="stylesheet" href="~/assets/css/custom.css" />
+    <style type="text/css">
+        .btn-login:hover {
+            color: #000 !important;
+        }
+    </style>
+}
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            if (parseInt('@(Model?.ID ?? 0)') <= 0) {
+                ClearFields();
+            }
+            $('#btn-update').on('click', function (e) {
+                debugger
+                var name = $('#txtName').val();
+                var id = $('#cmbxUserName').val();
+                var username = $('#cmbxUserName :selected').text();
+                var password = "";//$('#txtPassword').val();
+                var role = $('#cmbxRole').val();
+                var isActive = $('input[name="optionCheckbox"]').is(":checked") ? "true" : "false";
+                var requestId = parseInt('@(Model?.ID ?? 0)');
+                var ExpiryDate = $('#txtexpirydate').val();
+                var EmpCode = $('#txtEmpCode').val();
+                var IsExpiry = $('input[name="ExpiryCheckbox"]').prop("checked");
+                var url = '@Url.Action("UpdateProfile","Login")';
+
+                if (ExpiryDate != null || ExpiryDate != '' || typeof (ExpiryDate) != undefined) {
+                    ExpiryDate = ExpiryDate + ' 23:59:58.998';
+                } 
+                if (IsExpiry== false)
+                {
+                    ExpiryDate = null;
+                }
+                if (username == null || username == "" || typeof (username) == undefined || username == "undefined" || username == '') {
+                    //alert("Please Enter UserName");
+                    $('#cmbxUserName').parent().siblings('.lblerror').text("Please select username");
+                    return false;
+                }
+
+                if (name == null || name == "" || typeof (name) == undefined || name == "undefined" || name == '') {
+                    //alert("Please Enter UserName");
+                    $('#txtName').parent().siblings('.lblerror').text("Please enter name");
+                    return false;
+                }
+
+                if (role == null || role == "" || typeof (role) == undefined || role == "undefined" || role == '') {
+                    //alert("Please Enter Password");
+                    $('#cmbxRole').parent().siblings('.lblerror').text("Please select role");
+                    return false;
+                }
+
+                ShowLoader();
+                ajaxCall(url, { ID: id, UserName: name, UserLogin: username, UserPassword: password, RoleTitle: role, IsActive: isActive, RequestId: requestId, ExpiryDate: ExpiryDate, EmpCode: EmpCode }, function (resp) {
+                    if (typeof (resp) === "object" && resp.IsSuccess) {
+                        HideLoader();
+                        alert(resp.ErrorMessage);
+                        window.location.reload();
+                    }
+                    else {
+                        HideLoader();
+                        alert(resp.ErrorMessage);
+                    }
+                }, function (fail) {
+                    HideLoader();
+                    alert(genericMessage);
+                    console.log(fail.responseText);
+                }, function (err) {
+                    HideLoader();
+                    if (err.responseText.indexOf("IsSuccess") >= 0) {
+                        alert(err.responseJSON.ErrorMessage);
+                    }
+                    else {
+                        alert(genericMessage);
+                    }
+                    console.log(err.responseText);
+                });
+            });
+
+            $('.formfields').on('focus', function () {
+                $(this).parent().siblings('.lblerror').text('');
+            });
+
+        });
+
+        function ClearFields() {
+            $('#txtName').val('');
+            $('#cmbxUserName').val('');
+            //$('#txtPassword').val('');
+            $('#cmbxRole').val('');
+            $('#txtexpirydate').val('');
+            $('#txtEmpCode').val('');
+        }
+
+        $(document).on('change', '#cmbxUserName', function (e) {
+            var url = '@Url.Action("GetUser","Login")';
+            var id = $('#cmbxUserName').val();
+            if (id === null || id === "" || typeof (id) === undefined || id === "undefined" || id === '') {
+                ClearFields();
+                return false;
+            }
+            else {
+                ShowLoader();
+                ajaxCall(url, { Id: id }, function (resp) {
+                    if (typeof (resp) === "object" && resp.IsSuccess) {
+                        $('#txtName').val(resp.Response.UserName);
+                        $('#txtPassword').val('');
+                        $('#cmbxRole').val(resp.Response.RoleTitle);
+                        $('input[name="optionCheckbox"]').prop("checked", resp.Response.IsActive);
+                        console.log(resp.Response.ExpiryDateStr);
+                        $('#txtexpirydate').val(resp.Response.ExpiryDateStr);
+                        debugger
+                        if (resp.Response.ExpiryDateStr != null && resp.Response.ExpiryDateStr != "" && resp.Response.ExpiryDateStr != '')
+                        {
+                        $('input[name="ExpiryCheckbox"]').prop("checked", true);
+                        
+                        } else
+                        {
+                            $('input[name="ExpiryCheckbox"]').prop("checked", false);
+                        }
+                        $('#txtEmpCode').val(resp.Response.EmpCode);
+                        HideLoader();
+                    }
+                    else {
+                        HideLoader();
+                        alert(resp.ErrorMessage);
+                    }
+                }, function (fail) {
+                    HideLoader();
+                    alert(genericMessage);
+                    console.log(fail.responseText);
+                }, function (err) {
+                    HideLoader();
+                    if (err.responseText.indexOf("IsSuccess") >= 0) {
+                        alert(err.responseJSON.ErrorMessage);
+                    }
+                    else {
+                        alert(genericMessage);
+                    }
+                    console.log(err.responseText);
+                });
+            }
+        });
+    </script>
+
+}
+
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <h2>Update User</h2>
+        <hr />
+        <form>
+            <div class="form-group">
+                <label for="txtName">User Name</label>
+                <select id="cmbxUserName" class="form-control formfields" placeholder="User Name" required>
+                    <option value="" @(userDetails == null ? "selected" : string.Empty)>Select User</option>
+                    @foreach (var item in ViewBag.GetAllUsers)
+                    {
+                        <option value="@item.ID" @(userDetails == null ? string.Empty : (userDetails.ID == item.ID) ? "selected" : string.Empty)>@item.UserLogin</option>
+                    }
+                </select>
+                <label class="lblerror" style="color:red;"></label>
+            </div>
+            <div class="form-group">
+                <label for="txtName">Name</label>
+                <div class="input-group">
+                    <input type="text" id="txtName" class="form-control formfields" placeholder="Name" value="@(userDetails == null ? string.Empty : userDetails.UserName)" aria-describedby="basic-addon1" required>
+                    <span class="input-group-addon" id="basic-addon1">i.e: John Doe</span>
+                </div>
+                <label class="lblerror" style="color:red;"></label>
+            </div>
+
+            <div class="form-group">
+                <label for="txtEmpCode">Employee Code </label>
+                <input type="text" id="txtEmpCode" class="form-control formfields" placeholder="Employee Code" value="@(userDetails != null ? userDetails.EmpCode : string.Empty)" required>
+                <label class="lblerror" style="color:red;"></label>
+            </div>
+
+            <div class="form-group">
+                <label for="txtexpirydate">Expiry Date </label> &nbsp;<input type="checkbox" name="ExpiryCheckbox"><span class="checkbox-material"><span class="check"></span></span>
+
+    @*<div class="col-md-6">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="ExpiryCheckbox" ><span class="checkbox-material"><span class="check"></span></span>
+                    Is Expiry Date
+                </label>
+            </div>
+        </div>*@
+    <div class='input-group date datetimepicker1'>
+        <input type='text' class="form-control from_date" id="txtexpirydate" value="@(userDetails != null ? userDetails.ExpiryDate : null)" readonly />
+        <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+    </div>
+</div>
+
+            <div class="form-group" style="display:none">
+                <label for="txtUserName">Role</label>
+                <select class="form-control formfields" id="cmbxRole" placeholder="RoleTitle" required>
+                    <option value="" @(userDetails == null ? "selected" : string.Empty)>Please select role</option>
+                    <option value="c" @(userDetails == null ? string.Empty : userDetails.RoleTitle == "c" ? "selected" : string.Empty)>Creator</option>
+                    <option value="u" @(userDetails == null ? string.Empty : userDetails.RoleTitle == "u" ? "selected" : string.Empty)>Authenticator</option>
+                </select>
+                <label class="lblerror" style="color:red;"></label>
+            </div>
+            <div class="form-group">
+                <div class="row chk_bxs">
+
+                    
+
+
+
+                    <div class="col-md-12">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="optionCheckbox" @(userDetails == null ? string.Empty : userDetails.IsActive == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                Is Active
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <label class="lblerror" style="color:red;"></label>
+            </div>
+
+            <div class="form-group">
+                <button id="btn-update" class="btn btn-cstm btn-login">Save</button>
+            </div><!-- End form-group -->
+            @*<button type="submit" class="btn btn-default">Submit</button>*@
+        </form>
+    </div>
+
+</div>

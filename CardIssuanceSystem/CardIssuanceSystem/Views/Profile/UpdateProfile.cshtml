@@ -1,0 +1,92 @@
+﻿@model List<CardIssuanceSystem.DAL.tbl_Profile>
+@{
+    ViewBag.Title = "UpdateProfile";
+    var systemRequest = ViewBag.SystemRequest as CardIssuanceSystem.DAL.tbl_System_Requests;
+    var profileDetails = ViewBag.ProfileDetails as CardIssuanceSystem.DAL.tbl_Profile;
+}
+
+<div class="container">
+    <div class="form-group row">
+        <div class="col-md-12">
+            <label class="control-label">Profile</label>
+            <select class="form-control" id="cmbxProfile">
+                <option value="" @(profileDetails == null ? "selected" : string.Empty)>--Select Profile--</option>
+                @foreach (var item in Model)
+                {
+                    <option value="@item.ID" @(profileDetails == null ? string.Empty : profileDetails.ID == item.ID ? "selected" : string.Empty)>@item.Title</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-6">
+            <label class="control-label">Title</label>
+            <input type="text" class="form-control" id="txtTitle" value="@(profileDetails?.Title ?? string.Empty)" maxlength="100" />
+        </div>
+        <div class="col-md-6">
+            <label class="control-label">Is Profile Active</label>
+            <div class="row chk_bxs">
+                <div class="col-md-12">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="optionsCheckbox" @((profileDetails?.IsActive ?? false) == false ? string.Empty : "checked")><span class="checkbox-material"><span class="check"></span></span>
+                            Is Active
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-12">
+            <input type="submit" class="btn pull-right btn-cstm" id="btnSubmit" />
+        </div>
+    </div>
+</div>
+
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            $('#cmbxProfile').change(function(){
+                var id = $(this).val();
+                var data = @Html.Raw(Json.Encode(Model));
+
+                var datam = data.map(function(e){
+                    if(e.ID.toString() == id.toString()){
+                        return e.IsActive;
+                    }
+                    else{return "0";}
+                });
+
+                var obj = $.grep(datam,function(i){return i!=="0"});
+                var value = obj.length === 1 ? obj[0] : false;
+
+                $('input[name="optionsCheckbox"]').prop('checked',value);
+                $('#txtTitle').val($(this).find("option:selected").text());
+            });
+
+            $('#btnSubmit').on('click', function (e) {
+                var Id = $('#cmbxProfile').val();
+                var title = $('#txtTitle').val();
+                var isActive = $('input[name="optionsCheckbox"]').is(':checked') == true ? "true" : "false";
+                var requestId = parseInt('@(systemRequest?.ID ?? 0)');
+                var url = '@Url.Action("AddProfileModificationRequest", "Profile")';
+                if (!title) {
+                    alert('Please provide title');
+                }
+                else {
+                    ajaxCall(url, {ID: Id, Title: title, IsActive: isActive, RequestId: requestId }, function (resp) {
+                        if (typeof (resp) === "object" && resp != null) {
+                            alert("Success!");
+                            location.reload();
+                        }
+                    }, function (fail) {
+                        alert("Failure");
+                    }, function (err) {
+                        alert("Error");
+                    });
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,241 @@
+﻿
+@{
+    ViewBag.Title = "Branch Configuration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="form-group row">
+        <div class="col-sm-3">
+            <label class="control-label">Code Number</label>
+            <input id="CodeNumber" type="text" class="form-control" placeholder="Code Number">
+        </div>
+
+        <div class="col-sm-9">
+            <button class="btn btn-cstm btn-search">Search</button>
+        </div>
+    </div>
+   
+        <div class="row form-group">
+            <div class="col-sm-6">
+                <label class="control-label">Branch Title</label>
+                <input id="BranchTitle" type="text" class="form-control" placeholder="Branch Title">
+            
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-6">
+                <label class="control-label">F.E.D.</label>
+                <input id="FED" type="text" class="form-control" placeholder="F.E.D.">
+            </div><!-- End col-sm-3 -->
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-6">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="IsActive" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                        Is Active
+                    </label>
+                </div>
+            </div><!-- End col-sm-3 -->
+
+
+        </div>
+
+    <div class="row form-group">
+        <div class="col-sm-12">
+            <div class="btns_right">
+                <button id="btnAdd" class="btn btn-cstm" style="display:none;">Add</button>
+                <button id="btnUpdate" class="btn btn-cstm" style="display:none;">Update</button>
+                <button id="btnCancel" class="btn btn-cstm btn-light" onclick="location.reload();">Cancel</button>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-3 -->
+    </div>
+
+
+
+</div>
+<script type="text/javascript">
+    $('.btn-search').click(function ()
+    {
+        $('#btnAdd').css("display", "none");
+        $('#btnUpdate').css("display", "none");
+        var CodeNumber = $('#CodeNumber').val();
+
+        var Url = '@Url.Action("SearchBranchByCodeNo", "Configuration")';
+        if (CodeNumber === '' || CodeNumber === null || typeof (CodeNumber) === 'undefined') {
+            $('#CodeNo').css("border", "red solid 1px");
+            alert("Please Enter Code Number");
+            return false;
+        }
+
+        ShowLoader();
+        ajaxCall(Url, { CodeNumber: CodeNumber }, function (resp) {
+           // debugger
+            HideLoader();
+            if (resp.ErrorMessage == '@CardIssuanceSystem.Core.Helpers.CustomMessages.Success')
+            {
+               // debugger
+                $('#BranchTitle').val(resp.result.Title);
+                $('#FED').val(resp.result.FED);
+                //$('#IsActive').val('');
+                if (resp.result.IsActive == true)
+                {
+                    $('#IsActive').prop('checked', true);
+                } else
+                {
+                    $('#IsActive').prop('checked', false);
+                }
+                $('#btnUpdate').removeAttr("style");
+            } else
+            {
+                //debugger
+                alert(resp.ErrorMessage);
+                $('#BranchTitle').val('');
+                $('#FED').val('');
+                $('#IsActive').attr('checked', false);
+                $('#btnAdd').removeAttr("style");
+            }
+
+        }, function (fail) {
+            HideLoader();
+            //debugger
+            alert(fail.responseText);
+            return false;
+        }, function (err) {
+            //debugger
+            HideLoader();
+            alert(err.responseText);
+            return false;
+        });
+
+    });
+
+    $('#btnAdd').click(function () {
+        var Description = $('#CodeNumber').val();
+        var Tilte = $('#BranchTitle').val();
+        var FED = $('#FED').val();
+        var IsActive;// = $('#IsActive').val();
+
+        if ($('#IsActive').is(":checked")) {
+            IsActive=true
+        } else
+        {
+            IsActive = false;
+        }
+
+        var Url = '@Url.Action("AddBranch", "Configuration")';
+        if (Description === '' || Description === null || typeof (Description) === 'undefined') {
+            $('#CodeNumber').css("border", "red solid 1px");
+            alert("Please Enter Code Number");
+            return false;
+        }
+        if (Tilte === '' || Tilte === null || typeof (Tilte) === 'undefined') {
+            $('#BranchTitle').css("border", "red solid 1px");
+            alert("Please Enter Branch Title");
+            return false;
+        }
+        if (FED === "" || FED === null || typeof (FED) === 'undefined') {
+            $('#FED').css("border", "red solid 1px");
+            alert("Please enter FED");
+            return false;
+        }
+
+        if (!CheckStrLength(Description, 500)) {
+            alert("Code Number Length should be less than or equal to 500");
+            return false;
+        }
+        if (!CheckStrLength(Tilte, 50)) {
+            alert("Branch Title Length should be less than or equal to 50");
+            return false;
+        }
+        if (!CheckStrLength(FED, 50)) {
+            alert("FED Length should be less than or equal to 50");
+            return false;
+        }
+
+        ShowLoader();
+        ajaxCall(Url, { Description: Description, Tilte: Tilte, FED: FED, IsActive: IsActive }, function (resp) {
+            //debugger
+            HideLoader();
+            if (resp.ErrorMessage == '@CardIssuanceSystem.Core.Helpers.CustomMessages.Success') {
+                alert(resp.ErrorMessage);
+                location.reload();
+            } else {
+                alert(resp.ErrorMessage);
+                
+            }
+
+        }, function (fail) {
+            HideLoader();
+            //debugger
+            alert(fail.responseText);
+            return false;
+        }, function (err) {
+            //debugger
+            HideLoader();
+            alert(err.responseText);
+            return false;
+        });
+
+    });
+
+
+
+
+    $('#btnUpdate').click(function () {
+        var Description = $('#CodeNumber').val();
+        var Tilte = $('#BranchTitle').val();
+        var FED = $('#FED').val();
+        var IsActive;// = $('#IsActive').val();
+
+        if ($('#IsActive').is(":checked")) {
+            IsActive = true
+        } else {
+            IsActive = false;
+        }
+
+        var Url = '@Url.Action("UpdateBranch", "Configuration")';
+        if (Description === '' || Description === null || typeof (Description) === 'undefined') {
+            $('#CodeNumber').css("border", "red solid 1px");
+            alert("Please Enter Code Number");
+            return false;
+        }
+        if (Tilte === '' || Tilte === null || typeof (Tilte) === 'undefined') {
+            $('#BranchTitle').css("border", "red solid 1px");
+            alert("Please Enter Branch Title");
+            return false;
+        }
+        if (FED === "" || FED === null || typeof (FED) === 'undefined') {
+            $('#FED').css("border", "red solid 1px");
+            alert("Please enter FED");
+            return false;
+        }
+
+
+        ShowLoader();
+        ajaxCall(Url, { Description: Description, Tilte: Tilte, FED: FED, IsActive: IsActive }, function (resp) {
+            //debugger
+            HideLoader();
+            if (resp.ErrorMessage == '@CardIssuanceSystem.Core.Helpers.CustomMessages.Success') {
+                alert(resp.ErrorMessage);
+                location.reload();
+            } else {
+                alert(resp.ErrorMessage);
+
+            }
+
+        }, function (fail) {
+            HideLoader();
+            //debugger
+            alert(fail.responseText);
+            return false;
+        }, function (err) {
+            //debugger
+            HideLoader();
+            alert(err.responseText);
+            return false;
+        });
+
+    });
+</script>

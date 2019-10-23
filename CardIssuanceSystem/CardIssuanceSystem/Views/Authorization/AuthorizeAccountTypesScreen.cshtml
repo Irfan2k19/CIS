@@ -1,0 +1,157 @@
+﻿@model CardIssuanceSystem.Core.ViewModel.AccountTypeVM
+@{
+    ViewBag.Title = "Account Type Authorization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var requestId = ViewBag.RequestId;
+    var requestType = ViewBag.AccountRequestType;
+}
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            $('.btn-proceed').on('click', function () {
+                debugger;
+                var status = $('.rb-val').find('input[type="radio"]:checked').val();
+                var comment = $('.txt-desc').val();
+                var id = '@requestId';
+                var url = '@requestType' === "Add" ? '@Url.Action("UpdateACAuthorizeScreen", "Authorization")' : '@Url.Action("UpdateACAuthorizeScreenForUpdateRequest", "Authorization")';
+                if (status == undefined || status == "") {
+                    alert("Action required!");
+                    return false;
+                }
+                if (status == "R" && comment == "") {
+                    alert("Comment required!");
+                    return false;
+                }
+                else {
+                    ShowLoader();
+                    ajaxCall(url, { RequestId: id, RequestType: "AccountTypes", AuthorizationStatus: status, AuthorizeComments: comment }, function (resp) {
+                        //debugger;
+                        if (resp == true) {
+                            HideLoader();
+                            alert("Success");
+                            location.reload();
+                        }
+                        else {
+                            HideLoader();
+                            //alert("Failure");
+                            alert(resp.ErrorMessage);
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        alert("Failure");
+                    }, function (err) {
+                        HideLoader();
+                        alert("Error");
+                    });
+                }
+            });
+        });
+        $(window).on('load', function () {
+            if (parseInt('@requestId') > 0) {
+                $('.no-accept input').prop('disabled', 'disabled');
+                $('.no-accept textarea').prop('disabled', 'disabled');
+            }
+        });
+    </script>
+}
+<div class="container">
+
+    @*<ul class="nav nav-tabs radio">
+            <li class="active new-account-type">
+                <a data-toggle="tab" href="#newaccounttype">
+                    <label>
+                        <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                        New Account Type
+                    </label>
+                </a>
+            </li>
+            <li class="update-account-type">
+                <a data-toggle="tab" href="#updateexsisting">
+                    <label>
+                        <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                        Update Existing
+                    </label>
+                </a>
+            </li>
+        </ul>*@
+
+    <div class="tab-content">
+        <div id="newaccounttype" class="tab-pane fade in active">
+            <div class="no-accept">
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label class="control-label">Account Type Name</label>
+                        <input type="text" class="form-control" id="txtAccountTypeName" value="@(Model?.Name ?? string.Empty)">
+                    </div><!-- End col-md-6 -->
+
+                    <div class="col-md-6">
+                        <label class="control-label">Account Type Code(Account Nature)</label>
+                        <input type="text" class="form-control" id="txtAccountTypeCode" value="@(Model?.Code ?? string.Empty)">
+                    </div><!-- End col-md-6 -->
+                </div><!-- End row -->
+
+                <div class="row form-group">
+
+                    @*<div class="col-md-6">
+                            <label class="control-label">Description</label>
+                            <textarea class="form-control" rows="5" id="txtAccountTypeDesc" maxlength="50">@(Model?.Description ?? string.Empty)</textarea>
+                        </div>*@
+                    <div class="col-md-6">
+                        <label class="control-label">Current/Savings Code</label>
+                        <textarea class="form-control" id="txtAccountTypeDesc" maxlength="50">@(Model?.Description ?? string.Empty)</textarea>
+
+                    </div><!-- End col-md-3 -->
+                    <div class="col-md-6">
+                        <label class="control-label">Is Account Type Active</label>
+                        <div class="row chk_bxs chkUpgradeTypes">
+                            <div class="col-md-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="activeCheckbox" @((Model?.IsActive ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                        Active
+                                    </label>
+                                </div>
+                            </div><!-- End col-md-3 -->
+                        </div>
+                    </div>
+                </div><!-- End row -->
+            </div>
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <div class="radio rb-val">
+                        <label>
+                            <input type="radio" name="correct-ans" value="A"><span class="checkbox-material"><span class="check"></span></span>
+                            Approved
+                        </label>
+
+                        <label>
+                            <input type="radio" name="correct-ans" value="C"><span class="checkbox-material"><span class="check"></span></span>
+                            Reject
+                        </label>
+
+                        <label>
+                            <input type="radio" name="correct-ans" value="R"><span class="checkbox-material"><span class="check"></span></span>
+                            To be corrected
+                        </label>
+                    </div>
+                </div><!-- End col-sm-12 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <textarea class="form-control txt-desc" rows="5" maxlength="50"></textarea>
+                </div><!-- End col-sm-12 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <div class="btns_right">
+                        <button class="btn btn-cstm btn-proceed">Proceed</button>
+                        <a class="btn btn-cstm btn-light btn-cancel" href="@Url.Action("Authorize", "AccountTypes")">Cancel</a>
+                    </div><!-- End btns_right -->
+                </div><!-- End col-sm-3 -->
+            </div><!-- End row -->
+        </div>
+    </div>
+</div><!-- End container -->

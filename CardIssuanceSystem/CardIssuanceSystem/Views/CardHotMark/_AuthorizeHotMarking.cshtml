@@ -1,0 +1,196 @@
+﻿@model IEnumerable<CardIssuanceSystem.Core.ViewModel.HotMarkVM>
+@{
+
+    Layout = null;
+}
+
+<div class="table-responsive">
+    <table class="table" id="AuthHotMark">
+        <thead>
+            <tr>
+                <th>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                        </label>
+                    </div>
+                </th>
+                <th>Customer ID</th>
+                <th>Name</th>
+                <th>Card No</th>
+                <th>Card Type</th>
+                <th>Account #</th>
+                <th>Approve/Reject</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (Model.Count() > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionsCheckbox" unchecked="" data-attr-requestid="@item.RequestId" data-attr-cardno="@item.CardNo"><span class="checkbox-material"><span class="check"></span></span>
+                                </label>
+                            </div>
+                        </td>
+                        <td>@item.CustomerID</td>
+                        <td>@item.AccountTitle</td>
+                        <td>@item.CardNo</td>
+                        <td>@item.CardType</td>
+                        <td>@item.AccountNo</td>
+                        <td>
+                            <button class="btn btn-cstm btn-approve" data-requestid="@item.RequestId" data-cardno="@item.CardNo">Approve</button>
+                            <button class="btn btn-cstm btn-reject" data-requestid="@item.RequestId" data-cardno="@item.CardNo">Reject</button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr colspan="15">
+                    <td>
+                        No Records Found
+                    </td>
+
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+       // $('#AuthHotMark').DataTable();
+
+        $('#AuthHotMark').DataTable({
+            "aLengthMenu": [[25, 50, 100, 300], [25, 50, 100, 300]],
+            "iDisplayLength": 25
+        });
+
+    });
+
+    $(function () {
+        $('input[name="optionsCheckboxes"]').on('change', function (e) {
+            if ($(this).prop('checked')) {
+                $('input[name="optionsCheckbox"]').each(function (index, value) {
+                    $(value).prop('checked', true);
+                });
+            }
+            else {
+                $('input[name="optionsCheckbox"]').each(function (index, value) {
+                    $(value).prop('checked', false);
+                });
+            }
+        });
+
+        $('input[name="optionsCheckbox"]').on('change', function (e) {
+            if ($(this).prop('checked')) {
+                if ($('input[name="optionsCheckbox"]').length === $('input[name="optionsCheckbox"]:checked').length) {
+                    $('input[name="optionsCheckboxes"]').prop('checked', true);
+                }
+            }
+            else {
+                $('input[name="optionsCheckboxes"]').prop('checked', false);
+            }
+        });
+    });
+    $('#btn-approveall').click(function (e) {
+        //debugger
+        var arr = [];
+
+        if ($('input[name="optionsCheckbox"]:checked').length > 0) {
+            $('input[name="optionsCheckbox"]:checked').each(function (index, value) {
+                var data = {};
+                data.RequestId = $(value).attr('data-attr-requestid');
+                data.CardNo = $(value).attr('data-attr-cardno');
+                arr.push(data);
+            });
+
+            var Url = '@Url.Action("ApproveMultipleHotMarkRequest", "CardHotMark")';
+            ajaxCall(Url, { request: arr }, function (resp) {
+
+                alert(resp.ErrorMessage);
+                location.reload();
+            }, function (fail) {
+                alert("Failure");
+            }, function (err) {
+                alert("Error");
+            });
+        }
+        else {
+            alert("Please check atleast one checkbox.");
+        }
+    });
+    $('#btn-rejectall').click(function (e) {
+        //debugger
+        var arr = [];
+
+        if ($('input[name="optionsCheckbox"]:checked').length > 0) {
+            $('input[name="optionsCheckbox"]:checked').each(function (index, value) {
+                var data = {};
+                data.RequestId = $(value).attr('data-attr-requestid');
+                data.CardNo = $(value).attr('data-attr-cardno');
+                arr.push(data);
+            });
+
+            var Url = '@Url.Action("RejectMultipleHotMarkRequest", "CardHotMark")';
+            ajaxCall(Url, { request: arr }, function (resp) {
+
+                alert(resp.ErrorMessage);
+                location.reload();
+            }, function (fail) {
+                alert("Failure");
+            }, function (err) {
+                alert("Error");
+            });
+        }
+        else {
+            alert("Please check atleast one checkbox.");
+        }
+    });
+    $('.btn-approve').click(function () {
+        
+        var CardNo = $(this).attr('data-cardno');
+        var RequestId = $(this).attr('data-requestid');
+        var Url = '@Url.Action("ApproveHotMarkRequest", "CardHotMark")';
+        ajaxCall(Url, { CardNo: CardNo, RequestId: RequestId }, function (resp) {
+
+            alert(resp.ErrorMessage);
+            location.reload();
+        }, function (fail) {
+            alert("Failure");
+        }, function (err) {
+            alert("Error");
+        });
+    });
+
+
+
+    $('.btn-reject').click(function () {
+        //debugger
+        var CardNo = $('.btn-reject').attr('data-cardno');
+        var RequestId = $('.btn-reject').attr('data-requestid');
+        var Url = '@Url.Action("RejectHotMarkRequest", "CardHotMark")';
+        ajaxCall(Url, { CardNo: CardNo, RequestId: RequestId }, function (resp) {
+            //debugger;
+            //if (resp == true) {
+            //    alert("Successfully Rejected");
+            //    location.reload();
+            //}
+            alert(resp.ErrorMessage);
+            location.reload();
+
+        }, function (fail) {
+            alert("Failure");
+        }, function (err) {
+            alert("Error");
+        });
+    });
+</script>

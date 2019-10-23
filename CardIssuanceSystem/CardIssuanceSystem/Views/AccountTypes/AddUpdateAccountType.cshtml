@@ -1,0 +1,303 @@
+﻿@model CardIssuanceSystem.Core.ViewModel.AccountTypeVM
+@{
+    ViewBag.Title = "Account Type Configuration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var requestId = ViewBag.RequestId;
+    var requestType = ViewBag.RequestType == null ? string.Empty : ViewBag.RequestType;
+}
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            $('#cmbxAccountTypes').on('change', function () {
+                //debugger;
+                if (parseInt('@requestId') <= 0) {
+                    var id = parseInt($(this).val());
+                    var url = '@Url.Action("GetAccountTypeDetail","AccountTypes")';
+                    if (id === undefined) {
+                        alert("Please select account type");
+                        return false;
+                    }
+                    else {
+                        setTimeout(function () {
+                            ShowLoader();
+                            ajaxCall(url, { Id: id }, function (resp) {
+                                if (resp.IsSuccess) {
+                                    $('#txtUpdateAccountTypeCode').val(resp.Response.Code);
+                                    $('#txtUpdateAccountTypeDesc').val(resp.Response.Description);
+                                    $('#txtAuthorizationStatus').val(resp.Response.AuthorizationStatus);
+                                    if (resp.Response.IsActive) {
+                                        $('input[name="activeCheckbox"]').prop('checked', true);
+                                    }
+                                }
+                            }, function (fail) {
+
+                            }, function (err) {
+                                if (err.responseText.indexOf("IsSuccess") >= 0) {
+                                    alert(err.responseJSON.ErrorMessage);
+                                }
+                                else {
+                                    alert(genericMessage);
+                                }
+                            });
+                            HideLoader();
+                        }, 100);
+                    }
+                }
+            });
+
+            $('#btnSubmit').on('click', function () {
+                var id = parseInt('@requestId');
+                var name = $('#txtAccountTypeName').val();
+                var code = $('#txtAccountTypeCode').val();
+                var desc = $('#txtAccountTypeDesc').val();
+                var status = "P";
+                var url = '@Url.Action("AddUpdateAccountType", "AccountTypes")';
+                if (validate(name, code, desc, false)) {
+                    ShowLoader();
+                    ajaxCall(url, {ID:id, Name: name, Code: code, Description: desc, AuthorizationStatus: status }, function (resp) {
+                        if (resp.IsSuccess) {
+                            HideLoader();
+                            alert("Success!");
+                            location.reload();
+                        }
+                        else {
+                            HideLoader();
+                            alert(resp.ErrorMessage);
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        alert("fail");
+                    }, function (err) {
+                        HideLoader();
+                        if (err.responseText.indexOf("IsSuccess") >= 0) {
+                            alert(err.responseJSON.ErrorMessage);
+                        }
+                        else {
+                            alert(genericMessage);
+                        }
+                    });
+                }
+            });
+
+            $('#btnUpdateSubmit').on('click', function () {
+                var id = $('#cmbxAccountTypes').val();
+                var name = $('#cmbxAccountTypes :selected').text();
+                var code = $('#txtUpdateAccountTypeCode').val();
+                var desc = $('#txtUpdateAccountTypeDesc').val();
+                var status = $('#txtAuthorizationStatus').val();
+                var active = $('input[name="activeCheckbox"]').is(':checked') == true ? "true" : "false";
+                var requestId = parseInt('@requestId');
+                var url = '@Url.Action("AddUpdateAccountType", "AccountTypes")';
+                if (parseInt('@requestId') > 0 || parseInt(id) > 0) {
+                    status = "P";
+                }
+                if (validate(name, code, desc, true)) {
+                    ShowLoader();
+                    ajaxCall(url, { ID: id, Name: name, Code: code, Description: desc, AuthorizationStatus: status, IsActive: active, RequestId: requestId }, function (resp) {
+                        if (resp.IsSuccess) {
+                            HideLoader();
+                            alert("Success!");
+                            location.reload();
+                        }
+                        else {
+                            HideLoader();
+                            alert(resp.ErrorMessage);
+                        }
+                    }, function (fail) {
+                        HideLoader();
+                        alert("fail");
+                    }, function (err) {
+                        HideLoader();
+                        //alert("fail");
+                        if (err.responseText.indexOf("IsSuccess") >= 0) {
+                            alert(err.responseJSON.ErrorMessage);
+                        }
+                        else {
+                            alert(genericMessage);
+                        }
+                    });
+                }
+            });
+        });
+
+        function validate(name, code, desc, isupdate) {
+            if (name === "") {
+                alert("Invalid AccountType Name");
+                return false;
+            }
+            if (code === "") {
+                alert("Invalid AccountType Code");
+                return false;
+            }
+            if (desc === "") {
+                alert("Invalid AccountType Description");
+                return false;
+            }
+            if (isupdate) {
+                if ($('#cmbxAccountTypes').val() === "") {
+                    alert("Invalid Account Type");
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+
+        $(window).on('load', function () {
+            if (parseInt('@requestId') > 0) {
+                if ('@requestType' != "") {
+                    if ('@requestType' === "Add") {
+                        $('.update-account-type').css('display', 'none');
+                        //$('.li-update').addClass('active');
+                        $('.new-account-type > a').trigger('click');
+                    }
+                    else {
+                        $('.new-account-type').css('display', 'none');
+                        $('.update-account-type > a').trigger('click');
+                        $('#cmbxAccountTypes').val(parseInt('@(Model?.ID ?? 0)'));
+                        $('#cmbxAccountTypes').trigger('change');
+                    }
+                }
+            }
+        });
+    </script>
+}
+<div class="container">
+
+    <ul class="nav nav-tabs radio">
+        <li class="active new-account-type">
+            <a data-toggle="tab" href="#newaccounttype">
+                <label>
+                    <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                    New Account Type
+                </label>
+            </a>
+        </li>
+        <li class="update-account-type">
+            <a data-toggle="tab" href="#updateexsisting">
+                <label>
+                    <input type="radio" name="tbs"><span class="checkbox-material"><span class="check"></span></span>
+                    Update Existing
+                </label>
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="newaccounttype" class="tab-pane fade in active">
+            <div class="row form-group">
+                <div class="col-md-6">
+                    <label class="control-label">Account Type Name</label>
+                    <input type="text" class="form-control" id="txtAccountTypeName" value= "@(Model?.Name ?? string.Empty)">
+                </div><!-- End col-md-6 -->
+
+                <div class="col-md-6">
+                    <label class="control-label">Account Type Code(Account Nature)</label>
+                    <input type="text" class="form-control" id="txtAccountTypeCode" value= "@(Model?.Code ?? string.Empty)">
+                </div><!-- End col-md-6 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-md-12">
+                    <label class="control-label">Current/Savings Code for IRIS</label>
+                    <textarea class="form-control" id="txtAccountTypeDesc">@(Model?.Description ?? string.Empty)</textarea>
+                </div><!-- End col-md-3 -->
+            </div><!-- End row -->
+
+            <div class="row">
+                <div class="col-md-12 btns_right">
+                    <button class="btn btn-cstm btn_no_mrgn" id="btnSubmit">Submit</button>
+                </div><!-- End col-md-3 -->
+            </div><!-- End row -->
+        </div>
+
+        <div id="updateexsisting" class="tab-pane fade">
+            <div class="row form-group">
+                <div class="col-md-6">
+                    @Html.Hidden("txtAuthorizationStatus")
+                    <label class="control-label">Account Type Name</label>
+                    <select class="form-control" id="cmbxAccountTypes">
+                        <option>Select Account Type</option>
+                        @foreach (var item in ViewBag.AccountTypes)
+                        {
+                            <option value="@item.ID">@item.Name</option>
+                        }
+                    </select>
+                </div><!-- End col-md-6 -->
+
+                <div class="col-md-6">
+                    <label class="control-label">Account Type Code(Account Nature)</label>
+                    <input type="text" class="form-control" id="txtUpdateAccountTypeCode" value="@(Model?.Code ?? string.Empty)">
+                </div><!-- End col-md-6 -->
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-md-6">
+                    <label class="control-label">Current/Savings Code for IRIS</label>
+                    <textarea class="form-control" rows="5" id="txtUpdateAccountTypeDesc">@(Model?.Description ?? string.Empty)</textarea>
+                </div><!-- End col-md-3 -->
+                <div class="col-md-6">
+                    <label class="control-label">Is Account Type Active</label>
+                    <div class="row chk_bxs chkUpgradeTypes">
+                        <div class="col-md-3">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="activeCheckbox" @((Model?.IsActive ?? false) == true ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                    Active
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->
+                    </div>
+                    @*<div class="col-md-3">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                                    Card Type 1
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->
+
+                        <div class="col-md-3">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                                    Card Type 2
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->
+
+                        <div class="col-md-3">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                                    Card Type 3
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->
+
+                        <div class="col-md-3">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="optionsCheckboxes" unchecked=""><span class="checkbox-material"><span class="check"></span></span>
+                                    Card Type 4
+                                </label>
+                            </div>
+                        </div><!-- End col-md-3 -->*@
+                </div>
+                </div><!-- End row -->
+            <div class="row">
+                <div class="col-md-12 btns_right">
+                    <button class="btn btn-cstm btn_no_mrgn" id="btnUpdateSubmit">Submit</button>
+                </div><!-- End col-md-3 -->
+            </div><!-- End row -->
+            </div><!-- End col-md-3 -->
+        </div><!-- End row -->
+
+
+    @*</div>*@
+@*</div>*@
+</div><!-- End container -->

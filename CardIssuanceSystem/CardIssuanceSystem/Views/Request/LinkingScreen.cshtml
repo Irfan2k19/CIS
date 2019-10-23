@@ -1,0 +1,749 @@
+﻿@model CardIssuanceSystem.Core.ViewModel.UpdateRequestVM
+@{
+    ViewBag.Title = "Account Linking Request";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Id = ViewBag.RequestId;
+}
+<style>
+    .del-account {
+        position: absolute;
+        z-index: 9;
+        top: 0;
+        line-height: normal;
+        font-size: 16px;
+        background: #b5b7b9;
+        right: 16px;
+        padding: 5px 8px 6px;
+        cursor: pointer;
+    }
+
+    .section-filter .filter-option {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+<div class="container">
+    <div class="form-group row">
+        <div class="col-sm-3">
+            <label class="control-label">Card Number</label>
+            <input type="text" id="CardNo" class="form-control">
+            @Html.Hidden("hfCardTypeId", Model?.RequestData?.CardTypeID ?? 0)
+            @Html.Hidden("hfRequestDate", Model?.RequestData?.RequestDate)
+        </div><!-- End col-sm-3 -->
+
+        <div class="col-sm-9">
+            <button class="btn btn-cstm btn-search">Search</button>
+        </div><!-- End col-sm-9 -->
+    </div><!-- End row -->
+    <div id="ResultForm">
+        <div class="row form-group">
+            <div class="col-sm-3" style="display:none;">
+                <label class="control-label">Request No</label>
+                <input type="text" class="form-control">
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Salutation</label>
+                <select class="form-control" id="Salutation">
+                    @*<option>Salutation</option>*@
+                    <option>Mr.</option>
+                    <option>Ms.</option>
+                    <option>Mrs.</option>
+
+                </select>
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Card Title</label>
+                <input type="text" id="CardTitle" class="form-control" maxlength="30" disabled>
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Default Account #</label>
+                <input type="text" id="DefaultAccountNo" class="form-control" disabled>
+            </div><!-- End col-sm-3 -->
+
+            <div class="col-sm-3">
+                <label class="control-label">Default Account Title</label>
+                <input type="text" id="DefaultAccountTitle" class="form-control" disabled>
+            </div><!-- End col-sm-3 -->
+
+
+        </div><!-- End row -->
+
+        <div class="row form-group">
+            <div class="col-sm-3">
+                <label class="control-label">Existing Card Type</label>
+                <select class="form-control" id="ExistingCardType" disabled>
+                    @foreach (var item in (ViewBag.CardTypes))
+                    {
+                        <option value="@item.ID">@item.Title</option>
+                    }
+                </select>
+            </div><!-- End col-sm-3 -->
+        </div>
+
+        <div class="row form-group">
+            <div class="col-sm-3" style="display:@(Id == 0 ? "none" : "block")">
+                <label class="control-label">Request Date</label>
+                <div class='input-group date datetimepicker1'>
+                    <input type='text' class="form-control" id="RequestDate" readonly @(Id == null ? "" : "disabled") />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-3">
+            </div><!-- End col-sm-3 -->
+        </div><!-- End row -->
+
+        <h4 class="main_hdng">Account to be Linked</h4>
+        <!--New added div-->
+        <div class="row form-group">
+            <div class="q_1 col-sm-12">
+                @*<div class="col-sm-3">
+
+                        <input type="text" class="form-control" id="acntnum_1" style='margin-bottom: 15px'>
+                        <div class="del-account acntnum_1"><span>x</span></div>
+                    </div>*@
+
+                <input type="text" class="form-control" id="acntnum" style='margin-bottom: 15px' value="@((Id != null) ? (Id > 0) ? Model.RequestData.LinkingDelinkingAccount: string.Empty:string.Empty )">
+
+            </div><!-- End col-sm-3 -->
+            <div class="col-sm-12">
+                <button class="btn btn-cstm btn-add-ans1" style="margin-top: 5px">Add Account</button>
+                @*<button class="btn btn-cstm" style="margin-top: 5px">Submit</button>*@
+            </div>
+        </div>
+        <!--New added div Ends-->
+        <h4 class="main_hdng">Customer Information</h4>
+        <div id="UnEditable">
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Customer ID</label>
+                    <input type="text" id="CustomerId" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Customer Name</label>
+                    <input type="text" id="CustomerName" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Account Title</label>
+                    <input type="text" class="form-control" id="AccountTitle">
+                </div><!-- End col-sm-3 -->
+
+
+                <div class="col-sm-3" style="display:none;">
+                    <label class="control-label">Address Type</label>
+                    <select class="form-control" id="AddressType">
+                        <option>Address Type</option>
+                        <option>Home</option>
+                        <option>Office</option>
+                    </select>
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3" style="display:none;">
+                    <label class="control-label">Correspondence</label>
+                    <input type="text" id="Correspondence" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+            </div><!-- End row -->
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Account Address</label>
+                    <input type="text" id="AccountAddress" class="form-control">
+                </div><!-- End col-sm-3 -->
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Customer Address 1</label>
+                    <input type="text" id="CustomerAddress" class="form-control">
+                </div><!-- End col-sm-3 -->
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <label class="control-label">Customer Address 2</label>
+                    <input type="text" id="Address" class="form-control">
+                </div><!-- End col-sm-3 -->
+            </div>
+            <div class="row form-group">
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No</label>
+                    <input type="text" id="MobileNo" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 1</label>
+                    <input type="text" id="MobileNo1" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 2</label>
+                    <input type="text" id="MobileNo2" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Mobile No 3</label>
+                    <input type="text" id="MobileNo3" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+            </div><!-- End row -->
+
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Phone Res</label>
+                    <input type="text" id="PhoneRes" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Phone Off</label>
+                    <input type="text" id="PhoneOff" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Fax No</label>
+                    <input type="text" id="FaxNo" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Email</label>
+                    <input type="email" id="Email" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+            </div><!-- End row -->
+
+            <div class="row form-group">
+
+                <div class="col-sm-3">
+                    <label class="control-label">Date of Birth</label>
+                    <div class='input-group date'>
+                        <input type='text' id="DateofBirth" class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div><!-- End datepicker -->
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Father's Name</label>
+                    <input type="text" id="FatherName" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Mother's Maiden Name</label>
+                    <input type="text" id="MotherName" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+
+                <div class="col-sm-3">
+                    <label class="control-label">Identification</label>
+                    <select class="form-control" id="Identification">
+                        <option>Identification</option>
+                        <option>CNIC</option>
+                        <option>Passport</option>
+                    </select>
+                </div><!-- End col-sm-3 -->
+
+
+            </div><!-- End row -->
+
+            <div class="row form-group">
+
+
+                <div class="col-sm-3">
+                    <label class="control-label">Identification No</label>
+                    <input type="text" id="CNIC" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Old NIC</label>
+                    <input type="text" id="OldNIC" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <input type="hidden" id="hfCardNum" />
+
+                <div class="col-sm-3">
+                    <label class="control-label">Product</label>
+                    <input id="Product" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+                <div class="col-sm-3">
+                    <label class="control-label">Operating Instruction</label>
+                    <input id="OperatingInst" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+
+
+            </div><!-- End row -->
+            <div class="row form-group">
+                <div class="col-sm-3">
+                    <label class="control-label">Sector</label>
+                    <input id="Sector" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Nationality</label>
+                    <input id="Nationality" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+                <div class="col-sm-3">
+                    <label class="control-label">Residence</label>
+                    <input id="Residence" type="text" class="form-control">
+                </div><!-- End col-sm-3 -->
+            </div>
+
+        </div>
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <div class="btns_right">
+                    <button class="btn btn-cstm" id="Link">Link</button>
+                    <button class="btn btn-cstm btn-light" onclick="location.reload();">Cancel</button>
+                </div><!-- End btns_right -->
+            </div><!-- End col-sm-3 -->
+        </div><!-- End row -->
+    </div>
+</div><!-- End container -->
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ResultForm').css("display", "none");
+        $("#UnEditable :input").attr("disabled", true);
+        localStorage.clear();
+
+    });
+
+
+
+    $('.btn-search').click(function () {
+        var Url = '@Url.Action("SearchAccountByCardNo", "Request")';
+        var CardNo = $('#CardNo').val();
+
+        if (CardNo == null || CardNo.trim() == "" || typeof (CardNo) == "undefined") {
+            $('.CardNo').css("border", "red solid 1px");
+            alert("Please Enter Card Number");
+            return false;
+        }
+
+        if (!NumberValue(CardNo)) {
+            alert("Only Numeric Value is Allowed");
+            return false;
+        }
+        if (!CheckLength(CardNo, 16)) {
+            $('.CardNo').css("border", "red solid 1px");
+            alert("Card number length should be equal to 16");
+            return false;
+        }
+
+        ShowLoader();
+        ajaxCall(Url, { CardNo: CardNo }, function (resp) {
+            if (resp.Message == '@CardIssuanceSystem.Core.Helpers.CustomMessages.Success' && resp.AccountInfo.ErrorField == "") {
+                $('#Salutation option:selected').text(resp.CardInfo[0].Salutation);
+                $('#CardTitle').val(resp.CardInfo[0].CardTitle);
+                $('#DefaultAccountNo').val(resp.CardInfo[0].AccountNo);
+                $('#DefaultAccountTitle').val(resp.AccountInfo.AccountTitle);
+                $('#AccountTitle').val(resp.AccountInfo.AccountTitle);
+                $('#CustomerId').val(resp.AccountInfo.CustomerID);
+                $('#CustomerName').val(resp.AccountInfo.CustomerName);
+                $('#AccountAddress').val(resp.AccountInfo.AccountAddress);
+                $('#CustomerAddress').val(resp.AccountInfo.CustomerAddress1);
+                $('#Address').val(resp.AccountInfo.CustomerAddress2);
+                $('#MobileNo').val(resp.AccountInfo.AccountMobile);
+                $('#MobileNo1').val(resp.AccountInfo.SMS);
+                $('#MobileNo2').val(resp.AccountInfo.SMS2);
+                $('#MobileNo3').val(resp.AccountInfo.SMS3);
+                $('#PhoneRes').val(resp.AccountInfo.PhoneResidence);
+                $('#PhoneOff').val(resp.AccountInfo.OffPhone);
+                $('#FaxNo').val();
+                $('#Email').val(resp.AccountInfo.Email);
+                $('#FatherName').val(resp.AccountInfo.FathersName);
+                $('#MotherName').val(resp.AccountInfo.MothersName);
+                $('#DateofBirth').val(resp.AccountInfo.CustomerDOB);
+                $('#Identification option:selected').text(resp.AccountInfo.IdentificationType);
+                $('#CNIC').val(resp.AccountInfo.IdentificationNo);
+                $('#hfCardNum').val(CardNo);
+                $('#ResultForm').css("display", "block");
+                $('#ExistingCardType').val(resp.CardInfo[0].CardTypeID);
+                $('#Sector').val(resp.AccountInfo.Sector);
+                $('#Product').val(resp.AccountInfo.Product);
+                $('#OperatingInst').val(resp.AccountInfo.OpInstructions);
+                $('#Nationality').val(resp.AccountInfo.Nationality);
+                $('#Residence').val(resp.AccountInfo.ResidenceStatus);
+
+                $('#RequestDate').val('@(Model?.RequestData?.RequestDate ?? DateTime.Now)');
+                HideLoader();
+
+            } else if (resp.AccountInfo.ErrorField != null && resp.AccountInfo.ErrorField != "") {
+                alert(resp.AccountInfo.ErrorField);
+                HideLoader();
+            }
+
+            else {
+                alert(resp.Message);
+                $('#ResultForm').css("display", "none");
+                HideLoader();
+                return false;
+            }
+        }, function (fail) {
+
+            alert("Failure");
+            HideLoader();
+        }, function (err) {
+
+            alert("Error");
+            HideLoader();
+        });
+    });
+
+    $(".btn-add-ans1").click(function () {
+        var linkingAccount = []
+        var DefaultAccount = $('#DefaultAccountNo').val();
+        var AccountToLink = $("#acntnum").val();
+        var Accounts;
+
+        if (AccountToLink == null || AccountToLink == "" || AccountToLink == undefined) {
+            $("#acntnum").css("border", "red solid 1px");
+            alert("Please enter account to be linked")
+            return false;
+        }
+
+        $("#acntnum").css("border", "gray solid 1px");
+        //debugger
+        var error = false;
+        Accounts = AccountToLink.split(',');
+        $.each(Accounts, function (index, value) {
+            if (!CheckLength(value, 15)) {
+                error = true;
+                return false;
+            }
+        });
+        if (error) {
+            alert("Account number length should be equal to 15");
+            return false;
+        }
+        var IsDefaultAccount = (Accounts.indexOf(DefaultAccount) > -1);
+        if (IsDefaultAccount) {
+            alert("Default Account can't be linked or delinked");
+            return false;
+        }
+        var Url = '@Url.Action("SearchAccountforLinking", "Request")';
+
+        var CIF = $('#CustomerId').val();
+
+        ShowLoader();
+        ajaxCallSynchronous(Url, { Accounts: Accounts, CIF: CIF }, function (resp) {
+            HideLoader();
+            if (Object.values(resp.Result).includes("InActive/Different CIF/Not Found") == true) {
+                alert(JSON.stringify(resp.Result));
+                return false;
+
+            } else {
+                localStorage.setItem("acccountcheck", 1);
+                alert("Account Numbers are correct!");
+            }
+
+        }, function (fail) {
+            HideLoader();
+            alert("Failure");
+            return false;
+
+        }, function (err) {
+            HideLoader();
+            alert("Error");
+            return false;
+        });
+
+
+
+    });
+
+    function CheckAccounts() {
+        var linkingAccount = []
+        var response = true;
+
+        var DefaultAccount = $('#DefaultAccountNo').val();
+        var AccountToLink = $("#acntnum").val();
+        var Accounts;
+        var error = false;
+        Accounts = AccountToLink.split(',');
+        $.each(Accounts, function (index, value) {
+            if (!CheckLength(value, 15)) {
+                error = true;
+                return false;
+            }
+        });
+
+        if ((Accounts.indexOf(DefaultAccount) > -1)) {
+            alert("Default Account can't be linked or delinked");
+            response = false;
+        }
+        else if (AccountToLink == null || AccountToLink == "" || AccountToLink == undefined) {
+            $("#acntnum").css("border", "red solid 1px");
+            alert("Please enter account to be linked")
+            response = false;
+        }
+        else if (error) {
+            alert("Account number length should be equal to 15");
+            return false;
+        }
+        else {
+            $("#acntnum").css("border", "gray solid 1px");
+            Accounts = AccountToLink.split(',');
+
+            var Url = '@Url.Action("SearchAccountforLinking", "Request")';
+
+            var CIF = $('#CustomerId').val();
+
+            ShowLoader();
+            ajaxCallSynchronous(Url, { Accounts: Accounts, CIF: CIF }, function (resp) {
+                HideLoader();
+                if (Object.values(resp.Result).includes("InActive/Different CIF/Not Found") == true) {
+                    alert(JSON.stringify(resp.Result));
+                    response = false;
+                } else {
+                    localStorage.setItem("acccountcheck", 1);
+                    alert("Account Numbers are correct!");
+                }
+
+            }, function (fail) {
+                HideLoader();
+                alert("Failure");
+                response = false;
+            }, function (err) {
+                HideLoader();
+                alert("Error");
+                response = false;
+            });
+
+        }
+
+        return response;
+    }
+    @*$(".btn-add-ans1").click(function () {
+        debugger
+        var ButtonClick = 1;
+        var CIF = $('#CustomerId').val();
+        localStorage.setItem("ButtonClickCount", ButtonClick);
+
+        var parent = $('.q_1');
+        var child = $('.col-sm-3');
+        var DefaultAccount = $('#DefaultAccountNo').val();
+        var idnum = localStorage.getItem("last-id");
+        if (idnum == null) {
+            idnum = 1;
+        }
+
+        var AccountToLink = $("#acntnum_" + parseInt(idnum)).val();
+        if (parent.children().length > 0 && DefaultAccount == AccountToLink) {
+            alert("Default Account can't be linked or delinked");
+            return false;
+        }
+        if (parent.children().length > 0 && !NumberValue(AccountToLink)) {
+            alert("Only Numeric Value is Allowed");
+            return false;
+        }
+
+        if (parent.children().length > 0 && (AccountToLink == null || AccountToLink == "" || AccountToLink == undefined)) {
+            $("#acntnum_" + parseInt(idnum)).css("border", "red solid 1px");
+            alert("Please enter account to be linked")
+            return false;
+        } else {
+            $("#acntnum_" + parseInt(idnum)).css("border", "gray solid 1px");
+        }
+        var Url = '@Url.Action("SearchAccount", "Request")';
+        var CardNo = $('#CardNo').val();
+        var AccountNo = $('#acntnum_' + parseInt(idnum)).val();
+        var CIF = $('#CustomerId').val();
+
+        ajaxCall(Url, { AccountNo: AccountNo, CIF: CIF }, function (resp) {
+            var sameCIF = false;
+            if (resp.CustomerID == CIF) {
+                sameCIF = true;
+            }
+            if (typeof (resp) === "object" && resp.AccountStatus == "0001" && resp.ResponseCode == "0000")//&& sameCIF==true)
+            {
+                if (resp.CustomerID) { }
+                debugger
+                var newid = parseInt(idnum) + 1;
+                if (parent.children().length <= 3) {
+                    $(".q_1").append("<div class='col-sm-3'><input type='text' class='form-control' id='acntnum_" + newid + "' placeholder='****-****-****-4565\' style='margin-bottom: 15px'><div class='del-account acntnum_" + newid + "'><span>x</span></div></div>");
+                    $("#acntnum_" + parseInt(idnum)).attr("disabled", true);
+                    $(".acntnum_" + parseInt(idnum)).attr("disabled", true);
+                    localStorage.setItem("last-id", newid);
+                } else {
+                    localStorage.clear();
+                    alert("You can't add more elements");
+                }
+            }
+            else if (resp.AccountStatus != "0001") {
+                alert("Account Not Active");
+                return false;
+            }
+        }, function (fail) {
+            alert("Failure");
+            return false;
+        }, function (err) {
+            alert("Error");
+            return false;
+        });
+
+    });*@
+
+
+
+    $(document).on('click', '.del-account', function (e) {
+        $(this).parent().remove();
+    });
+
+
+
+    $('#Link').click(function () {
+        debugger
+        if (CheckAccounts()) {
+            var check = localStorage.getItem("acccountcheck");
+            if (check <= 0) {
+                alert("Please add active account(s)");
+                return false;
+            }
+            var Url = '@Url.Action("SubmitLinkingRequest", "Request")';
+            if (parseInt('@Id') > 0) {
+                Url = '@Url.Action("UpdateReviewRequest", "Request")';
+            }
+            var LinkAccount1 = $("#acntnum").val();
+            linkingAccount = LinkAccount1.split(',');
+            var ID = parseInt('@Id');
+            var RequestType = "L";
+            var RequestDate = $('#hfRequestDate').val();
+            var CardNo = $('#hfCardNum').val();
+            var Salutation = $('#Salutation option:selected').text();
+            var LinkAccount1 = linkingAccount; //$('#LinkAccount option:selected').text();
+            var CardTitle = $('#CardTitle').val();
+            var DefaultAccountNo = $('#DefaultAccountNo').val();
+            var DefaultAccountTitle = $('#DefaultAccountTitle').val();
+            var AccountTitle = $('#AccountTitle').val();
+            var CustomerId = $('#CustomerId').val();
+            var CustomerName = $('#CustomerName').val();
+            var AddressType = $('#AddressType option:selected').text();
+            var Correspondence = $('#Correspondence').val();
+            var AccountAddress = $('#AccountAddress').val();
+            var CustomerAddress = $('#CustomerAddress').val();
+            var Address = $('#Address').val();
+            var MobileNo = $('#MobileNo').val();
+            var MobileNo1 = $('#MobileNo1').val();
+            var MobileNo2 = $('#MobileNo2').val();
+            var MobileNo3 = $('#MobileNo3').val();
+            var PhoneRes = $('#PhoneRes').val();
+            var PhoneOff = $('#PhoneOff').val();
+            var FaxNo = $('#FaxNo').val();
+            var Email = $('#Email').val();
+            var FatherName = $('#FatherName').val();
+            var MotherName = $('#MotherName').val();
+            var DateofBirth = $('#DateofBirth').val();
+            var Identification = $('#Identification').val();
+            var CNIC = $('#CNIC').val();
+            var OldNIC = $('#OldNIC').val();
+            var CardTypeId = $('#ExistingCardType').val();
+            var CIFNo = $('#CustomerId').val();
+
+            //if (Salutation.trim() == "" || Salutation == "Salutation") {
+            //    $('#Salutation').css("border", "red solid 1px");
+            //    alert("Please Enter Salutation");
+            //    return false;
+            //}
+            if (CardTitle.trim() == "") {
+                $('#CardTitle').css("border", "red solid 1px");
+                alert("Please Enter Card Title");
+                return false;
+            }
+            if (!CheckLength(CardNo, 16)) {
+                $('.CardNo').css("border", "red solid 1px");
+                alert("Card number length should be equal to 16");
+                return false;
+            }
+
+            ShowLoader();
+            ajaxCall(Url, {
+                ID: ID,
+                CardNo: CardNo,
+                Salutation: Salutation,
+                LinkAccount1: LinkAccount1,
+                CardTitle: CardTitle,
+                AccountNo: DefaultAccountNo,
+                DefaultAccountNo: DefaultAccountNo,
+                DefaultAccountTitle: DefaultAccountTitle,
+                AccountTitle: AccountTitle,
+                CustomerId: CustomerId,
+                CIFNo: CIFNo,
+                CustomerName: CustomerName,
+                AddressType: AddressType,
+                Correspondence: Correspondence,
+                AccountAddress: AccountAddress,
+                CustomerAddress: CustomerAddress,
+                Address: Address,
+                MobileNo: MobileNo,
+                MobileNo1: MobileNo1,
+                MobileNo2: MobileNo2,
+                MobileNo3: MobileNo3,
+                PhoneRes: PhoneRes,
+                PhoneOff: PhoneOff,
+                FaxNo: FaxNo,
+                Email: Email,
+                FatherName: FatherName,
+                MotherName: MotherName,
+                DateofBirth: DateofBirth,
+                Identification: Identification,
+                CNIC: CNIC,
+                OldNIC: OldNIC,
+                CardType: CardTypeId,
+                CardTypeId: CardTypeId,
+                Waive: false,
+                RequestDate: RequestDate,
+                RequestType: RequestType,
+                CustomerRequestId: 0
+            }, function (resp) {
+                HideLoader();
+                if (typeof (resp) === "object" && typeof (resp.IsSuccess) === "boolean") {
+                    alert(resp.ErrorMessage);
+                    location.reload();
+                }
+                else if (typeof (resp.ErrorMessage) !== "undefined" && (resp.ErrorMessage !== null || resp.ErrorMessage !== "")) {
+                    alert(resp.ErrorMessage + " !" + " Request Id: " + resp.IsSuccess);
+                    location.reload();
+                }
+
+                else if (typeof (resp) === 'boolean') {
+                    alert(resp);
+                    if (resp === true) {
+                        location.reload();
+                    }
+                }
+                else if (typeof (resp) === "object") {
+                    if (typeof (resp.IsSuccess) === "boolean") {
+                        alert(resp.ErrorMessage);
+                        location.reload();
+                    }
+                    else {
+                        alert(resp.ErrorMessage + " !" + " Request Id: " + resp.IsSuccess);
+                        location.reload();
+                    }
+                }
+                else {
+                    HideLoader();
+                    alert(resp.ErrorMessage + " !" + " Request Id: " + resp.IsSuccess);
+                }
+            }, function (fail) {
+                HideLoader();
+                alert("Failure");
+            }, function (err) {
+                HideLoader();
+                alert("Error");
+            });
+        }
+        //else {
+        //    alert("Some error occurred.");
+        //}
+    });
+
+    $(window).on('load', function () {
+        if (parseInt('@Id') > 0) {
+            $('#CardNo').val('@(Model?.RequestData?.CardNo ?? string.Empty)');
+            $('.btn-search').trigger('click');
+            $('.btn-search').attr("disabled", true);
+            $('#CardNo').attr("disabled", true);
+
+        }
+    });
+</script>

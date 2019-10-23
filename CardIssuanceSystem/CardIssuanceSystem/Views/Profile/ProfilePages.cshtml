@@ -1,0 +1,142 @@
+﻿@model List<CardIssuanceSystem.Core.ViewModel.PageSectionVM>
+@{
+    ViewBag.Title = "ProfilePages";
+    var profiles = ViewBag.Profiles as List<CardIssuanceSystem.DAL.tbl_Profile>;
+    var systemRequest = ViewBag.SystemRequest as CardIssuanceSystem.DAL.tbl_System_Requests;
+    var pageProfile = ViewBag.PageProfile as List<CardIssuanceSystem.Core.ViewModel.ProfilePageVM>;
+    var count = Model.GroupBy(e => e.SectionID).ToList().Count;
+}
+
+<div class="container">
+    <div class="form-group row">
+        <div class="col-md-6">
+            <label class="control-label">Profile</label>
+            <select class="form-control" id="cmbxProfile">
+                <option value="" @(pageProfile == null ? "checked" : string.Empty)>--Select Profile--</option>
+                @foreach (var item in profiles)
+                {
+                    <option value="@item.ID" @(pageProfile == null ? string.Empty : pageProfile.FirstOrDefault()?.ProfileID == item.ID ? "selected" : string.Empty)>@item.Title</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+
+    @*@foreach (var items in Model.GroupBy(e => e.SectionID))
+        {*@
+    @for (int i = 0; i < (count / 4) + 1; i++)
+    {
+        <div class="form-group row">
+
+            @for (int j = (i * 4); j < (count <= ((i + 1) * 4) ? count : ((i + 1) * 4)); j++)
+            {
+                <div class="col-md-3">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="activeSectionCheckbox" data-attr-id="@Model.GroupBy(e => e.SectionID).ToArray()[j].Key" @(pageProfile == null ? string.Empty : pageProfile.Any(n => n.SectionID == Model.GroupBy(a => a.SectionID).ToArray()[j].Key) ? "checked" : string.Empty) class="checkAll"><span class="checkbox-material"><span class="check"></span></span>
+                            <b>@Model.GroupBy(e => e.SectionID).ToArray()[j].FirstOrDefault().SectionTitle</b>
+                        </label>
+                    </div>
+                    @foreach (var item in Model.GroupBy(e => e.SectionID).ToArray()[j].OrderBy(e => e.SequenceNo))
+                    {
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="activeCheckbox" data-attr-id="@item.ID" @(pageProfile == null ? string.Empty : pageProfile.Any(n => n.PageID == item.ID) ? "checked" : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                @item.Title
+                            </label>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+    @*}*@
+
+    <div class="form-group row">
+        <div class="col-md-12">
+            <input type="submit" id="btnSubmit" class="btn btn-cstm pull-right" />
+        </div>
+    </div>
+</div>
+
+@section customCSS{
+    <style type="text/css">
+        .checkbox label {
+            padding: 1px 0px;
+        }
+    </style>
+}
+@section customJS{
+    <script type="text/javascript">
+        $(function () {
+            $(".checkAll").click(function () {
+                $(this).parents('.col-md-3').find('input:checkbox').not(this).prop('checked', this.checked);
+            });
+
+            $('#cmbxProfile').on('change', function () {
+                var url = '@Url.Action("GetPageProfileDetails", "Profile")';
+                var profileId = $(this).val();
+                ajaxCall(url, { ProfileId: profileId }, function (resp) {
+                    $('input[name="activeCheckbox"]').each(function (index, val) { $(this).prop('checked', false); });
+                    $('input[name="activeSectionCheckbox"]').each(function (index, val) { $(this).prop('checked', false); });
+                    if (resp.Response.ProfilePagesData.length > 0) {
+                        resp.Response.ProfilePagesData.map(function (val) {
+                            $('input[name="activeCheckbox"][data-attr-id="' + val.PageID + '"]').prop('checked', true);
+                            $('input[name="activeSectionCheckbox"][data-attr-id="' + val.SectionID + '"]').prop('checked', true);
+                        });
+                    }
+                }, function (fail) {
+                    alert("Failure");
+                }, function (err) {
+                    alert("Error");
+                });
+            });
+
+            $('#btnSubmit').on('click', function () {
+                var requestId = parseInt('@(systemRequest?.ID ?? 0)');
+                var profileId = $('#cmbxProfile').val();
+                var profileName = $('#cmbxProfile :selected').text();
+                var url = '@Url.Action("AddUpdateProfilePages", "Profile")';
+                if (!profileId) {
+                    alert("Please select profile before proceed");
+                }
+                else if ($('input[name=activeCheckbox]:checked').length <= 0) {
+                    alert("Please select atleast one page before proceed");
+                }
+                else {
+                    var lstData = [];
+                    $('input[name=activeCheckbox]:checked').not('.checkAll').map(function () {
+                        var data = {};
+                        data.ProfileID = parseInt(profileId);
+                        data.ProfileName = profileName;
+                        data.PageID = parseInt($(this).attr('data-attr-id'));
+                        data.PageTitle = $($(this).parent()).text().trim();
+                        data.SectionID = parseInt($(this).parents(".col-md-3").find('.checkAll').attr('data-attr-id'));
+                        data.SectionName = $(this).parents(".col-md-3").find('.checkAll').parent().text().trim();
+
+                        lstData.push(data);
+                    });
+
+                    ajaxCall(url, { request: lstData, RequestId: requestId }, function (resp) {
+                        if (typeof (resp) === "object" && resp != null) {
+                            if (resp.IsSuccess) {
+                                alert("Success");
+                                location.reload();
+                            }
+                            else {
+                                alert('@CardIssuanceSystem.Core.Helpers.CustomMessages.GenericErrorMessage');
+                            }
+                        }
+                    }, function (fail) {
+                        alert("Failure");
+                    }, function (err) {
+                        alert("Error");
+                    });
+                    //console.log(JSON.stringify(lstData));
+                }
+            });
+        });
+    </script>
+}
+

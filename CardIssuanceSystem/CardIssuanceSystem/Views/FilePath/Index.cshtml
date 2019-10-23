@@ -1,0 +1,116 @@
+﻿@model List<CardIssuanceSystem.DAL.tbl_File_Paths>
+@using CardIssuanceSystem.Core.Helpers
+@{
+    ViewBag.Title = "File Path Configuration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            $(document).on('change', 'input[name="filepath"]', function () {
+                SetPath();
+            });
+        });
+        $(document).on('click', '#btnSave', function (e) {
+            var Id = "";
+            var pathtype = $('input[name="filepath"]:checked').val();
+            var path = $('#txtPath').val();
+            var url = '@Url.Action("AddUpdateFilePath", "FilePath")';
+
+            if (pathtype === "") {
+                alert("Please select file type");
+                return false;
+            }
+            if (path === "") {
+                alert("Please enter valid path");
+                return false;
+            }
+            else {
+                if (pathtype === '@((int)Constants.enPathType.Import)') {
+                    Id = $('#hfFileImportId').val();
+                }
+                else {
+                    Id = $('#hfFileExportId').val();
+                }
+
+                ShowLoader();
+                ajaxCall(url, { ID: Id, PathType: pathtype, Path: path }, function (resp) {
+                    HideLoader();
+                    if (typeof (resp) === 'object') {
+                        if (resp.IsSuccess) {
+                            alert(resp.ErrorMessage);
+                            location.reload();
+                        }
+                        else {
+                            alert(resp.ErrorMessage);
+                        }
+                    }
+                }, function (fail) {
+                    console.log(fail.responseText);
+                    if (fail.responseText.indexOf("IsSuccess") >= 0) {
+                        alert(fail.responseJSON.ErrorMessage);
+                    }
+                    else {
+                        alert(genericMessage);
+                    }
+                    HideLoader();
+                }, function (err) {
+                    console.log(err.responseText);
+                    if (err.responseText.indexOf("IsSuccess") >= 0) {
+                        alert(err.responseJSON.ErrorMessage);
+                    }
+                    else {
+                        alert(genericMessage);
+                    }
+                    HideLoader();
+                });
+            }
+        });
+
+        function SetPath() {
+            if ($('input[name="filepath"]:checked').val() === '@((int)Constants.enPathType.Import)') {
+                $('#txtPath').val(@(Html.Raw(Json.Encode(Model.FirstOrDefault(e=>e.PathType == ((int)Constants.enPathType.Import).ToString())?.Path ?? string.Empty))));
+            }
+            else {
+                $('#txtPath').val(@(Html.Raw(Json.Encode(Model.FirstOrDefault(e=>e.PathType == ((int)Constants.enPathType.Export).ToString())?.Path ?? string.Empty))));
+            }
+        }
+    </script>
+}
+
+<div class="container">
+    @*<h4 class="main_hdng">Set File Path</h4>*@
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <div class="radio">
+                <label>
+                    @Html.Hidden("hfFileImportId", Model.FirstOrDefault(e => e.PathType == ((int)Constants.enPathType.Import).ToString())?.ID ?? 0)
+                    <input type="radio" name="filepath" value="@((int)Constants.enPathType.Import)"><span class="checkbox-material"><span class="check"></span></span>
+                    Import file path
+                </label>
+
+                <label>
+                    @Html.Hidden("hfFileExportId", Model.FirstOrDefault(e => e.PathType == ((int)Constants.enPathType.Export).ToString())?.ID ?? 0)
+                    <input type="radio" name="filepath" value="@((int)Constants.enPathType.Export)"><span class="checkbox-material"><span class="check"></span></span>
+                    Export file path
+                </label>
+            </div>
+        </div><!-- End col-sm-6 -->
+
+        <div class="col-sm-6">
+        </div><!-- End col-sm-6 -->
+    </div><!-- End row -->
+
+    <div class="row form-group">
+        <div class="col-sm-6">
+            <label class="control-label">Path</label>
+            <input type="text" class="form-control" placeholder="Path" id="txtPath" />
+        </div><!-- End col-sm-6 -->
+
+        <div class="col-sm-6">
+            <div class="btns_right">
+                <button class="btn btn-cstm" id="btnSave">Save</button>
+            </div><!-- End btns_right -->
+        </div><!-- End col-sm-6 -->
+    </div><!-- End row -->
+</div><!-- End container -->

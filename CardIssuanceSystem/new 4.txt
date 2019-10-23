@@ -1,0 +1,11 @@
+branch code: first 4 characters of tbl_request.AccountNo
+Card Type: tbl_request.CardTypeID
+Request Type: tbl_request.RequestType
+
+
+Export File:
+ID
+AccountNo
+CardNo
+RequestDate
+CardTitle

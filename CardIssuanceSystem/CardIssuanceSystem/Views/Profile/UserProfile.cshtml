@@ -1,0 +1,176 @@
+﻿@model List<CardIssuanceSystem.DAL.tbl_Profile>
+@{
+    ViewBag.Title = "User Profile";
+    var profileUser = ViewBag.ProfileUser as List<CardIssuanceSystem.Core.ViewModel.ProfileUserVM>;
+    var systemRequest = ViewBag.SystemRequest as CardIssuanceSystem.DAL.tbl_System_Requests;
+    var userID = ViewBag.UserID;
+}
+
+<div class="container">
+    <div class="form-group row">
+        <div class="col-md-6">
+            <label class="control-label">User ID</label>
+            <input type="text" class="form-control" id="txtUserId" maxlength="100" placeholder="user@email" value="@(userID == null ? string.Empty : userID)"/>
+        </div>
+        <div class="col-md-6">
+            <input type="submit" class="btn btn-cstm" id="btnSearch" value="Search" />
+        </div>
+    </div>
+    <div id="ResultForm" style="display:none">
+        <div class="form-group row">
+            <div class="col-md-12">
+                <label class="control-label">User Name</label>
+                <input type="text" class="form-control" id="txtUserName" maxlength="100" value ="@(profileUser == null ? string.Empty : profileUser.FirstOrDefault()?.UserName ?? string.Empty)" disabled />
+                @Html.Hidden("hfUserId", profileUser == null ? 0 : profileUser.FirstOrDefault()?.UserID ?? 0)
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-12">
+            <label class="control-label">Select Profiles</label>
+            <div class="row chk_bxs">
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-3">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="optionsCheckbox" data-attr-id="@item.ID" @((profileUser != null) ? profileUser.Count <= 0 ? string.Empty : profileUser.Any(e => e.ProfileID == item.ID) ? "checked" : string.Empty : string.Empty)><span class="checkbox-material"><span class="check"></span></span>
+                                @item.Title
+                            </label>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-12">
+            <input type="submit" id="btnSubmit" class="btn btn-cstm pull-right" />
+        </div>
+    </div>
+</div>
+<link href="~/assets/css/jquery-ui.min.css" rel="stylesheet" />
+<script src="~/assets/js/jquery-ui.min.js"></script>
+@section CustomJS{
+    <script type="text/javascript">
+        $(function () {
+            debugger
+            var availableTags = [];
+            debugger
+            @foreach(var item in ViewBag.Users)
+            {
+               @:availableTags.push({"Id":@item.ID,"Label":"@item.UserLogin"});
+            }
+
+
+            var source  = [ ];
+            var mapping = { };
+            for(var i = 0; i < availableTags.length; ++i) 
+            {
+                source.push(availableTags[i].Label);
+                mapping[availableTags[i].Label] = availableTags[i].Id;
+            }
+
+            $("#txtUserId").autocomplete({
+                source: source,
+                select: function( event, ui ) {
+                    //$('#txtUserId').val(ui.item.Label);
+                    $('#hfUserId').val(mapping[ui.item.value]);
+                }
+            });
+
+
+            if (parseInt('@(systemRequest?.ID ?? 0 )') <= 0) {
+                $('#btnSubmit').css('display', 'none');
+            }
+            $('#btnSearch').on('click', function (e) {
+                var userid = $('#txtUserId').val();
+                if (userid === "") {
+                    alert("Please enter user id");
+                }
+                else {
+                    var url = '@Url.Action("GetUserByUserId", "Profile")';
+                    ajaxCall(url, { UserId: userid }, function (resp) {
+                        if (typeof (resp) === "object" && resp != null) {
+                            if (resp.IsSuccess) {
+                                $('#ResultForm').css('display', 'block');
+                                $('#txtUserName').val(resp.Response.UserData.UserName);
+                                $('#hfUserId').val(resp.Response.UserData.ID);
+
+                                if (resp.Response.ProfileData.length > 0) 
+                                {
+                                    $('input[name="optionsCheckbox"]').each(function (index, val) { $(this).prop('checked', false); });
+
+                                    resp.Response.ProfileData.map(function (val) {
+                                        $('input[name="optionsCheckbox"][data-attr-id="' + val + '"]').prop('checked', true);
+                                    });
+                                }else
+                                {
+                                    $('input[name="optionsCheckbox"]').prop('checked', false);
+                                }
+                                $('#btnSubmit').css('display', 'block');
+                            }
+                            else {
+                                alert(resp.ErrorMessage);
+                            }
+                        }
+                    }, function (fail) {
+                        alert("Failure");
+                    }, function (err) {
+                        alert("Error");
+                    });
+                }
+            });
+
+            $('#btnSubmit').on('click', function (e) {
+                var userId = $('#hfUserId').val();
+                var requestId = parseInt('@(systemRequest?.ID ?? 0)');
+                if (!parseInt(userId)) {
+                    alert("Please select user before proceed");
+                    return false;
+                }
+                else if ($('input[name="optionsCheckbox"]:checked').length <= 0) {
+                    alert("Please select atleast one profile before proceed");
+                    return false;
+                }
+                else {
+                    var lstRequest = [];
+                    $('input[name="optionsCheckbox"]:checked').map(function () {
+                        var data = {};
+                        data.UserID = parseInt(userId);
+                        data.ProfileID = parseInt($(this).attr('data-attr-id'));
+                        data.UserName = $('#txtUserName').val();
+                        data.ProfileTitle = $($(this).parent()).text().trim();
+                        lstRequest.push(data);
+                        //return $(this).attr('data-attr-id');
+                    });
+
+                    var url = '@Url.Action("AddUpdateUserProfile", "Profile")';
+                    ajaxCall(url, { request: lstRequest, RequestId: requestId }, function (resp) {
+                        if (resp.IsSuccess) {
+                            alert('Success');
+                            location.reload();
+                        }
+                        else {
+                            alert('@CardIssuanceSystem.Core.Helpers.CustomMessages.GenericErrorMessage');
+                        }
+                    }, function (fail) {
+                        alert("Failure");
+                    }, function (err) {
+                        alert("Error");
+                    });
+                }
+            });
+        });
+
+        $(window).load(function () {
+            if (parseInt('@(systemRequest?.ID ?? 0 )') > 0) {
+                $('#ResultForm').css('display', 'block');
+            }
+        });
+
+        @*@functions{
+            }*@
+    </script>
+}
+
